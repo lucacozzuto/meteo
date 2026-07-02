@@ -33,8 +33,6 @@ jobs:
         run: |
           python plot_records_yearly.py
           python plot_records_yearly_italy.py
-          python plot_records_june_europe.py
-          python plot_records_june_italy.py
           python plot_records_cdd_europe.py
           python plot_records_cdd_italy.py
 
