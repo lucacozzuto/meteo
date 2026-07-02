@@ -134,43 +134,74 @@
             background-color: #fff; /* To contrast with the plots */
         }
 
+        /* Modal Lightbox */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 90%;
+            max-width: 1400px;
+            animation-name: zoom;
+            animation-duration: 0.3s;
+        }
+
+        @keyframes zoom {
+            from {transform:scale(0)} 
+            to {transform:scale(1)}
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Cursor pointer for images */
         .card img {
             width: 100%;
             height: auto;
             display: block;
             border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
 
-        .card-content {
-            padding: 1.5rem;
+        .card img:hover {
+            opacity: 0.8;
         }
-
-        .card-title {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.3rem;
-            color: #fff;
-        }
-
-        .card-desc {
-            margin: 0;
-            color: #aaa;
-            font-size: 0.95rem;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: #777;
-            border-top: 1px solid #333;
-            background-color: var(--card-bg);
-        }
-
-        /* Smooth scrolling */
-        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body>
+
+<!-- The Modal -->
+<div id="imageModal" class="modal">
+  <span class="close" id="modalClose">&times;</span>
+  <img class="modal-content" id="img01">
+</div>
 
 <header>
     <h1>Meteo Records Dashboard</h1>
@@ -194,7 +225,7 @@
     <div class="grid">
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="record_heatmap_yearly_europe.png" alt="Record Annuale Europa" loading="lazy">
+                <img src="record_heatmap_yearly_europe.png" alt="Record Annuale Europa" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Europa</h3>
@@ -203,7 +234,7 @@
         </div>
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="record_heatmap_yearly_italy.png" alt="Record Annuale Italia" loading="lazy">
+                <img src="record_heatmap_yearly_italy.png" alt="Record Annuale Italia" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Italia</h3>
@@ -216,7 +247,7 @@
     <div class="grid">
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="record_heatmap_june_europe.png" alt="Record Giugno Europa" loading="lazy">
+                <img src="record_heatmap_june_europe.png" alt="Record Giugno Europa" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Europa (Giugno)</h3>
@@ -225,7 +256,7 @@
         </div>
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="record_heatmap_june_italy.png" alt="Record Giugno Italia" loading="lazy">
+                <img src="record_heatmap_june_italy.png" alt="Record Giugno Italia" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Italia (Giugno)</h3>
@@ -238,7 +269,7 @@
     <div class="grid">
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="record_heatmap_cdd_europe.png" alt="Record CDD Europa" loading="lazy">
+                <img src="record_heatmap_cdd_europe.png" alt="Record CDD Europa" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Europa (Siccità)</h3>
@@ -247,7 +278,7 @@
         </div>
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="record_heatmap_cdd_italy.png" alt="Record CDD Italia" loading="lazy">
+                <img src="record_heatmap_cdd_italy.png" alt="Record CDD Italia" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Italia (Siccità)</h3>
@@ -261,5 +292,29 @@
     <p>Aggiornato automaticamente via GitHub Actions integrando i dati storici (ERA5) e previsionali (Forecast) di Open-Meteo.</p>
 </footer>
 
+<script>
+    // Script for modal image lightbox
+    var modal = document.getElementById("imageModal");
+    var modalImg = document.getElementById("img01");
+    var images = document.getElementsByClassName("zoomable");
+    var closeBtn = document.getElementById("modalClose");
+
+    for(var i = 0; i < images.length; i++) {
+        images[i].onclick = function(){
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        }
+    }
+
+    closeBtn.onclick = function() { 
+        modal.style.display = "none";
+    }
+
+    modal.onclick = function(e) {
+        if (e.target !== modalImg) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>
