@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meteo Records Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --card-bg: #1e1e1e;
+            --accent-color: #3b82f6;
+            --accent-hover: #60a5fa;
+            --record-heat: #ff4d4d;
+            --record-drought: #cc6600;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--record-heat), var(--record-drought));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 0.5rem;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid #333;
+        }
+
+        .legend h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+
+        .legend ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .legend li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #333;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            overflow: hidden;
+            background-color: #fff; /* To contrast with the plots */
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 1px solid #333;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        .card-desc {
+            margin: 0;
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: #777;
+            border-top: 1px solid #333;
+            background-color: var(--card-bg);
+        }
+
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Meteo Records Dashboard</h1>
+    <p class="subtitle">Analisi climatica automatizzata dei record di calore e siccità in Europa e Italia (1940 - Oggi).</p>
+</header>
+
+<div class="container">
+    <div class="legend">
+        <h3>Come leggere i tabelloni</h3>
+        <p>Questi grafici mostrano la storia climatica evidenziando unicamente gli anni in cui è stato battuto un <strong>record storico assoluto</strong>.</p>
+        <ul>
+            <li><span class="color-box" style="background-color: lightgray;"></span> <strong>Baseline (1940-1954)</strong>: Anni usati per stabilire i primi record.</li>
+            <li><span class="color-box" style="background-color: white; border: 1px solid #ccc;"></span> <strong>Nessun Record</strong>: L'anno non ha superato i record passati.</li>
+            <li><span class="color-box" style="background-color: var(--record-heat);"></span> <strong>Nuovo Record (Calore)</strong>: Picco massimo mai registrato prima.</li>
+            <li><span class="color-box" style="background-color: var(--record-drought);"></span> <strong>Nuovo Record (Siccità)</strong>: Periodo secco più lungo mai registrato prima.</li>
+            <li><span class="color-box" style="border: 2px solid blue; background-color: transparent;"></span> <strong>Colonna Blu</strong>: Anomalia estrema sincronizzata (molte città battono il record simultaneamente).</li>
+        </ul>
+    </div>
+
+    <h2 class="section-title">🌡️ Record di Temperature (Tutto l'anno)</h2>
+    <div class="grid">
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="record_heatmap_yearly_europe.png" alt="Record Annuale Europa" loading="lazy">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Europa</h3>
+                <p class="card-desc">Anni in cui le capitali europee hanno battuto il loro record storico di temperatura massima annua.</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="record_heatmap_yearly_italy.png" alt="Record Annuale Italia" loading="lazy">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Italia</h3>
+                <p class="card-desc">Anni in cui i capoluoghi italiani hanno battuto il loro record storico di temperatura massima annua.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">🔥 Record di Temperature (Mese di Giugno)</h2>
+    <div class="grid">
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="record_heatmap_june_europe.png" alt="Record Giugno Europa" loading="lazy">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Europa (Giugno)</h3>
+                <p class="card-desc">Record assoluti di temperatura massima limitatamente al mese di Giugno.</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="record_heatmap_june_italy.png" alt="Record Giugno Italia" loading="lazy">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Italia (Giugno)</h3>
+                <p class="card-desc">Record assoluti di temperatura massima limitatamente al mese di Giugno.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">🏜️ Siccità Estrema: Consecutive Dry Days (CDD)</h2>
+    <div class="grid">
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="record_heatmap_cdd_europe.png" alt="Record CDD Europa" loading="lazy">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Europa (Siccità)</h3>
+                <p class="card-desc">Anni in cui si è registrato il periodo ininterrotto senza pioggia (CDD) più lungo di sempre.</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="record_heatmap_cdd_italy.png" alt="Record CDD Italia" loading="lazy">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Italia (Siccità)</h3>
+                <p class="card-desc">Anni in cui si è registrato il periodo ininterrotto senza pioggia (CDD) più lungo di sempre.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>Aggiornato automaticamente via GitHub Actions integrando i dati storici (ERA5) e previsionali (Forecast) di Open-Meteo.</p>
+</footer>
+
+</body>
+</html>

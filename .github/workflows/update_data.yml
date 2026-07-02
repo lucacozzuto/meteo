@@ -1,0 +1,47 @@
+name: Update Meteo Data and Plots
+
+on:
+  schedule:
+    # Esegue ogni giorno alle 02:00 UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Permette di avviare il workflow manualmente
+
+jobs:
+  update-and-plot:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Serve per poter fare push sul branch
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update data (update_meteo.py)
+        run: python update_meteo.py
+
+      - name: Generate plots
+        run: |
+          python plot_records_yearly.py
+          python plot_records_yearly_italy.py
+          python plot_records_june_europe.py
+          python plot_records_june_italy.py
+          python plot_records_cdd_europe.py
+          python plot_records_cdd_italy.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/ data_italy/ *.png
+          # Verifica se ci sono state modifiche prima di fare il commit
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated data and plots update" && git push)
