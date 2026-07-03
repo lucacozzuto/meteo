@@ -33,6 +33,8 @@ jobs:
         run: |
           python plot_records_yearly.py
           python plot_records_yearly_italy.py
+          python plot_hot_days_europe.py
+          python plot_hot_days_italy.py
 
       - name: Commit and Push changes
         run: |
