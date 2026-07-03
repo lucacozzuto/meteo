@@ -35,6 +35,8 @@ jobs:
           python plot_records_yearly_italy.py
           python plot_hot_days_europe.py
           python plot_hot_days_italy.py
+          python plot_tropical_nights_europe.py
+          python plot_tropical_nights_italy.py
 
       - name: Commit and Push changes
         run: |
