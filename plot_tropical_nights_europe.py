@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 data_dir = "data"
 all_data = pd.DataFrame()
@@ -49,10 +50,12 @@ heatmap_data = heatmap_data.sort_values('latitude', ascending=False)
 heatmap_data.index = [f"{city} ({lat:.1f}°N)" for city, lat in zip(heatmap_data.index, heatmap_data['latitude'])]
 heatmap_data = heatmap_data.drop(columns=['latitude'])
 
+annot_data = np.where(heatmap_data == 0, "", heatmap_data.astype(str))
+
 fig, ax = plt.subplots(figsize=(30, 16))
 
 # Use a purplish colormap for nights
-sns.heatmap(heatmap_data, cmap='Purples', ax=ax, annot=True, fmt="d", annot_kws={"size": 8},
+sns.heatmap(heatmap_data, cmap='Purples', ax=ax, annot=annot_data, fmt="", annot_kws={"size": 8},
             linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Notti >= 20°C'})
 
 ax.set_title('Numero di Notti Tropicali (Minima >= 20°C) per anno in Europa', fontsize=18)
