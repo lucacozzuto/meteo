@@ -63,6 +63,6 @@ ax.set_ylabel('Città (Da Nord a Sud)', fontsize=14)
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-output_path = '/Users/lcozzuto/git/meteo/docs/extreme_rain_europe.png'
+output_path = 'docs/extreme_rain_europe.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Extreme rain heatmap saved to {output_path}")

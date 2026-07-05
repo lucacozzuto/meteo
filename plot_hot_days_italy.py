@@ -56,6 +56,6 @@ ax.set_ylabel('Città (Da Nord a Sud)', fontsize=14)
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-output_path = '/Users/lcozzuto/git/meteo/docs/hot_days_italy.png'
+output_path = 'docs/hot_days_italy.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Hot days heatmap saved to {output_path}")

@@ -91,9 +91,6 @@ ax.set_ylabel('Città (Da Nord a Sud)', fontsize=14)
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-artifact_dir = '/Users/lcozzuto/.gemini/antigravity/brain/e9a954cd-73d4-4826-91e2-4e6263f6d002'
-output_path1 = os.path.join(artifact_dir, 'record_heatmap_yearly_italy.png')
-output_path2 = '/Users/lcozzuto/git/meteo/docs/record_heatmap_yearly_italy.png'
-plt.savefig(output_path1, dpi=300, bbox_inches='tight')
-plt.savefig(output_path2, dpi=300, bbox_inches='tight')
-print(f"Records heatmap saved to {output_path1} and {output_path2}")
+output_path = 'docs/record_heatmap_yearly_italy.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight')
+print(f"Records heatmap saved to {output_path}")
