@@ -46,7 +46,7 @@ annot_data = np.where(heatmap_data == 0, "", heatmap_data.astype(str))
 
 fig, ax = plt.subplots(figsize=(30, 12))
 
-sns.heatmap(heatmap_data, cmap='Blues', ax=ax, annot=annot_data, fmt="", annot_kws={"size": 5},
+sns.heatmap(heatmap_data, cmap='Blues', ax=ax, annot=annot_data, fmt="", annot_kws={"size": 8},
             linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Giorni >= 50 mm'})
 
 ax.set_title('Numero di giorni con precipitazioni estreme (>= 50 mm) per anno nei Capoluoghi Italiani', fontsize=18)
