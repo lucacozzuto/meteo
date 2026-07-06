@@ -64,7 +64,7 @@ fig, ax = plt.subplots(figsize=(30, 12))
 # Custom colormap: -1=LightGray, 0=White, 1=Less intense red (salmon/light coral)
 cmap = mcolors.ListedColormap(['lightgray', 'white', '#ff7f7f'])
 
-sns.heatmap(heatmap_data, cmap=cmap, ax=ax, annot=annot_data, fmt="", annot_kws={"size": 7, "color": "black", "weight": "bold"},
+sns.heatmap(heatmap_data, cmap=cmap, ax=ax, annot=annot_data, fmt="", annot_kws={"size": 5, "color": "black", "weight": "bold"},
             linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar=False, vmin=-1, vmax=1)
 
 # Highlight columns (years) with records >= 25% of cities
