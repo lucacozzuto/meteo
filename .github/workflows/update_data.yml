@@ -39,6 +39,7 @@ jobs:
           python plot_tropical_nights_italy.py
           python plot_extreme_rain_europe.py
           python plot_extreme_rain_italy.py
+          python generate_monthly_records.py
 
       - name: Commit and Push changes
         run: |
