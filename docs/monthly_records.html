@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Temperature Record Mensili</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -32,7 +32,7 @@
             color: var(--accent-color);
         }
         .container {
-            max-width: 1000px;
+            max-width: 1400px;
             margin: 2rem auto;
             padding: 2rem;
             background-color: var(--card-bg);
@@ -55,7 +55,7 @@
         }
         .chart-container {
             position: relative;
-            height: 500px;
+            height: 600px;
             width: 100%;
         }
         .back-link {
@@ -68,6 +68,24 @@
         .back-link:hover {
             text-decoration: underline;
         }
+        .legend-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +96,11 @@
 </header>
 
 <div class="container">
+    <div class="legend-box">
+        <div class="legend-item"><div class="color-box" style="background-color: lightgray;"></div> Baseline (1940-1954)</div>
+        <div class="legend-item"><div class="color-box" style="background-color: white;"></div> Nessun Record</div>
+        <div class="legend-item"><div class="color-box" style="background-color: #ff7f7f;"></div> Nuovo Record</div>
+    </div>
     <div class="controls">
         <select id="datasetSelect">
             <option value="Italy">Italia</option>
@@ -88,14 +111,12 @@
         </select>
     </div>
 
-    <div class="chart-container">
-        <canvas id="recordChart"></canvas>
-    </div>
+    <div class="chart-container" id="recordChart"></div>
 </div>
 
 <script>
     let recordsData = null;
-    let chartInstance = null;
+    // Note: Heatmap y-axis goes from bottom to top in Plotly by default
     const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
     const datasetSelect = document.getElementById('datasetSelect');
@@ -128,52 +149,69 @@
     function renderChart() {
         const dataset = datasetSelect.value;
         const city = citySelect.value;
-        const data = recordsData[dataset][city];
+        const cityData = recordsData[dataset][city];
 
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
+        const years = cityData.years;
+        const records = cityData.records;
+        const temps = cityData.temps;
 
-        const ctx = document.getElementById('recordChart').getContext('2d');
-        chartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: `Temperatura Max Mensile Record (°C) - ${city}`,
-                    data: data,
-                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                    borderColor: 'rgba(220, 38, 38, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        title: {
-                            display: true,
-                            text: 'Temperatura (°C)'
+        // Reverse arrays so Jan is at top, Dec at bottom
+        let recordsReversed = [...records].reverse();
+        let tempsReversed = [...temps].reverse();
+        let monthsReversed = [...months].reverse();
+
+        let annotations = [];
+        for (let i = 0; i < recordsReversed.length; i++) {
+            for (let j = 0; j < recordsReversed[i].length; j++) {
+                if (recordsReversed[i][j] === 1) {
+                    annotations.push({
+                        x: years[j],
+                        y: monthsReversed[i],
+                        text: tempsReversed[i][j].toFixed(1),
+                        showarrow: false,
+                        font: {
+                            color: 'black',
+                            size: 10,
+                            weight: 'bold'
                         }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.parsed.y + ' °C';
-                            }
-                        }
-                    }
+                    });
                 }
             }
-        });
+        }
+
+        var data = [{
+            z: recordsReversed,
+            x: years,
+            y: monthsReversed,
+            type: 'heatmap',
+            colorscale: [
+                [0.0, 'lightgray'],   // maps to -1
+                [0.5, 'white'],       // maps to 0
+                [1.0, '#ff7f7f']      // maps to 1
+            ],
+            zmin: -1,
+            zmax: 1,
+            showscale: false,
+            hoverinfo: 'none' // disable default hover, we use annotations
+        }];
+
+        var layout = {
+            title: `Nuovi Record di Temperatura Massima Assoluta Mensile - ${city}`,
+            xaxis: {
+                title: 'Anno',
+                tickangle: -45,
+                dtick: 5
+            },
+            yaxis: {
+                title: 'Mese',
+            },
+            annotations: annotations,
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('recordChart', data, layout, {responsive: true});
     }
 
     datasetSelect.addEventListener('change', () => {
