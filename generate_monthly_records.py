@@ -12,11 +12,40 @@ def get_monthly_records(data_dir):
             filepath = os.path.join(data_dir, file)
             df = pd.read_csv(filepath)
             df['date'] = pd.to_datetime(df['date'])
+            df['year'] = df['date'].dt.year
             df['month'] = df['date'].dt.month
 
-            monthly_max = df.groupby('month')['temperature_2m_max'].max().round(1).tolist()
-            records[city] = monthly_max
-    return dict(sorted(records.items())) # Sort alphabetically
+            # Filter from 1940 onwards
+            df = df[df['year'] >= 1940]
+
+            monthly_yearly_max = df.groupby(['month', 'year'])['temperature_2m_max'].max().reset_index()
+            monthly_yearly_max = monthly_yearly_max.sort_values(by=['month', 'year'])
+            monthly_yearly_max['prev_max'] = monthly_yearly_max.groupby('month')['temperature_2m_max'].transform(lambda x: x.cummax().shift(1))
+
+            monthly_yearly_max['is_record'] = (monthly_yearly_max['temperature_2m_max'] > monthly_yearly_max['prev_max']).astype(int)
+            monthly_yearly_max.loc[monthly_yearly_max['year'] < 1955, 'is_record'] = -1
+
+            years = sorted(monthly_yearly_max['year'].unique().tolist())
+
+            city_data = {
+                "years": years,
+                "records": [],
+                "temps": []
+            }
+
+            for m in range(1, 13):
+                m_data = monthly_yearly_max[monthly_yearly_max['month'] == m]
+                m_data = m_data.set_index('year').reindex(years).reset_index()
+
+                m_data['is_record'] = m_data['is_record'].fillna(0).astype(int)
+                m_data['temperature_2m_max'] = m_data['temperature_2m_max'].fillna(0)
+
+                city_data["records"].append(m_data['is_record'].tolist())
+                city_data["temps"].append(m_data['temperature_2m_max'].round(1).tolist())
+
+            records[city] = city_data
+
+    return dict(sorted(records.items()))
 
 def main():
     europe_records = get_monthly_records('data')
