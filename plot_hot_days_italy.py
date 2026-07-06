@@ -46,7 +46,7 @@ annot_data = np.where(heatmap_data == 0, "", heatmap_data.astype(str))
 
 fig, ax = plt.subplots(figsize=(30, 12))
 
-sns.heatmap(heatmap_data, cmap='YlOrRd', ax=ax, annot=annot_data, fmt="", annot_kws={"size": 5},
+sns.heatmap(heatmap_data, cmap='YlOrRd', ax=ax, annot=annot_data, fmt="", annot_kws={"size": 8},
             linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Giorni > 30°C'})
 
 ax.set_title('Numero di giorni con temperature massime superiori a 30°C per anno nei Capoluoghi Italiani', fontsize=18)

@@ -55,7 +55,7 @@ annot_data = np.where(heatmap_data == 0, "", heatmap_data.astype(str))
 fig, ax = plt.subplots(figsize=(30, 16))
 
 # Use a purplish colormap for nights
-sns.heatmap(heatmap_data, cmap='Purples', ax=ax, annot=annot_data, fmt="", annot_kws={"size": 5},
+sns.heatmap(heatmap_data, cmap='Purples', ax=ax, annot=annot_data, fmt="", annot_kws={"size": 8},
             linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Notti >= 20°C'})
 
 ax.set_title('Numero di Notti Tropicali (Minima >= 20°C) per anno in Europa', fontsize=18)
