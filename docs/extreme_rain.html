@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meteo Records Dashboard</title>
+    <title>Precipitazioni Estreme - Meteo Dashboard</title>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -227,63 +227,33 @@
 </div>
 
 <header>
-    <h1>Meteo Records Dashboard</h1>
+    <h1>Precipitazioni Estreme - Meteo Dashboard</h1>
     <p class="subtitle">Analisi climatica automatizzata dei record di calore e precipitazioni in Europa e Italia (1940 - <span id="current-date">Oggi</span>).</p>
-    <div style="margin-top: 1rem;">
-        <a href="monthly_records.html" style="display: inline-block; padding: 0.75rem 1.5rem; background-color: var(--accent-color); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: background-color 0.3s;">📊 Esplora Record Mensili Interattivi</a>
-    </div>
+    
 </header>
 
 <div class="container">
-    <div class="legend">
-        <h3>Come leggere i tabelloni</h3>
-        <p>Questi grafici mostrano la storia climatica evidenziando unicamente gli anni in cui è stato battuto un <strong>record storico assoluto</strong>.</p>
-        <ul>
-            <li><span class="color-box" style="background-color: lightgray;"></span> <strong>Baseline (1940-1954)</strong>: Anni usati per stabilire i primi record.</li>
-            <li><span class="color-box" style="background-color: white; border: 1px solid #ccc;"></span> <strong>Nessun Record</strong>: L'anno non ha superato i record passati.</li>
-            <li><span class="color-box" style="background-color: var(--record-heat);"></span> <strong>Nuovo Record (Calore)</strong>: Picco massimo mai registrato prima.</li>
-            <li><span class="color-box" style="border: 2px solid blue; background-color: transparent;"></span> <strong>Colonna Blu</strong>: Anomalia estrema sincronizzata (molte città battono il record simultaneamente).</li>
-        </ul>
-    </div>
-
-    <h2 class="section-title">🗺️ Esplora i Dati</h2>
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-        <a href="records_heat.html" style="text-decoration: none; color: inherit;">
-            <div class="card" style="padding: 2rem; text-align: center;">
-                <h3 class="card-title">🌡️ Record di Temperature (Caldo)</h3>
-                <p class="card-desc">Record assoluti di caldo mai registrati.</p>
+    <a href="index.html" style="display: inline-block; margin-bottom: 2rem; color: var(--accent-color); text-decoration: none; font-weight: bold;">&larr; Torna alla Home</a>
+    <h2 class="section-title">💧 Precipitazioni Estreme (>= 50 mm/giorno)</h2>
+    <div class="grid">
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="extreme_rain_italy.png" alt="Precipitazioni Estreme Italia" loading="lazy" class="zoomable">
             </div>
-        </a>
-        <a href="records_cold.html" style="text-decoration: none; color: inherit;">
-            <div class="card" style="padding: 2rem; text-align: center;">
-                <h3 class="card-title">❄️ Record di Temperature (Freddo)</h3>
-                <p class="card-desc">Record assoluti di freddo mai registrati.</p>
+            <div class="card-content">
+                <h3 class="card-title">Italia</h3>
+                <p class="card-desc">Numero assoluto di giorni in un anno solare con precipitazioni estreme (uguali o superiori a 50 mm in 24 ore).</p>
             </div>
-        </a>
-        <a href="hot_days.html" style="text-decoration: none; color: inherit;">
-            <div class="card" style="padding: 2rem; text-align: center;">
-                <h3 class="card-title">🔥 Giorni Torridi</h3>
-                <p class="card-desc">Giorni con massima > 30°C.</p>
+        </div>
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="extreme_rain_europe.png" alt="Precipitazioni Estreme Europa" loading="lazy" class="zoomable">
             </div>
-        </a>
-        <a href="tropical_nights.html" style="text-decoration: none; color: inherit;">
-            <div class="card" style="padding: 2rem; text-align: center;">
-                <h3 class="card-title">🌙 Notti Tropicali</h3>
-                <p class="card-desc">Notti con minima >= 20°C.</p>
+            <div class="card-content">
+                <h3 class="card-title">Europa</h3>
+                <p class="card-desc">Numero assoluto di giorni in un anno solare con precipitazioni estreme (uguali o superiori a 50 mm in 24 ore).</p>
             </div>
-        </a>
-        <a href="extreme_rain.html" style="text-decoration: none; color: inherit;">
-            <div class="card" style="padding: 2rem; text-align: center;">
-                <h3 class="card-title">💧 Precipitazioni Estreme</h3>
-                <p class="card-desc">Giorni con >= 50 mm di pioggia.</p>
-            </div>
-        </a>
-    </div>
-
-    <h2 class="section-title">🚨 Ultimi Record Battuti (Anno Corrente)</h2>
-    <div id="latest-records-container" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-        <!-- Records will be loaded here dynamically -->
-        <p id="loading-records" style="color: #666; font-style: italic;">Caricamento degli ultimi record in corso...</p>
+        </div>
     </div>
 </div>
 
@@ -300,42 +270,7 @@
         dateElement.textContent = today.toLocaleDateString('it-IT', options);
     }
 
-    // Load latest records dynamically
-    const recordsContainer = document.getElementById('latest-records-container');
-    if (recordsContainer) {
-        fetch('latest_records.json')
-            .then(response => response.json())
-            .then(data => {
-                recordsContainer.innerHTML = ''; // clear loading text
-                if (data.length === 0) {
-                    recordsContainer.innerHTML = '<p style="color: #666; font-style: italic;">Nessun nuovo record registrato finora in questo anno solare.</p>';
-                } else {
-                    data.forEach(record => {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        card.style.padding = '1.5rem';
-                        card.style.borderLeft = '4px solid var(--record-heat)';
-                        
-                        const title = record.type === 'mensile' 
-                            ? `Nuovo record per ${record.period} a ${record.city}!`
-                            : `Nuovo record assoluto dell'anno a ${record.city}!`;
-
-                        card.innerHTML = `
-                            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: var(--record-heat);">🚨 ${title}</h3>
-                            <p style="margin: 0; font-size: 1.2rem; font-weight: bold;">${record.new_record.toFixed(1)}°C <span style="font-size: 0.9rem; font-weight: normal; color: #666;">(${record.new_date})</span></p>
-                            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #777;">vs ${record.old_record.toFixed(1)}°C <span style="font-size: 0.8rem;">(${record.old_date})</span></p>
-                        `;
-                        recordsContainer.appendChild(card);
-                    });
-                }
-            })
-            .catch(error => {
-                recordsContainer.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
-                console.error('Error fetching records:', error);
-            });
-    }
-
-    // Modal Image Viewer (kept for compatibility if any zoomable image is added later)
+    // Modal Image Viewer
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("img01");
     const closeBtn = document.getElementById("modalClose");
