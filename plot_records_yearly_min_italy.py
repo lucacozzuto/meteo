@@ -33,11 +33,11 @@ all_data['year'] = all_data['date'].dt.year
 all_data = all_data[all_data['year'] >= 1940]
 
 # Absolute maximum temperature per year per city
-yearly_data = all_data.groupby(['city', 'year'])['temperature_2m_min'].min().reset_index()
+yearly_data = all_data.groupby(['city', 'year'])['temperature_2m_min'].max().reset_index()
 
 # Calculate records
 yearly_data = yearly_data.sort_values(by=['city', 'year'])
-yearly_data['prev_min'] = yearly_data.groupby('city')['temperature_2m_min'].transform(lambda x: x.cummin().shift(1))
+yearly_data['prev_min'] = yearly_data.groupby('city')['temperature_2m_min'].transform(lambda x: x.cummax().shift(1))
 
 # A record is when the current temp is strictly greater than all previous ones
 yearly_data['is_record'] = (yearly_data['temperature_2m_min'] > yearly_data['prev_min']).astype(int)

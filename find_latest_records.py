@@ -91,8 +91,12 @@ for city in all_data['city'].unique():
 # Sort records by new_date descending
 new_records.sort(key=lambda x: x['new_date'], reverse=True)
 
+# Only keep records broken on the absolute last day of available data
+max_date_str = all_data['date'].max().strftime('%Y-%m-%d')
+new_records = [r for r in new_records if r['new_date'] == max_date_str]
+
 os.makedirs('docs', exist_ok=True)
 with open('docs/latest_records.json', 'w') as f:
     json.dump(new_records, f, indent=4)
 
-print(f"Found {len(new_records)} new records for {current_year}. Saved to docs/latest_records.json")
+print(f"Found {len(new_records)} new records on the last day ({max_date_str}). Saved to docs/latest_records.json")
