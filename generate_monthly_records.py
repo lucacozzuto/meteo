@@ -40,13 +40,15 @@ def get_monthly_records(data_dir):
 
             years = sorted(monthly_yearly_max['year'].unique().tolist())
             
-            # ANNUAL ANOMALIES
-            annual_mean = df.groupby('year')['temp_mean'].mean().reindex(years)
+            # ANNUAL ANOMALIES (Exclude 2026 as it's incomplete)
+            annual_years_list = [y for y in years if y < 2026]
+            annual_df = df[df['year'] < 2026]
+            annual_mean = annual_df.groupby('year')['temp_mean'].mean().reindex(annual_years_list)
             baseline_mean = annual_mean.mean()
             annual_anomalies = (annual_mean - baseline_mean).round(2)
             import numpy as np
             annual_anomalies = annual_anomalies.replace({np.nan: None}).tolist()
-            annual_years = years
+            annual_years = annual_years_list
 
             city_data = {
                 "years": years,
