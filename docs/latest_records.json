@@ -1,152 +1,62 @@
 [
     {
-        "city": "Lisbon",
-        "type": "mensile",
-        "period": "Luglio",
-        "new_record": 40.400001525878906,
-        "new_date": "2026-07-01",
-        "old_record": 38.7,
-        "old_date": "2022-07-11"
-    },
-    {
         "city": "Budapest",
-        "type": "annuale",
-        "period": "Anno",
+        "region": "Europe",
+        "metric": "massima",
         "new_record": 39.84999847412109,
         "new_date": "2026-06-29",
         "old_record": 38.648502,
         "old_date": "1945-08-08"
     },
     {
-        "city": "Budapest",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 39.84999847412109,
-        "new_date": "2026-06-29",
-        "old_record": 38.1615,
-        "old_date": "1950-06-30"
+        "city": "Warsaw",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 26.049999237060547,
+        "new_date": "2026-06-28",
+        "old_record": 24.396,
+        "old_date": "2015-08-08"
     },
     {
-        "city": "Kyiv",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 34.95000076293945,
+        "city": "Vienna",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 26.049999237060547,
         "new_date": "2026-06-28",
-        "old_record": 34.6,
-        "old_date": "2021-06-23"
-    },
-    {
-        "city": "Bratislava",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 37.95000076293945,
-        "new_date": "2026-06-28",
-        "old_record": 35.9305,
-        "old_date": "2012-06-30"
-    },
-    {
-        "city": "Vilnius",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 32.29999923706055,
-        "new_date": "2026-06-28",
-        "old_record": 31.8,
-        "old_date": "2019-06-11"
+        "old_record": 25.13,
+        "old_date": "2015-07-22"
     },
     {
         "city": "Minsk",
-        "type": "annuale",
-        "period": "Anno",
+        "region": "Europe",
+        "metric": "massima",
         "new_record": 34.20000076293945,
         "new_date": "2026-06-28",
         "old_record": 33.75,
         "old_date": "2024-07-12"
     },
     {
-        "city": "Minsk",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 34.20000076293945,
-        "new_date": "2026-06-28",
-        "old_record": 32.9,
-        "old_date": "2021-06-22"
-    },
-    {
         "city": "Venezia",
-        "type": "annuale",
-        "period": "Anno",
+        "region": "Italy",
+        "metric": "massima",
         "new_record": 36.44200134277344,
         "new_date": "2026-06-28",
         "old_record": 35.942,
         "old_date": "2025-08-09"
     },
     {
-        "city": "Venezia",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 36.44200134277344,
-        "new_date": "2026-06-28",
-        "old_record": 32.942,
-        "old_date": "2025-06-29"
-    },
-    {
-        "city": "Bologna",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 38.150001525878906,
-        "new_date": "2026-06-28",
-        "old_record": 38.1,
-        "old_date": "2019-06-26"
-    },
-    {
-        "city": "Firenze",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 38.99300003051758,
-        "new_date": "2026-06-28",
-        "old_record": 38.843,
-        "old_date": "2022-06-26"
-    },
-    {
-        "city": "Trieste",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 37.50400161743164,
-        "new_date": "2026-06-28",
-        "old_record": 35.9325,
-        "old_date": "2003-06-11"
-    },
-    {
         "city": "Warsaw",
-        "type": "annuale",
-        "period": "Anno",
+        "region": "Europe",
+        "metric": "massima",
         "new_record": 38.20000076293945,
         "new_date": "2026-06-27",
         "old_record": 35.709,
         "old_date": "1943-08-21"
     },
     {
-        "city": "Warsaw",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 38.20000076293945,
-        "new_date": "2026-06-27",
-        "old_record": 34.75,
-        "old_date": "2019-06-25"
-    },
-    {
-        "city": "Vienna",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 38.54999923706055,
-        "new_date": "2026-06-27",
-        "old_record": 37.0,
-        "old_date": "2025-06-25"
-    },
-    {
         "city": "Prague",
-        "type": "annuale",
-        "period": "Anno",
+        "region": "Europe",
+        "metric": "massima",
         "new_record": 39.25,
         "new_date": "2026-06-27",
         "old_record": 38.05,
@@ -154,17 +64,17 @@
     },
     {
         "city": "Prague",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 39.25,
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 25.700000762939453,
         "new_date": "2026-06-27",
-        "old_record": 38.05,
-        "old_date": "2019-06-25"
+        "old_record": 23.0385,
+        "old_date": "2015-08-13"
     },
     {
         "city": "Berlin",
-        "type": "annuale",
-        "period": "Anno",
+        "region": "Europe",
+        "metric": "massima",
         "new_record": 39.75,
         "new_date": "2026-06-27",
         "old_record": 37.695503,
@@ -172,272 +82,65 @@
     },
     {
         "city": "Berlin",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 39.75,
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 27.5,
         "new_date": "2026-06-27",
-        "old_record": 37.35,
-        "old_date": "2019-06-29"
+        "old_record": 23.7,
+        "old_date": "2018-08-07"
     },
     {
-        "city": "Copenhagen",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 30.0,
+        "city": "Milano",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 27.25,
         "new_date": "2026-06-27",
-        "old_record": 29.713001,
-        "old_date": "1947-06-29"
+        "old_record": 26.45,
+        "old_date": "2022-07-24"
     },
     {
-        "city": "Bern",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 35.5,
-        "new_date": "2026-06-26",
-        "old_record": 33.1,
-        "old_date": "2022-06-18"
-    },
-    {
-        "city": "Genova",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 34.067501068115234,
-        "new_date": "2026-06-26",
-        "old_record": 33.7175,
-        "old_date": "2025-06-29"
+        "city": "Torino",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 25.899999618530277,
+        "new_date": "2026-06-27",
+        "old_record": 25.15,
+        "old_date": "2019-06-28"
     },
     {
         "city": "Aosta",
-        "type": "annuale",
-        "period": "Anno",
+        "region": "Italy",
+        "metric": "massima",
         "new_record": 38.18600082397461,
         "new_date": "2026-06-26",
         "old_record": 37.786,
         "old_date": "2025-08-10"
     },
     {
-        "city": "Aosta",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 38.18600082397461,
-        "new_date": "2026-06-26",
-        "old_record": 37.186,
-        "old_date": "2025-06-28"
-    },
-    {
-        "city": "Amsterdam",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 34.95000076293945,
-        "new_date": "2026-06-25",
-        "old_record": 34.8,
-        "old_date": "2025-06-30"
-    },
-    {
-        "city": "Dublin",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 27.26749992370605,
-        "new_date": "2026-06-25",
-        "old_record": 25.6145,
-        "old_date": "1995-06-28"
-    },
-    {
         "city": "Brussels",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 36.95000076293945,
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 25.75,
         "new_date": "2026-06-25",
-        "old_record": 36.15,
-        "old_date": "2025-06-30"
-    },
-    {
-        "city": "London",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 36.0,
-        "new_date": "2026-06-25",
-        "old_record": 33.55,
-        "old_date": "2025-06-30"
-    },
-    {
-        "city": "Paris",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 40.3,
-        "new_date": "2026-06-23",
-        "old_record": 38.7,
-        "old_date": "2025-06-30"
-    },
-    {
-        "city": "Trento",
-        "type": "mensile",
-        "period": "Giugno",
-        "new_record": 37.8515,
-        "new_date": "2026-06-22",
-        "old_record": 37.7515,
-        "old_date": "2025-06-27"
-    },
-    {
-        "city": "Madrid",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 35.7,
-        "new_date": "2026-05-29",
-        "old_record": 35.3025,
-        "old_date": "2015-05-12"
-    },
-    {
-        "city": "Brussels",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 32.1,
-        "new_date": "2026-05-28",
-        "old_record": 31.36,
-        "old_date": "1944-05-29"
-    },
-    {
-        "city": "Paris",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 33.1,
-        "new_date": "2026-05-28",
-        "old_record": 31.792,
-        "old_date": "1944-05-28"
-    },
-    {
-        "city": "Trento",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 34.801502,
-        "new_date": "2026-05-27",
-        "old_record": 31.516,
-        "old_date": "2009-05-24"
-    },
-    {
-        "city": "Zagreb",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 32.4,
-        "new_date": "2026-05-26",
-        "old_record": 32.1035,
-        "old_date": "2003-05-07"
-    },
-    {
-        "city": "Venezia",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 29.942,
-        "new_date": "2026-05-26",
-        "old_record": 29.155,
-        "old_date": "2009-05-25"
-    },
-    {
-        "city": "LAquila",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 30.012999,
-        "new_date": "2026-05-26",
-        "old_record": 29.775,
-        "old_date": "2009-05-24"
-    },
-    {
-        "city": "Milano",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 36.05,
-        "new_date": "2026-05-26",
-        "old_record": 32.846,
-        "old_date": "2009-05-24"
-    },
-    {
-        "city": "Bologna",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 35.55,
-        "new_date": "2026-05-26",
-        "old_record": 34.7825,
-        "old_date": "2009-05-24"
-    },
-    {
-        "city": "Torino",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 36.35,
-        "new_date": "2026-05-26",
-        "old_record": 31.75,
-        "old_date": "2022-05-20"
-    },
-    {
-        "city": "Amsterdam",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 29.65,
-        "new_date": "2026-05-25",
-        "old_record": 29.15,
-        "old_date": "2017-05-26"
-    },
-    {
-        "city": "Ljubljana",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 30.5,
-        "new_date": "2026-05-25",
-        "old_record": 29.85,
-        "old_date": "2025-05-31"
+        "old_record": 23.9,
+        "old_date": "2020-08-08"
     },
     {
         "city": "Bern",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 31.0,
-        "new_date": "2026-05-25",
-        "old_record": 28.85,
-        "old_date": "2022-05-19"
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 22.299999237060547,
+        "new_date": "2026-06-25",
+        "old_record": 20.4,
+        "old_date": "2017-08-03"
     },
     {
-        "city": "London",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 34.45,
-        "new_date": "2026-05-25",
-        "old_record": 29.5575,
-        "old_date": "1944-05-28"
-    },
-    {
-        "city": "Firenze",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 33.243,
-        "new_date": "2026-05-25",
-        "old_record": 33.043,
-        "old_date": "2022-05-26"
-    },
-    {
-        "city": "Aosta",
-        "type": "mensile",
-        "period": "Maggio",
-        "new_record": 34.636,
-        "new_date": "2026-05-25",
-        "old_record": 31.886,
-        "old_date": "2022-05-21"
-    },
-    {
-        "city": "Stockholm",
-        "type": "mensile",
-        "period": "Aprile",
-        "new_record": 24.2,
-        "new_date": "2026-04-30",
-        "old_record": 22.665,
-        "old_date": "1993-04-26"
-    },
-    {
-        "city": "Tirana",
-        "type": "mensile",
-        "period": "Gennaio",
-        "new_record": 19.1,
-        "new_date": "2026-01-24",
-        "old_record": 17.85,
-        "old_date": "2025-01-27"
+        "city": "Paris",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 26.9,
+        "new_date": "2026-06-24",
+        "old_record": 23.3,
+        "old_date": "2020-08-09"
     }
 ]

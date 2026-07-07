@@ -280,10 +280,14 @@
         </a>
     </div>
 
-    <h2 class="section-title">🚨 Ultimi Record Battuti (Anno Corrente)</h2>
-    <div id="latest-records-container" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-        <!-- Records will be loaded here dynamically -->
-        <p id="loading-records" style="color: #666; font-style: italic;">Caricamento degli ultimi record in corso...</p>
+    <h2 class="section-title">🚨 Ultimi Record Battuti (Anno Corrente) - Italia</h2>
+    <div id="latest-records-italy" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 3rem;">
+        <p id="loading-records-it" style="color: #666; font-style: italic;">Caricamento degli ultimi record in corso...</p>
+    </div>
+
+    <h2 class="section-title">🚨 Ultimi Record Battuti (Anno Corrente) - Europa</h2>
+    <div id="latest-records-europe" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <p id="loading-records-eu" style="color: #666; font-style: italic;">Caricamento degli ultimi record in corso...</p>
     </div>
 </div>
 
@@ -301,36 +305,50 @@
     }
 
     // Load latest records dynamically
-    const recordsContainer = document.getElementById('latest-records-container');
-    if (recordsContainer) {
+    const recordsItaly = document.getElementById('latest-records-italy');
+    const recordsEurope = document.getElementById('latest-records-europe');
+    
+    if (recordsItaly && recordsEurope) {
         fetch('latest_records.json')
             .then(response => response.json())
             .then(data => {
-                recordsContainer.innerHTML = ''; // clear loading text
-                if (data.length === 0) {
-                    recordsContainer.innerHTML = '<p style="color: #666; font-style: italic;">Nessun nuovo record registrato finora in questo anno solare.</p>';
-                } else {
-                    data.forEach(record => {
+                recordsItaly.innerHTML = ''; 
+                recordsEurope.innerHTML = ''; 
+                
+                const italyData = data.filter(d => d.region === 'Italy');
+                const europeData = data.filter(d => d.region === 'Europe');
+                
+                function renderRecords(container, recordsData) {
+                    if (recordsData.length === 0) {
+                        container.innerHTML = '<p style="color: #666; font-style: italic;">Nessun nuovo record registrato finora in questo anno solare.</p>';
+                        return;
+                    }
+                    recordsData.forEach(record => {
                         const card = document.createElement('div');
                         card.className = 'card';
                         card.style.padding = '1.5rem';
-                        card.style.borderLeft = '4px solid var(--record-heat)';
                         
-                        const title = record.type === 'mensile' 
-                            ? `Nuovo record per ${record.period} a ${record.city}!`
-                            : `Nuovo record assoluto dell'anno a ${record.city}!`;
+                        let isMinima = record.metric === 'minima';
+                        card.style.borderLeft = isMinima ? '4px solid #ef4444' : '4px solid var(--record-heat)';
+                        
+                        const metricName = isMinima ? "Temperatura Minima Più Alta" : "Temperatura Massima";
+                        const title = `Nuovo record assoluto di ${metricName} a ${record.city}!`;
 
                         card.innerHTML = `
                             <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: var(--record-heat);">🚨 ${title}</h3>
                             <p style="margin: 0; font-size: 1.2rem; font-weight: bold;">${record.new_record.toFixed(1)}°C <span style="font-size: 0.9rem; font-weight: normal; color: #666;">(${record.new_date})</span></p>
-                            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #777;">vs ${record.old_record.toFixed(1)}°C <span style="font-size: 0.8rem;">(${record.old_date})</span></p>
+                            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #777;">vs vecchi ${record.old_record.toFixed(1)}°C <span style="font-size: 0.8rem;">(${record.old_date})</span></p>
                         `;
-                        recordsContainer.appendChild(card);
+                        container.appendChild(card);
                     });
                 }
+                
+                renderRecords(recordsItaly, italyData);
+                renderRecords(recordsEurope, europeData);
             })
             .catch(error => {
-                recordsContainer.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
+                recordsItaly.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
+                recordsEurope.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
                 console.error('Error fetching records:', error);
             });
     }
