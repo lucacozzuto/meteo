@@ -118,6 +118,12 @@
 
     <div class="chart-container" id="recordChart"></div>
     <div class="chart-container" id="anomalyChart" style="height: 400px; margin-top: 3rem;"></div>
+    
+    <div style="margin-top: 5rem; padding-top: 3rem; border-top: 1px solid var(--border-color);">
+        <h2 style="text-align: center; color: var(--accent-color);">Panoramica Globale delle Anomalie Termiche</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 2rem;">Visualizzazione combinata delle deviazioni dalla media per tutte le città italiane ed europee</p>
+        <div class="chart-container" id="allCitiesAnomalyChart" style="height: 1000px;"></div>
+    </div>
 </div>
 
 <script>
@@ -155,6 +161,7 @@
     function renderCharts() {
         renderHeatmap();
         renderAnomalyChart();
+        renderAllCitiesAnomalyChart();
     }
 
     function renderHeatmap() {
@@ -298,6 +305,66 @@
         };
 
         Plotly.newPlot('anomalyChart', data, layout, {responsive: true});
+    }
+
+    function renderAllCitiesAnomalyChart() {
+        if (!recordsData) return;
+
+        let allCities = [];
+        let allAnomalies = [];
+        let years = [];
+
+        // Combine both Italy and Europe datasets
+        let combinedData = {...recordsData['Europe'], ...recordsData['Italy']};
+        
+        // Sort alphabetically but reverse so A is at top of Plotly y-axis
+        let sortedCities = Object.keys(combinedData).sort().reverse();
+
+        for (let city of sortedCities) {
+            const cityData = combinedData[city];
+            if (cityData.annual_anomalies) {
+                allCities.push(city);
+                allAnomalies.push(cityData.annual_anomalies);
+                if (years.length === 0) {
+                    years = cityData.annual_years;
+                }
+            }
+        }
+
+        // Custom continuous colorscale centered at 0
+        const colorscale = [
+            [0, '#313695'], [0.25, '#74add1'], [0.5, '#ffffbf'], [0.75, '#f46d43'], [1, '#a50026']
+        ];
+        
+        // Find max absolute anomaly to center the color scale at 0
+        let flatAnomalies = allAnomalies.flat().filter(x => x !== null);
+        let maxAbs = Math.max(Math.abs(Math.min(...flatAnomalies)), Math.abs(Math.max(...flatAnomalies)));
+
+        var data = [{
+            z: allAnomalies,
+            x: years,
+            y: allCities,
+            type: 'heatmap',
+            colorscale: colorscale,
+            zmin: -maxAbs,
+            zmax: maxAbs,
+            showscale: true,
+            colorbar: {
+                title: 'Anomalia (°C)'
+            },
+            hoverinfo: 'x+y+z'
+        }];
+
+        var layout = {
+            title: `Warming Stripes: Anomalie Termiche Annuali (Europa e Italia combinate)`,
+            xaxis: { title: 'Anno', tickangle: -45, dtick: 5 },
+            yaxis: { title: 'Città', automargin: true },
+            margin: { t: 50, r: 20, l: 150, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('allCitiesAnomalyChart', data, layout, {responsive: true});
     }
 
     datasetSelect.addEventListener('change', () => {

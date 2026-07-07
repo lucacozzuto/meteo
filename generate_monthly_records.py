@@ -37,14 +37,16 @@ def get_monthly_records(data_dir):
             
             # MEAN TEMP PER MONTH
             monthly_yearly_mean = df.groupby(['month', 'year'])['temp_mean'].mean().reset_index()
-            
-            # ANNUAL ANOMALIES
-            annual_mean = df.groupby('year')['temp_mean'].mean()
-            baseline_mean = annual_mean.mean()
-            annual_anomalies = (annual_mean - baseline_mean).round(2).tolist()
-            annual_years = annual_mean.index.tolist()
 
             years = sorted(monthly_yearly_max['year'].unique().tolist())
+            
+            # ANNUAL ANOMALIES
+            annual_mean = df.groupby('year')['temp_mean'].mean().reindex(years)
+            baseline_mean = annual_mean.mean()
+            annual_anomalies = (annual_mean - baseline_mean).round(2)
+            import numpy as np
+            annual_anomalies = annual_anomalies.replace({np.nan: None}).tolist()
+            annual_years = years
 
             city_data = {
                 "years": years,
