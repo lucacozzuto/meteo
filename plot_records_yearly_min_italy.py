@@ -84,7 +84,7 @@ for i, year in enumerate(heatmap_data.columns):
             labels[i].set_weight("bold")
             labels[i].set_color("blue")
 
-ax.set_title('Nuovi Record di Temperatura Massima ASSOLUTA nei Capoluoghi Italiani (1940-2026) [Primi 15 anni usati come storico]', fontsize=18)
+ax.set_title('Nuovi Record di Temperatura Minima Più Alta nei Capoluoghi Italiani (1940-2026) [Primi 15 anni usati come storico]', fontsize=18)
 ax.set_xlabel('Anno', fontsize=14)
 ax.set_ylabel('Città (Da Nord a Sud)', fontsize=14)
 
