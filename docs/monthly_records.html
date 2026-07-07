@@ -109,6 +109,7 @@
         <select id="metricSelect">
             <option value="max">Record di Temperature Massime</option>
             <option value="min">Record di Notti Più Calde (Minima Più Alta)</option>
+            <option value="mean">Temperature Medie</option>
         </select>
         <select id="citySelect">
             <!-- Options populated by JS -->
@@ -116,6 +117,7 @@
     </div>
 
     <div class="chart-container" id="recordChart"></div>
+    <div class="chart-container" id="anomalyChart" style="height: 400px; margin-top: 3rem;"></div>
 </div>
 
 <script>
@@ -131,7 +133,7 @@
             const response = await fetch('monthly_records.json');
             recordsData = await response.json();
             updateCityDropdown();
-            renderChart();
+            renderCharts();
         } catch (error) {
             console.error("Errore nel caricamento dei dati:", error);
         }
@@ -150,15 +152,31 @@
         });
     }
 
-    function renderChart() {
+    function renderCharts() {
+        renderHeatmap();
+        renderAnomalyChart();
+    }
+
+    function renderHeatmap() {
         const dataset = datasetSelect.value;
         const city = citySelect.value;
         const metric = document.getElementById('metricSelect').value;
         const cityData = recordsData[dataset][city];
 
         const years = cityData.years;
-        const records = metric === 'max' ? cityData.records : cityData.records_min;
-        const temps = metric === 'max' ? cityData.temps : cityData.temps_min;
+        
+        let records = [];
+        let temps = [];
+        if (metric === 'max') {
+            records = cityData.records;
+            temps = cityData.temps;
+        } else if (metric === 'min') {
+            records = cityData.records_min;
+            temps = cityData.temps_min;
+        } else if (metric === 'mean') {
+            records = cityData.mean_temps;
+            temps = cityData.mean_temps;
+        }
 
         // Reverse arrays so Jan is at top, Dec at bottom
         let recordsReversed = [...records].reverse();
@@ -166,20 +184,49 @@
         let monthsReversed = [...months].reverse();
 
         let annotations = [];
-        for (let i = 0; i < recordsReversed.length; i++) {
-            for (let j = 0; j < recordsReversed[i].length; j++) {
-                if (recordsReversed[i][j] === 1) {
-                    annotations.push({
-                        x: years[j],
-                        y: monthsReversed[i],
-                        text: tempsReversed[i][j].toFixed(1),
-                        showarrow: false,
-                        font: {
-                            color: 'black',
-                            size: 5,
-                            weight: 'bold'
-                        }
-                    });
+        let colorscale = [];
+        let zmin, zmax, showscale, hoverinfo;
+
+        if (metric === 'mean') {
+            // For mean temps, z is the temperature values directly
+            colorscale = [
+                [0, '#313695'], [0.25, '#74add1'], [0.5, '#ffffbf'], [0.75, '#f46d43'], [1, '#a50026']
+            ];
+            let allTemps = records.flat();
+            zmin = Math.min(...allTemps);
+            zmax = Math.max(...allTemps);
+            showscale = true;
+            hoverinfo = 'x+y+z';
+            // Disable legend-box visually since it's only for records
+            document.querySelector('.legend-box').style.display = 'none';
+        } else {
+            // For records, z is -1, 0, 1
+            colorscale = [
+                [0.0, 'lightgray'],   // maps to -1
+                [0.5, 'white'],       // maps to 0
+                [1.0, metric === 'max' ? '#ff7f7f' : '#3b82f6'] // red for max, blue for min
+            ];
+            zmin = -1;
+            zmax = 1;
+            showscale = false;
+            hoverinfo = 'none';
+            document.querySelector('.legend-box').style.display = 'flex';
+            
+            for (let i = 0; i < recordsReversed.length; i++) {
+                for (let j = 0; j < recordsReversed[i].length; j++) {
+                    if (recordsReversed[i][j] === 1) {
+                        annotations.push({
+                            x: years[j],
+                            y: monthsReversed[i],
+                            text: tempsReversed[i][j].toFixed(1),
+                            showarrow: false,
+                            font: {
+                                color: 'black',
+                                size: 5,
+                                weight: 'bold'
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -189,20 +236,17 @@
             x: years,
             y: monthsReversed,
             type: 'heatmap',
-            colorscale: [
-                [0.0, 'lightgray'],   // maps to -1
-                [0.5, 'white'],       // maps to 0
-                [1.0, '#ff7f7f']      // maps to 1
-            ],
-            zmin: -1,
-            zmax: 1,
-            showscale: false,
-            hoverinfo: 'none' // disable default hover, we use annotations
+            colorscale: colorscale,
+            zmin: zmin,
+            zmax: zmax,
+            showscale: showscale,
+            hoverinfo: hoverinfo
         }];
 
-        const titleText = metric === 'max' 
-            ? `Nuovi Record di Temperatura Massima Assoluta Mensile - ${city}`
-            : `Nuovi Record di Notti Più Calde (Minima Più Alta) Mensile - ${city}`;
+        let titleText = "";
+        if (metric === 'max') titleText = `Nuovi Record di Temperatura Massima Assoluta Mensile - ${city}`;
+        else if (metric === 'min') titleText = `Nuovi Record di Notti Più Calde (Minima Più Alta) Mensile - ${city}`;
+        else titleText = `Temperature Medie Mensili (°C) - ${city}`;
 
         var layout = {
             title: titleText,
@@ -223,13 +267,46 @@
         Plotly.newPlot('recordChart', data, layout, {responsive: true});
     }
 
+    function renderAnomalyChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData[dataset][city];
+
+        if (!cityData.annual_anomalies) return;
+
+        const years = cityData.annual_years;
+        const anomalies = cityData.annual_anomalies;
+
+        const markerColors = anomalies.map(a => a >= 0 ? '#ef4444' : '#3b82f6'); // Red for positive, blue for negative
+
+        var data = [{
+            x: years,
+            y: anomalies,
+            type: 'bar',
+            marker: {
+                color: markerColors
+            }
+        }];
+
+        var layout = {
+            title: `Anomalia Termica Annuale - ${city} (rispetto alla media del periodo)`,
+            xaxis: { title: 'Anno', dtick: 5, tickangle: -45 },
+            yaxis: { title: 'Anomalia (°C)' },
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('anomalyChart', data, layout, {responsive: true});
+    }
+
     datasetSelect.addEventListener('change', () => {
         updateCityDropdown();
-        renderChart();
+        renderCharts();
     });
 
-    citySelect.addEventListener('change', renderChart);
-    document.getElementById('metricSelect').addEventListener('change', renderChart);
+    citySelect.addEventListener('change', renderCharts);
+    document.getElementById('metricSelect').addEventListener('change', renderHeatmap);
 
     // Initialize
     loadData();

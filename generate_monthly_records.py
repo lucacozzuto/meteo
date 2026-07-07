@@ -32,6 +32,18 @@ def get_monthly_records(data_dir):
             monthly_yearly_min['is_record'] = (monthly_yearly_min['temperature_2m_min'] > monthly_yearly_min['prev_min']).astype(int)
             monthly_yearly_min.loc[monthly_yearly_min['year'] < 1955, 'is_record'] = -1
 
+            # MEAN TEMP (Daily Mean)
+            df['temp_mean'] = (df['temperature_2m_max'] + df['temperature_2m_min']) / 2
+            
+            # MEAN TEMP PER MONTH
+            monthly_yearly_mean = df.groupby(['month', 'year'])['temp_mean'].mean().reset_index()
+            
+            # ANNUAL ANOMALIES
+            annual_mean = df.groupby('year')['temp_mean'].mean()
+            baseline_mean = annual_mean.mean()
+            annual_anomalies = (annual_mean - baseline_mean).round(2).tolist()
+            annual_years = annual_mean.index.tolist()
+
             years = sorted(monthly_yearly_max['year'].unique().tolist())
 
             city_data = {
@@ -39,7 +51,10 @@ def get_monthly_records(data_dir):
                 "records": [],
                 "temps": [],
                 "records_min": [],
-                "temps_min": []
+                "temps_min": [],
+                "mean_temps": [],
+                "annual_anomalies": annual_anomalies,
+                "annual_years": annual_years
             }
 
             for m in range(1, 13):
@@ -58,6 +73,12 @@ def get_monthly_records(data_dir):
                 m_data_min['temperature_2m_min'] = m_data_min['temperature_2m_min'].fillna(0)
                 city_data["records_min"].append(m_data_min['is_record'].tolist())
                 city_data["temps_min"].append(m_data_min['temperature_2m_min'].round(1).tolist())
+                
+                # Mean Data
+                m_data_mean = monthly_yearly_mean[monthly_yearly_mean['month'] == m]
+                m_data_mean = m_data_mean.set_index('year').reindex(years).reset_index()
+                m_data_mean['temp_mean'] = m_data_mean['temp_mean'].fillna(0)
+                city_data["mean_temps"].append(m_data_mean['temp_mean'].round(1).tolist())
 
             records[city] = city_data
 
