@@ -309,7 +309,7 @@
     const recordsEurope = document.getElementById('latest-records-europe');
     
     if (recordsItaly && recordsEurope) {
-        fetch('latest_records.json')
+        fetch('latest_records.json?t=' + new Date().getTime())
             .then(response => response.json())
             .then(data => {
                 recordsItaly.innerHTML = ''; 
