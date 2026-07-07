@@ -18,30 +18,46 @@ def get_monthly_records(data_dir):
             # Filter from 1940 onwards
             df = df[df['year'] >= 1940]
 
+            # MAX TEMP RECORDS
             monthly_yearly_max = df.groupby(['month', 'year'])['temperature_2m_max'].max().reset_index()
             monthly_yearly_max = monthly_yearly_max.sort_values(by=['month', 'year'])
             monthly_yearly_max['prev_max'] = monthly_yearly_max.groupby('month')['temperature_2m_max'].transform(lambda x: x.cummax().shift(1))
-
             monthly_yearly_max['is_record'] = (monthly_yearly_max['temperature_2m_max'] > monthly_yearly_max['prev_max']).astype(int)
             monthly_yearly_max.loc[monthly_yearly_max['year'] < 1955, 'is_record'] = -1
+
+            # MIN TEMP RECORDS (Warmest Nights)
+            monthly_yearly_min = df.groupby(['month', 'year'])['temperature_2m_min'].max().reset_index()
+            monthly_yearly_min = monthly_yearly_min.sort_values(by=['month', 'year'])
+            monthly_yearly_min['prev_min'] = monthly_yearly_min.groupby('month')['temperature_2m_min'].transform(lambda x: x.cummax().shift(1))
+            monthly_yearly_min['is_record'] = (monthly_yearly_min['temperature_2m_min'] > monthly_yearly_min['prev_min']).astype(int)
+            monthly_yearly_min.loc[monthly_yearly_min['year'] < 1955, 'is_record'] = -1
 
             years = sorted(monthly_yearly_max['year'].unique().tolist())
 
             city_data = {
                 "years": years,
                 "records": [],
-                "temps": []
+                "temps": [],
+                "records_min": [],
+                "temps_min": []
             }
 
             for m in range(1, 13):
+                # Max Data
                 m_data = monthly_yearly_max[monthly_yearly_max['month'] == m]
                 m_data = m_data.set_index('year').reindex(years).reset_index()
-
                 m_data['is_record'] = m_data['is_record'].fillna(0).astype(int)
                 m_data['temperature_2m_max'] = m_data['temperature_2m_max'].fillna(0)
-
                 city_data["records"].append(m_data['is_record'].tolist())
                 city_data["temps"].append(m_data['temperature_2m_max'].round(1).tolist())
+
+                # Min Data
+                m_data_min = monthly_yearly_min[monthly_yearly_min['month'] == m]
+                m_data_min = m_data_min.set_index('year').reindex(years).reset_index()
+                m_data_min['is_record'] = m_data_min['is_record'].fillna(0).astype(int)
+                m_data_min['temperature_2m_min'] = m_data_min['temperature_2m_min'].fillna(0)
+                city_data["records_min"].append(m_data_min['is_record'].tolist())
+                city_data["temps_min"].append(m_data_min['temperature_2m_min'].round(1).tolist())
 
             records[city] = city_data
 

@@ -106,6 +106,10 @@
             <option value="Italy">Italia</option>
             <option value="Europe">Europa</option>
         </select>
+        <select id="metricSelect">
+            <option value="max">Record di Temperature Massime</option>
+            <option value="min">Record di Notti Più Calde (Minima Più Alta)</option>
+        </select>
         <select id="citySelect">
             <!-- Options populated by JS -->
         </select>
@@ -149,11 +153,12 @@
     function renderChart() {
         const dataset = datasetSelect.value;
         const city = citySelect.value;
+        const metric = document.getElementById('metricSelect').value;
         const cityData = recordsData[dataset][city];
 
         const years = cityData.years;
-        const records = cityData.records;
-        const temps = cityData.temps;
+        const records = metric === 'max' ? cityData.records : cityData.records_min;
+        const temps = metric === 'max' ? cityData.temps : cityData.temps_min;
 
         // Reverse arrays so Jan is at top, Dec at bottom
         let recordsReversed = [...records].reverse();
@@ -195,8 +200,12 @@
             hoverinfo: 'none' // disable default hover, we use annotations
         }];
 
+        const titleText = metric === 'max' 
+            ? `Nuovi Record di Temperatura Massima Assoluta Mensile - ${city}`
+            : `Nuovi Record di Notti Più Calde (Minima Più Alta) Mensile - ${city}`;
+
         var layout = {
-            title: `Nuovi Record di Temperatura Massima Assoluta Mensile - ${city}`,
+            title: titleText,
             xaxis: {
                 title: 'Anno',
                 tickangle: -45,
@@ -220,6 +229,7 @@
     });
 
     citySelect.addEventListener('change', renderChart);
+    document.getElementById('metricSelect').addEventListener('change', renderChart);
 
     // Initialize
     loadData();
