@@ -281,13 +281,21 @@
     </div>
 
     <h2 class="section-title">🚨 Ultimi Record Battuti (Anno Corrente) - Italia</h2>
-    <div id="latest-records-italy" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 3rem;">
+    <h3 style="color: var(--record-heat); margin-bottom: 1rem;">Record di Temperature Massime</h3>
+    <div id="latest-records-italy-max" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem;">
         <p id="loading-records-it" style="color: #666; font-style: italic;">Caricamento degli ultimi record in corso...</p>
+    </div>
+    <h3 style="color: #3b82f6; margin-bottom: 1rem;">Record di Temperature Minime (Più Alte)</h3>
+    <div id="latest-records-italy-min" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 3rem;">
     </div>
 
     <h2 class="section-title">🚨 Ultimi Record Battuti (Anno Corrente) - Europa</h2>
-    <div id="latest-records-europe" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    <h3 style="color: var(--record-heat); margin-bottom: 1rem;">Record di Temperature Massime</h3>
+    <div id="latest-records-europe-max" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem;">
         <p id="loading-records-eu" style="color: #666; font-style: italic;">Caricamento degli ultimi record in corso...</p>
+    </div>
+    <h3 style="color: #3b82f6; margin-bottom: 1rem;">Record di Temperature Minime (Più Alte)</h3>
+    <div id="latest-records-europe-min" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
     </div>
 </div>
 
@@ -305,22 +313,23 @@
     }
 
     // Load latest records dynamically
-    const recordsItaly = document.getElementById('latest-records-italy');
-    const recordsEurope = document.getElementById('latest-records-europe');
+    const italyMax = document.getElementById('latest-records-italy-max');
+    const italyMin = document.getElementById('latest-records-italy-min');
+    const europeMax = document.getElementById('latest-records-europe-max');
+    const europeMin = document.getElementById('latest-records-europe-min');
     
-    if (recordsItaly && recordsEurope) {
+    if (italyMax && europeMax) {
         fetch('latest_records.json?t=' + new Date().getTime())
             .then(response => response.json())
             .then(data => {
-                recordsItaly.innerHTML = ''; 
-                recordsEurope.innerHTML = ''; 
-                
-                const italyData = data.filter(d => d.region === 'Italy');
-                const europeData = data.filter(d => d.region === 'Europe');
+                italyMax.innerHTML = ''; 
+                italyMin.innerHTML = ''; 
+                europeMax.innerHTML = ''; 
+                europeMin.innerHTML = ''; 
                 
                 function renderRecords(container, recordsData) {
                     if (recordsData.length === 0) {
-                        container.innerHTML = '<p style="color: #666; font-style: italic;">Nessun nuovo record registrato finora in questo anno solare.</p>';
+                        container.innerHTML = '<p style="color: #666; font-style: italic;">Nessun nuovo record in questa categoria.</p>';
                         return;
                     }
                     recordsData.forEach(record => {
@@ -329,13 +338,14 @@
                         card.style.padding = '1.5rem';
                         
                         let isMinima = record.metric === 'minima';
-                        card.style.borderLeft = isMinima ? '4px solid #ef4444' : '4px solid var(--record-heat)';
+                        let cardColor = isMinima ? '#3b82f6' : 'var(--record-heat)';
+                        card.style.borderLeft = `4px solid ${cardColor}`;
                         
-                        const metricName = isMinima ? "Temperatura Minima Più Alta" : "Temperatura Massima";
-                        const title = `Nuovo record assoluto di ${metricName} a ${record.city}!`;
+                        const titleIcon = isMinima ? "🔵" : "🚨";
+                        const title = `Nuovo record a ${record.city}!`;
 
                         card.innerHTML = `
-                            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: var(--record-heat);">🚨 ${title}</h3>
+                            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: ${cardColor};">${titleIcon} ${title}</h3>
                             <p style="margin: 0; font-size: 1.2rem; font-weight: bold;">${record.new_record.toFixed(1)}°C <span style="font-size: 0.9rem; font-weight: normal; color: #666;">(${record.new_date})</span></p>
                             <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #777;">vs vecchi ${record.old_record.toFixed(1)}°C <span style="font-size: 0.8rem;">(${record.old_date})</span></p>
                         `;
@@ -343,12 +353,14 @@
                     });
                 }
                 
-                renderRecords(recordsItaly, italyData);
-                renderRecords(recordsEurope, europeData);
+                renderRecords(italyMax, data.filter(d => d.region === 'Italy' && d.metric === 'massima'));
+                renderRecords(italyMin, data.filter(d => d.region === 'Italy' && d.metric === 'minima'));
+                renderRecords(europeMax, data.filter(d => d.region === 'Europe' && d.metric === 'massima'));
+                renderRecords(europeMin, data.filter(d => d.region === 'Europe' && d.metric === 'minima'));
             })
             .catch(error => {
-                recordsItaly.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
-                recordsEurope.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
+                italyMax.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
+                europeMax.innerHTML = '<p style="color: red;">Errore nel caricamento degli ultimi record.</p>';
                 console.error('Error fetching records:', error);
             });
     }
