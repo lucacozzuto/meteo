@@ -62,3 +62,36 @@ plt.tight_layout()
 output_path = 'docs/tropical_nights_italy.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Tropical nights heatmap saved to {output_path}")
+plt.close(fig)
+
+# --- ANOMALY HEATMAP ---
+# Exclude incomplete year 2026
+anomaly_heatmap_data = heatmap_data.loc[:, heatmap_data.columns < 2026]
+
+# Calculate historical mean per city
+mean_per_city = anomaly_heatmap_data.mean(axis=1)
+
+# Calculate anomaly
+anomaly_data = anomaly_heatmap_data.sub(mean_per_city, axis=0)
+
+fig2, ax2 = plt.subplots(figsize=(24, 12))
+
+# Round anomalies for annotations
+annot_anomaly = np.where(anomaly_data.round(1) == 0, "0", anomaly_data.round(1).astype(str))
+# Replace 0.0 with 0
+annot_anomaly = np.where(annot_anomaly == '0.0', '0', annot_anomaly)
+
+sns.heatmap(anomaly_data, cmap='coolwarm', ax=ax2, annot=annot_anomaly, fmt="", annot_kws={"size": 10},
+            center=0, linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Deviazione Notti >= 20°C'})
+
+ax2.set_title('Anomalia del Numero di Notti Tropicali (Deviazione dalla media storica) per anno in Italia', fontsize=18)
+ax2.set_xlabel('Anno', fontsize=14)
+ax2.set_ylabel('Città (Da Nord a Sud)', fontsize=14)
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+anomaly_output_path = 'docs/tropical_nights_anomaly_italy.png'
+plt.savefig(anomaly_output_path, dpi=300, bbox_inches='tight')
+print(f"Tropical nights anomaly heatmap saved to {anomaly_output_path}")
+plt.close(fig2)
