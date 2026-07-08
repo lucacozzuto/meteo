@@ -76,10 +76,10 @@ anomaly_data = anomaly_heatmap_data.sub(mean_per_city, axis=0)
 
 fig2, ax2 = plt.subplots(figsize=(24, 12))
 
-# Round anomalies for annotations
-annot_anomaly = np.where(anomaly_data.round(1) == 0, "0", anomaly_data.round(1).astype(str))
-# Replace 0.0 with 0
-annot_anomaly = np.where(annot_anomaly == '0.0', '0', annot_anomaly)
+# Round anomalies for annotations (0 decimals)
+annot_anomaly = anomaly_data.round(0).astype(int).astype(str)
+# Do not show zeros
+annot_anomaly = np.where(annot_anomaly == '0', '', annot_anomaly)
 
 sns.heatmap(anomaly_data, cmap='coolwarm', ax=ax2, annot=annot_anomaly, fmt="", annot_kws={"size": 10},
             center=0, linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Deviazione Notti >= 20°C'})
