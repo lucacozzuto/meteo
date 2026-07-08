@@ -11,7 +11,7 @@ all_data = pd.DataFrame()
 # Latitudes for sorting (European Capitals)
 latitudes = {
     'London': 51.5074, 'Paris': 48.8566, 'Berlin': 52.5200,
-    'Madrid': 40.4168, 'Rome': 41.9028, 'Amsterdam': 52.3676,
+    'Madrid': 40.4168, 'Barcelona': 41.35, 'Rome': 41.9028, 'Amsterdam': 52.3676,
     'Brussels': 50.8503, 'Vienna': 48.2082, 'Prague': 50.0755,
     'Warsaw': 52.2297, 'Budapest': 47.4979, 'Stockholm': 59.3293,
     'Oslo': 59.9127, 'Copenhagen': 55.6761, 'Helsinki': 60.1695,
