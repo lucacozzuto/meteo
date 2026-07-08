@@ -88,7 +88,7 @@ annot_anomaly = anomaly_data.round(0).astype(int).astype(str)
 # Do not show zeros
 annot_anomaly = np.where(annot_anomaly == '0', '', annot_anomaly)
 
-sns.heatmap(anomaly_data, cmap='coolwarm', ax=ax2, annot=annot_anomaly, fmt="", annot_kws={"size": 8},
+sns.heatmap(anomaly_data, cmap='coolwarm', ax=ax2, annot=False,
             center=0, linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Deviazione Notti >= 20°C'})
 
 ax2.set_title('Anomalia del Numero di Notti Tropicali (Deviazione dalla media storica) per anno in Europa', fontsize=18)
