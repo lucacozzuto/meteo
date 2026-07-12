@@ -81,7 +81,7 @@ def get_monthly_records(data_dir):
                 # Mean Data
                 m_data_mean = monthly_yearly_mean[monthly_yearly_mean['month'] == m]
                 m_data_mean = m_data_mean.set_index('year').reindex(years).reset_index()
-                city_data["mean_temps"].append(m_data_mean['temp_mean'].apply(lambda x: round(x, 1) if pd.notna(x) else None).tolist())
+                city_data["mean_temps"].append([round(x, 1) if pd.notna(x) else None for x in m_data_mean['temp_mean']])
 
             records[city] = city_data
 
