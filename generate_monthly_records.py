@@ -65,7 +65,7 @@ def get_monthly_records(data_dir):
                 # Max Data
                 m_data = monthly_yearly_max[monthly_yearly_max['month'] == m]
                 m_data = m_data.set_index('year').reindex(years).reset_index()
-                m_data['is_record'] = m_data['is_record'].fillna(0).astype(int)
+                m_data['is_record'] = m_data['is_record'].fillna(-1).astype(int)
                 m_data['temperature_2m_max'] = m_data['temperature_2m_max'].fillna(0)
                 city_data["records"].append(m_data['is_record'].tolist())
                 city_data["temps"].append(m_data['temperature_2m_max'].round(1).tolist())
@@ -73,7 +73,7 @@ def get_monthly_records(data_dir):
                 # Min Data
                 m_data_min = monthly_yearly_min[monthly_yearly_min['month'] == m]
                 m_data_min = m_data_min.set_index('year').reindex(years).reset_index()
-                m_data_min['is_record'] = m_data_min['is_record'].fillna(0).astype(int)
+                m_data_min['is_record'] = m_data_min['is_record'].fillna(-1).astype(int)
                 m_data_min['temperature_2m_min'] = m_data_min['temperature_2m_min'].fillna(0)
                 city_data["records_min"].append(m_data_min['is_record'].tolist())
                 city_data["temps_min"].append(m_data_min['temperature_2m_min'].round(1).tolist())
@@ -81,8 +81,7 @@ def get_monthly_records(data_dir):
                 # Mean Data
                 m_data_mean = monthly_yearly_mean[monthly_yearly_mean['month'] == m]
                 m_data_mean = m_data_mean.set_index('year').reindex(years).reset_index()
-                m_data_mean['temp_mean'] = m_data_mean['temp_mean'].fillna(0)
-                city_data["mean_temps"].append(m_data_mean['temp_mean'].round(1).tolist())
+                city_data["mean_temps"].append(m_data_mean['temp_mean'].apply(lambda x: round(x, 1) if pd.notna(x) else None).tolist())
 
             records[city] = city_data
 

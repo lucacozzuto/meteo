@@ -1,5 +1,14 @@
 [
     {
+        "city": "Lisbon",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 27.399999618530273,
+        "new_date": "2026-07-02",
+        "old_record": 26.4,
+        "old_date": "2022-07-07"
+    },
+    {
         "city": "Budapest",
         "region": "Europe",
         "metric": "massima",

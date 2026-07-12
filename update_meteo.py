@@ -55,9 +55,10 @@ def fetch_data(url, params):
             if daily.Variables(0).ValuesAsNumpy().size == 0:
                 return None
                 
+            offset = response.UtcOffsetSeconds()
             daily_data = {"date": pd.date_range(
-                start = pd.to_datetime(daily.Time(), unit = "s", utc = True),
-                end = pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
+                start = pd.to_datetime(daily.Time() + offset, unit = "s", utc = True),
+                end = pd.to_datetime(daily.TimeEnd() + offset, unit = "s", utc = True),
                 freq = pd.Timedelta(seconds = daily.Interval()),
                 inclusive = "left"
             )}
