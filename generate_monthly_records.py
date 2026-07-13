@@ -50,6 +50,41 @@ def get_monthly_records(data_dir):
             annual_anomalies = annual_anomalies.replace({np.nan: None}).tolist()
             annual_years = annual_years_list
 
+            # Heatwaves calculation
+            df_summer = df[df['month'].isin([6, 7, 8])].copy()
+            baseline_summer = df_summer[(df_summer['year'] >= 1975) & (df_summer['year'] <= 2000)]['temperature_2m_max'].dropna()
+            threshold = baseline_summer.quantile(0.99) if not baseline_summer.empty else 30
+            baseline_mean_summer = baseline_summer.mean() if not baseline_summer.empty else 25
+            
+            df_summer['is_hot'] = df_summer['temperature_2m_max'] > threshold
+            heatwaves = []
+            current_hw = []
+            for i, row in df_summer.iterrows():
+                if row['is_hot']:
+                    current_hw.append(row)
+                else:
+                    if len(current_hw) > 0:
+                        hw_df = pd.DataFrame(current_hw)
+                        start_date = hw_df['date'].min()
+                        heatwaves.append({
+                            'start': start_date.strftime('%Y-%m-%d'),
+                            'year': int(start_date.year),
+                            'duration': len(hw_df),
+                            'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
+                            'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
+                        })
+                        current_hw = []
+            if len(current_hw) > 0:
+                hw_df = pd.DataFrame(current_hw)
+                start_date = hw_df['date'].min()
+                heatwaves.append({
+                    'start': start_date.strftime('%Y-%m-%d'),
+                    'year': int(start_date.year),
+                    'duration': len(hw_df),
+                    'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
+                    'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
+                })
+
             city_data = {
                 "years": years,
                 "records": [],
@@ -58,7 +93,8 @@ def get_monthly_records(data_dir):
                 "temps_min": [],
                 "mean_temps": [],
                 "annual_anomalies": annual_anomalies,
-                "annual_years": annual_years
+                "annual_years": annual_years,
+                "heatwaves": heatwaves
             }
 
             for m in range(1, 13):

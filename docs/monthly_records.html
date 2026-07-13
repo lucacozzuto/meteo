@@ -118,6 +118,7 @@
 
     <div class="chart-container" id="recordChart"></div>
     <div class="chart-container" id="anomalyChart" style="height: 400px; margin-top: 3rem;"></div>
+    <div class="chart-container" id="heatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
 </div>
 
 <script>
@@ -155,6 +156,7 @@
     function renderCharts() {
         renderHeatmap();
         renderAnomalyChart();
+        renderHeatwavesChart();
     }
 
     function renderHeatmap() {
@@ -298,6 +300,52 @@
         };
 
         Plotly.newPlot('anomalyChart', data, layout, {responsive: true});
+    }
+
+    function renderHeatwavesChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData[dataset][city];
+
+        if (!cityData.heatwaves || cityData.heatwaves.length === 0) {
+            document.getElementById('heatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore registrata per questa città.</p>';
+            return;
+        }
+
+        const hws = cityData.heatwaves.filter(hw => hw.year >= 1975);
+        if (hws.length === 0) {
+            document.getElementById('heatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore (dal 1975 in poi) registrata per questa città.</p>';
+            return;
+        }
+
+        const dates = hws.map(hw => hw.start);
+        const anomalies = hws.map(hw => hw.anomaly);
+        const durations = hws.map(hw => `Durata: ${hw.duration} giorni<br>Picco Assoluto: ${hw.max_temp}°C`);
+        
+        var data = [{
+            x: dates,
+            y: anomalies,
+            type: 'bar',
+            text: durations,
+            hovertemplate: '%{x}<br>Anomalia: +%{y}°C<br>%{text}<extra></extra>',
+            marker: {
+                color: anomalies,
+                colorscale: 'Inferno',
+                cmin: 0,
+                cmax: Math.max(...anomalies, 10)
+            }
+        }];
+
+        var layout = {
+            title: `Ondate di Calore Estreme (99° Perc. JJA) - ${city}`,
+            xaxis: { title: 'Data di Inizio', type: 'date' },
+            yaxis: { title: 'Anomalia Termica (°C)' },
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('heatwaveChart', data, layout, {responsive: true});
     }
 
     datasetSelect.addEventListener('change', () => {
