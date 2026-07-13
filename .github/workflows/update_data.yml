@@ -41,6 +41,8 @@ jobs:
           python plot_extreme_rain_italy.py
           python plot_records_yearly_min_europe.py
           python plot_records_yearly_min_italy.py
+          python plot_heatwaves_europe.py
+          python plot_heatwaves_italy.py
           python generate_monthly_records.py
           python find_latest_records.py
 

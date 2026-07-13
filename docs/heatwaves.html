@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ondate di Calore Estive - Meteo Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f9f9f9;
+            --accent-color: #2563eb;
+            --accent-hover: #3b82f6;
+            --record-heat: #ef4444;
+            --record-drought: #f97316;
+            --border-color: #e5e5e5;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--record-heat), #cc0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .legend h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+
+        .legend ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .legend li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        /* Modal Lightbox */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: auto;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 90%;
+            max-width: 1400px;
+            animation-name: zoom;
+            animation-duration: 0.3s;
+        }
+
+        @keyframes zoom {
+            from {transform:scale(0)} 
+            to {transform:scale(1)}
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Cursor pointer for images */
+        .card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .card img:hover {
+            opacity: 0.8;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            color: var(--text-color);
+        }
+
+        .card-desc {
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: #777;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+        }
+
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+
+<!-- The Modal -->
+<div id="imageModal" class="modal">
+  <span class="close" id="modalClose">&times;</span>
+  <img class="modal-content" id="img01">
+</div>
+
+<header>
+    <h1>Ondate di Calore Estive - Meteo Dashboard</h1>
+    <p class="subtitle">Analisi climatica automatizzata dei record di calore e precipitazioni in Europa e Italia (1940 - <span id="current-date">Oggi</span>).</p>
+    
+</header>
+
+<div class="container">
+    <a href="index.html" style="display: inline-block; margin-bottom: 2rem; color: var(--accent-color); text-decoration: none; font-weight: bold;">&larr; Torna alla Home</a>
+    <h2 class="section-title">🌡️ Ondate di Calore Estive</h2>
+    <div class="grid">
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="heatwaves_italy.png" alt="Ondate di Calore Italia" loading="lazy" class="zoomable">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Italia</h3>
+                <p class="card-desc">Eventi estremi in cui la massima ha superato il 99° percentile storico (1975-2000). L'altezza dell'onda indica i gradi di anomalia termica.</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-img-wrapper">
+                <img src="heatwaves_europe.png" alt="Ondate di Calore Europa" loading="lazy" class="zoomable">
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Europa</h3>
+                <p class="card-desc">Eventi estremi in cui la massima ha superato il 99° percentile storico (1975-2000). L'altezza dell'onda indica i gradi di anomalia termica.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>Aggiornato automaticamente via GitHub Actions integrando i dati storici (ERA5) e previsionali (Forecast) di Open-Meteo.</p>
+</footer>
+
+<script>
+    // Set dynamic current date
+    const dateElement = document.getElementById('current-date');
+    if (dateElement) {
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        dateElement.textContent = today.toLocaleDateString('it-IT', options);
+    }
+
+    // Modal Image Viewer
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("img01");
+    const closeBtn = document.getElementById("modalClose");
+    const zoomableImages = document.querySelectorAll('.zoomable');
+
+    zoomableImages.forEach(img => {
+        img.onclick = function() {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        }
+    });
+
+    closeBtn.onclick = function() { 
+        modal.style.display = "none";
+    }
+
+    modal.onclick = function(e) {
+        if (e.target !== modalImg) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>
