@@ -63,7 +63,7 @@ def get_monthly_records(data_dir):
                 if row['is_hot']:
                     current_hw.append(row)
                 else:
-                    if len(current_hw) > 0:
+                    if len(current_hw) >= 3:
                         hw_df = pd.DataFrame(current_hw)
                         start_date = hw_df['date'].min()
                         heatwaves.append({
@@ -74,7 +74,7 @@ def get_monthly_records(data_dir):
                             'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
                         })
                         current_hw = []
-            if len(current_hw) > 0:
+            if len(current_hw) >= 3:
                 hw_df = pd.DataFrame(current_hw)
                 start_date = hw_df['date'].min()
                 heatwaves.append({

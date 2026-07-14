@@ -33,7 +33,7 @@ def compute_heatwaves(city_file):
         if row['is_hot']:
             current_hw.append(row)
         else:
-            if len(current_hw) > 0:
+            if len(current_hw) >= 3:
                 hw_df = pd.DataFrame(current_hw)
                 start_date = hw_df['date'].min()
                 end_date = hw_df['date'].max()
@@ -51,7 +51,7 @@ def compute_heatwaves(city_file):
                 })
                 current_hw = []
                 
-    if len(current_hw) > 0:
+    if len(current_hw) >= 3:
         hw_df = pd.DataFrame(current_hw)
         start_date = hw_df['date'].min()
         end_date = hw_df['date'].max()
