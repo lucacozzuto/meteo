@@ -105,6 +105,8 @@ def plot_waves(cities, output_file, region_title):
     date_to_x = {d.date(): i for i, d in enumerate(summer_dates)}
     max_x = len(date_to_x)
     
+    date_counts = {d.date(): 0 for d in summer_dates}
+    
     for i, city in enumerate(cities):
         city_name = os.path.basename(city).replace('.csv', '')
         y_base = i * 20  # Base y-level for the city
@@ -117,6 +119,12 @@ def plot_waves(cities, output_file, region_title):
         
         hws = compute_heatwaves(city)
         hws = [hw for hw in hws if hw['start'].year >= 1975] # Filter to 1975+
+        
+        for hw in hws:
+            hw_dates = pd.date_range(hw['start'], hw['end'], freq='D')
+            for d in hw_dates:
+                if d.date() in date_counts:
+                    date_counts[d.date()] += 1
         
         # Plot each wave (altezza = anomalia assoluta in gradi rispetto alla media 1975-2000)
         for hw in hws:
@@ -144,20 +152,60 @@ def plot_waves(cities, output_file, region_title):
                 ax.fill_between(x_vals, y_base, y_vals, color=color, alpha=0.8, zorder=i+2)
                 ax.plot(x_vals, y_vals, color='white', lw=0.5, alpha=0.5, zorder=i+2)
 
+    # Sync events logic
+    sync_dates = [d for d, count in date_counts.items() if count >= len(cities) * 0.5]
+    sync_events = []
+    if sync_dates:
+        sync_dates.sort()
+        current_event = [sync_dates[0]]
+        for d in sync_dates[1:]:
+            if (d - current_event[-1]).days == 1:
+                current_event.append(d)
+            else:
+                sync_events.append(current_event)
+                current_event = [d]
+        sync_events.append(current_event)
+        
+    sync_color = '#00ffcc'
+    sync_years = set()
+    for event in sync_events:
+        center_day = event[len(event)//2]
+        x_idx = date_to_x[center_day]
+        ax.axvline(x=x_idx, color=sync_color, linestyle='--', lw=1.5, zorder=1, alpha=0.8)
+        sync_years.add(center_day.year)
+
     ax.set_yticks(y_ticks)
     ax.set_yticklabels(y_labels, color='white', fontsize=12)
     
     # Custom x-axis ticks for summer-only timeline
     xticks = []
     xticklabels = []
+    xtick_colors = []
     for y in range(1975, 2030, 5):
         d = pd.Timestamp(f'{y}-06-01').date()
         if d in date_to_x:
             xticks.append(date_to_x[d])
             xticklabels.append(str(y))
+            if y in sync_years:
+                xtick_colors.append(sync_color)
+            else:
+                xtick_colors.append('white')
+                
+    for y in sync_years:
+        if y % 5 != 0:
+            d = pd.Timestamp(f'{y}-06-01').date()
+            if d in date_to_x:
+                xticks.append(date_to_x[d])
+                xticklabels.append(str(y))
+                xtick_colors.append(sync_color)
             
     ax.set_xticks(xticks)
-    ax.set_xticklabels(xticklabels)
+    labels = ax.set_xticklabels(xticklabels)
+    for label, color in zip(labels, xtick_colors):
+        label.set_color(color)
+        if color == sync_color:
+            label.set_weight('bold')
+            
     ax.set_xlim(0, max_x)
     
     ax.tick_params(colors='white')
