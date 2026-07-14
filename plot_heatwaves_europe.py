@@ -153,7 +153,7 @@ def plot_waves(cities, output_file, region_title):
                 ax.plot(x_vals, y_vals, color='white', lw=0.5, alpha=0.5, zorder=i+2)
 
     # Sync events logic
-    sync_dates = [d for d, count in date_counts.items() if count >= len(cities) * 0.5]
+    sync_dates = [d for d, count in date_counts.items() if count >= len(cities) * 0.33]
     sync_events = []
     if sync_dates:
         sync_dates.sort()
