@@ -168,11 +168,13 @@ def plot_waves(cities, output_file, region_title):
         
     sync_color = '#00ffcc'
     sync_years = set()
+    sync_events_x = []
     for event in sync_events:
         center_day = event[len(event)//2]
         x_idx = date_to_x[center_day]
         ax.axvline(x=x_idx, color=sync_color, linestyle='--', lw=1.5, zorder=1, alpha=0.8)
         sync_years.add(center_day.year)
+        sync_events_x.append((center_day.year, x_idx))
 
     ax.set_yticks(y_ticks)
     ax.set_yticklabels(y_labels, color='white', fontsize=12)
@@ -181,23 +183,21 @@ def plot_waves(cities, output_file, region_title):
     xticks = []
     xticklabels = []
     xtick_colors = []
+    
+    # Regular years (multiples of 5) not in sync_years
     for y in range(1975, 2030, 5):
-        d = pd.Timestamp(f'{y}-06-01').date()
-        if d in date_to_x:
-            xticks.append(date_to_x[d])
-            xticklabels.append(str(y))
-            if y in sync_years:
-                xtick_colors.append(sync_color)
-            else:
-                xtick_colors.append('white')
-                
-    for y in sync_years:
-        if y % 5 != 0:
-            d = pd.Timestamp(f'{y}-06-01').date()
+        if y not in sync_years:
+            d = pd.Timestamp(f'{y}-07-15').date()
             if d in date_to_x:
                 xticks.append(date_to_x[d])
                 xticklabels.append(str(y))
-                xtick_colors.append(sync_color)
+                xtick_colors.append('white')
+                
+    # Sync events exactly at the line
+    for y, x_idx in sync_events_x:
+        xticks.append(x_idx)
+        xticklabels.append(str(y))
+        xtick_colors.append(sync_color)
             
     ax.set_xticks(xticks)
     labels = ax.set_xticklabels(xticklabels, rotation=45, ha='right', rotation_mode='anchor')
