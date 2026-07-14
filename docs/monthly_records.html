@@ -325,17 +325,14 @@
         var data = [{
             x: dates,
             y: anomalies,
-            type: 'scatter',
-            mode: 'lines+markers',
-            line: { color: '#e34a33', width: 2 },
+            type: 'bar',
             text: durations,
             hovertemplate: '%{x}<br>Anomalia: +%{y}°C<br>%{text}<extra></extra>',
             marker: {
                 color: anomalies,
                 colorscale: 'Inferno',
                 cmin: 0,
-                cmax: Math.max(...anomalies, 10),
-                size: 8
+                cmax: Math.max(...anomalies, 10)
             }
         }];
 
