@@ -200,7 +200,7 @@ def plot_waves(cities, output_file, region_title):
                 xtick_colors.append(sync_color)
             
     ax.set_xticks(xticks)
-    labels = ax.set_xticklabels(xticklabels)
+    labels = ax.set_xticklabels(xticklabels, rotation=45, ha='right')
     for label, color in zip(labels, xtick_colors):
         label.set_color(color)
         if color == sync_color:
