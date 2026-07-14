@@ -61,26 +61,38 @@ def get_monthly_records(data_dir):
             current_hw = []
             for i, row in df_summer.iterrows():
                 if row['is_hot']:
+                    if len(current_hw) > 0 and (row['date'] - current_hw[-1]['date']).days > 1:
+                        if len(current_hw) >= 3:
+                            hw_df = pd.DataFrame(current_hw)
+                            start_date = hw_df['date'].min()
+                            heatwaves.append({
+                                'year': start_date.year,
+                                'start': start_date.strftime('%Y-%m-%d'),
+                                'duration': len(current_hw),
+                                'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
+                                'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
+                            })
+                        current_hw = []
                     current_hw.append(row)
                 else:
                     if len(current_hw) >= 3:
                         hw_df = pd.DataFrame(current_hw)
                         start_date = hw_df['date'].min()
                         heatwaves.append({
+                            'year': start_date.year,
                             'start': start_date.strftime('%Y-%m-%d'),
-                            'year': int(start_date.year),
-                            'duration': len(hw_df),
+                            'duration': len(current_hw),
                             'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
                             'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
                         })
-                        current_hw = []
+                    current_hw = []
             if len(current_hw) >= 3:
                 hw_df = pd.DataFrame(current_hw)
                 start_date = hw_df['date'].min()
                 heatwaves.append({
+                    'year': start_date.year,
                     'start': start_date.strftime('%Y-%m-%d'),
-                    'year': int(start_date.year),
-                    'duration': len(hw_df),
+                    'duration': len(current_hw),
                     'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
                     'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
                 })
