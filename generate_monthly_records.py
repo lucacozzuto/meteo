@@ -52,9 +52,10 @@ def get_monthly_records(data_dir):
 
             # Heatwaves calculation
             df_summer = df[df['month'].isin([6, 7, 8])].copy()
-            baseline_summer = df_summer[(df_summer['year'] >= 1975) & (df_summer['year'] <= 2000)]['temperature_2m_max'].dropna()
-            threshold = baseline_summer.quantile(0.99) if not baseline_summer.empty else 30
-            baseline_mean_summer = baseline_summer.mean() if not baseline_summer.empty else 25
+            # Threshold calculation (90th percentile of summer days 1991-2020)
+            df_base_summer = df[(df['date'].dt.year >= 1991) & (df['date'].dt.year <= 2020) & (df['date'].dt.month.isin([6, 7, 8]))]
+            threshold = df_base_summer['temperature_2m_max'].quantile(0.90) if not df_base_summer.empty else 30
+            baseline_mean_summer = df_base_summer['temperature_2m_max'].mean() if not df_base_summer.empty else 25
             
             df_summer['is_hot'] = df_summer['temperature_2m_max'] > threshold
             heatwaves = []
@@ -62,7 +63,7 @@ def get_monthly_records(data_dir):
             for i, row in df_summer.iterrows():
                 if row['is_hot']:
                     if len(current_hw) > 0 and (row['date'] - current_hw[-1]['date']).days > 1:
-                        if len(current_hw) >= 3:
+                        if len(current_hw) >= 6:
                             hw_df = pd.DataFrame(current_hw)
                             start_date = hw_df['date'].min()
                             heatwaves.append({
@@ -75,7 +76,7 @@ def get_monthly_records(data_dir):
                         current_hw = []
                     current_hw.append(row)
                 else:
-                    if len(current_hw) >= 3:
+                    if len(current_hw) >= 6:
                         hw_df = pd.DataFrame(current_hw)
                         start_date = hw_df['date'].min()
                         heatwaves.append({
@@ -86,7 +87,7 @@ def get_monthly_records(data_dir):
                             'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
                         })
                     current_hw = []
-            if len(current_hw) >= 3:
+            if len(current_hw) >= 6:
                 hw_df = pd.DataFrame(current_hw)
                 start_date = hw_df['date'].min()
                 heatwaves.append({

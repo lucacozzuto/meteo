@@ -14,9 +14,9 @@ def compute_heatwaves(city_file):
     # Restrict to June, July, August
     df = df[df['date'].dt.month.isin([6, 7, 8])].copy()
     
-    # Calculate fixed 99th percentile based on 1975-2000 period
-    baseline_data = df[(df['date'].dt.year >= 1975) & (df['date'].dt.year <= 2000)]['temperature_2m_max'].dropna()
-    threshold = baseline_data.quantile(0.99) if not baseline_data.empty else 30
+    # Calculate fixed 90th percentile based on 1991-2020 period
+    baseline_data = df[(df['date'].dt.year >= 1991) & (df['date'].dt.year <= 2020) & (df['date'].dt.month.isin([6, 7, 8]))]['temperature_2m_max'].dropna()
+    threshold = baseline_data.quantile(0.90) if not baseline_data.empty else 30
     baseline_mean = baseline_data.mean() if not baseline_data.empty else 25
     baseline_std = baseline_data.std() if not baseline_data.empty else 2
     
@@ -32,7 +32,7 @@ def compute_heatwaves(city_file):
     for i, row in df.iterrows():
         if row['is_hot']:
             if len(current_hw) > 0 and (row['date'] - current_hw[-1]['date']).days > 1:
-                if len(current_hw) >= 3:
+                if len(current_hw) >= 6:
                     hw_df = pd.DataFrame(current_hw)
                     start_date = hw_df['date'].min()
                     end_date = hw_df['date'].max()
@@ -51,7 +51,7 @@ def compute_heatwaves(city_file):
                 current_hw = []
             current_hw.append(row)
         else:
-            if len(current_hw) >= 3:
+            if len(current_hw) >= 6:
                 hw_df = pd.DataFrame(current_hw)
                 start_date = hw_df['date'].min()
                 end_date = hw_df['date'].max()
@@ -69,7 +69,7 @@ def compute_heatwaves(city_file):
                 })
             current_hw = []
                 
-    if len(current_hw) >= 3:
+    if len(current_hw) >= 6:
         hw_df = pd.DataFrame(current_hw)
         start_date = hw_df['date'].min()
         end_date = hw_df['date'].max()
