@@ -100,7 +100,7 @@ def plot_waves(cities, output_file, region_title):
     y_ticks = []
     
     # Create summer-only continuous axis mapping
-    all_dates = pd.date_range('1975-01-01', '2026-12-31', freq='D')
+    all_dates = pd.date_range('1980-01-01', '2026-12-31', freq='D')
     summer_dates = all_dates[all_dates.month.isin([6, 7, 8])]
     date_to_x = {d.date(): i for i, d in enumerate(summer_dates)}
     max_x = len(date_to_x)
@@ -118,7 +118,7 @@ def plot_waves(cities, output_file, region_title):
         ax.plot([0, max_x], [y_base, y_base], color='#4a4e69', lw=1, zorder=1)
         
         hws = compute_heatwaves(city)
-        hws = [hw for hw in hws if hw['start'].year >= 1975] # Filter to 1975+
+        hws = [hw for hw in hws if hw['start'].year >= 1980] # Filter to 1975+
         
         for hw in hws:
             hw_dates = pd.date_range(hw['start'], hw['end'], freq='D')
@@ -185,7 +185,7 @@ def plot_waves(cities, output_file, region_title):
     xtick_colors = []
     
     # Regular years (multiples of 5) not in sync_years
-    for y in range(1975, 2030, 5):
+    for y in range(1980, 2030, 5):
         if y not in sync_years:
             d = pd.Timestamp(f'{y}-07-15').date()
             if d in date_to_x:
@@ -214,7 +214,7 @@ def plot_waves(cities, output_file, region_title):
     ax.spines['left'].set_color('#4a4e69')
     ax.spines['bottom'].set_color('#4a4e69')
     
-    plt.title(f"Ondate di Calore in Estate - {region_title} (Giugno-Luglio-Agosto, 1975-2026)", color='white', fontsize=20, pad=20)
+    plt.title(f"Ondate di Calore in Estate - {region_title} (Giugno-Luglio-Agosto, 1980-2026)", color='white', fontsize=20, pad=20)
     plt.tight_layout()
     plt.savefig(output_file, dpi=200, facecolor='#1a1a2e')
     plt.close()
