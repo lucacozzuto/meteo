@@ -9,7 +9,7 @@ def compute_heatwaves(city_file):
     df = pd.read_csv(city_file)
     df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values('date').reset_index(drop=True)
-    df = df[df['date'].dt.year >= 1940].copy()
+    df = df[df['date'].dt.year >= 1980].copy()
     
     # Restrict to June, July, August
     df = df[df['date'].dt.month.isin([6, 7, 8])].copy()
