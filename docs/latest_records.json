@@ -3,8 +3,8 @@
         "city": "Oslo",
         "region": "Europe",
         "metric": "massima",
-        "new_record": 33.006500244140625,
-        "new_date": "2026-07-15",
+        "new_record": 33.30649948120117,
+        "new_date": "2026-07-16",
         "old_record": 32.95,
         "old_date": "1975-08-09"
     },
@@ -27,6 +27,15 @@
         "old_date": "1945-08-08"
     },
     {
+        "city": "Warsaw",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 26.049999237060547,
+        "new_date": "2026-06-28",
+        "old_record": 24.396,
+        "old_date": "2015-08-08"
+    },
+    {
         "city": "Vienna",
         "region": "Europe",
         "metric": "minima",
@@ -45,15 +54,6 @@
         "old_date": "2024-07-12"
     },
     {
-        "city": "Warsaw",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 26.049999237060547,
-        "new_date": "2026-06-28",
-        "old_record": 24.396,
-        "old_date": "2015-08-08"
-    },
-    {
         "city": "Venezia",
         "region": "Italy",
         "metric": "massima",
@@ -63,22 +63,13 @@
         "old_date": "2025-08-09"
     },
     {
-        "city": "Berlin",
+        "city": "Warsaw",
         "region": "Europe",
         "metric": "massima",
-        "new_record": 39.75,
+        "new_record": 38.20000076293945,
         "new_date": "2026-06-27",
-        "old_record": 37.695503,
-        "old_date": "1992-08-08"
-    },
-    {
-        "city": "Berlin",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 27.5,
-        "new_date": "2026-06-27",
-        "old_record": 23.7,
-        "old_date": "2018-08-07"
+        "old_record": 35.709,
+        "old_date": "1943-08-21"
     },
     {
         "city": "Prague",
@@ -99,22 +90,22 @@
         "old_date": "2015-08-13"
     },
     {
-        "city": "Warsaw",
+        "city": "Berlin",
         "region": "Europe",
         "metric": "massima",
-        "new_record": 38.20000076293945,
+        "new_record": 39.75,
         "new_date": "2026-06-27",
-        "old_record": 35.709,
-        "old_date": "1943-08-21"
+        "old_record": 37.695503,
+        "old_date": "1992-08-08"
     },
     {
-        "city": "Milano",
-        "region": "Italy",
+        "city": "Berlin",
+        "region": "Europe",
         "metric": "minima",
-        "new_record": 27.25,
+        "new_record": 27.5,
         "new_date": "2026-06-27",
-        "old_record": 26.45,
-        "old_date": "2022-07-24"
+        "old_record": 23.7,
+        "old_date": "2018-08-07"
     },
     {
         "city": "Torino",
@@ -126,6 +117,15 @@
         "old_date": "2019-06-28"
     },
     {
+        "city": "Milano",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 27.25,
+        "new_date": "2026-06-27",
+        "old_record": 26.45,
+        "old_date": "2022-07-24"
+    },
+    {
         "city": "Aosta",
         "region": "Italy",
         "metric": "massima",
@@ -135,15 +135,6 @@
         "old_date": "2025-08-10"
     },
     {
-        "city": "Brussels",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 25.75,
-        "new_date": "2026-06-25",
-        "old_record": 23.9,
-        "old_date": "2020-08-08"
-    },
-    {
         "city": "Bern",
         "region": "Europe",
         "metric": "minima",
@@ -151,6 +142,15 @@
         "new_date": "2026-06-25",
         "old_record": 20.4,
         "old_date": "2017-08-03"
+    },
+    {
+        "city": "Brussels",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 25.75,
+        "new_date": "2026-06-25",
+        "old_record": 23.9,
+        "old_date": "2020-08-08"
     },
     {
         "city": "Paris",
