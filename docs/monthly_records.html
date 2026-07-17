@@ -312,9 +312,9 @@
             return;
         }
 
-        const hws = cityData.heatwaves.filter(hw => hw.year >= 1975);
+        const hws = cityData.heatwaves.filter(hw => hw.year >= 1980);
         if (hws.length === 0) {
-            document.getElementById('heatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore (dal 1975 in poi) registrata per questa città.</p>';
+            document.getElementById('heatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore (dal 1980 in poi) registrata per questa città.</p>';
             return;
         }
 
@@ -337,7 +337,7 @@
         }];
 
         var layout = {
-            title: `Ondate di Calore Estreme (99° Perc. JJA) - ${city}`,
+            title: `Ondate di Calore Estreme (90° Perc. JJA) - ${city}`,
             xaxis: { title: 'Data di Inizio', type: 'date' },
             yaxis: { title: 'Anomalia Termica (°C)' },
             margin: { t: 50, r: 20, l: 50, b: 60 },
