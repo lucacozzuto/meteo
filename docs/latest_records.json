@@ -2,6 +2,24 @@
     {
         "city": "Oslo",
         "region": "Europe",
+        "metric": "minima",
+        "new_record": 22.506500244140625,
+        "new_date": "2026-07-17",
+        "old_record": 22.4,
+        "old_date": "2014-07-22"
+    },
+    {
+        "city": "Cagliari",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 42.522499084472656,
+        "new_date": "2026-07-17",
+        "old_record": 41.2705,
+        "old_date": "1983-07-21"
+    },
+    {
+        "city": "Oslo",
+        "region": "Europe",
         "metric": "massima",
         "new_record": 33.30649948120117,
         "new_date": "2026-07-16",
