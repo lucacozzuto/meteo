@@ -1,5 +1,14 @@
 [
     {
+        "city": "Catanzaro",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 28.951499938964844,
+        "new_date": "2026-07-18",
+        "old_record": 28.571,
+        "old_date": "2023-07-22"
+    },
+    {
         "city": "Oslo",
         "region": "Europe",
         "metric": "minima",
