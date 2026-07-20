@@ -52,51 +52,47 @@ def get_monthly_records(data_dir):
 
             # Heatwaves calculation
             df_summer = df[df['month'].isin([6, 7, 8])].copy()
-            # Threshold calculation (90th percentile of summer days 1991-2020)
             df_base_summer = df[(df['date'].dt.year >= 1991) & (df['date'].dt.year <= 2020) & (df['date'].dt.month.isin([6, 7, 8]))]
-            threshold = df_base_summer['temperature_2m_max'].quantile(0.90) if not df_base_summer.empty else 30
-            baseline_mean_summer = df_base_summer['temperature_2m_max'].mean() if not df_base_summer.empty else 25
             
-            df_summer['is_hot'] = df_summer['temperature_2m_max'] > threshold
-            heatwaves = []
-            current_hw = []
-            for i, row in df_summer.iterrows():
-                if row['is_hot']:
-                    if len(current_hw) > 0 and (row['date'] - current_hw[-1]['date']).days > 1:
-                        if len(current_hw) >= 6:
-                            hw_df = pd.DataFrame(current_hw)
-                            start_date = hw_df['date'].min()
-                            heatwaves.append({
-                                'year': start_date.year,
-                                'start': start_date.strftime('%Y-%m-%d'),
-                                'duration': len(current_hw),
-                                'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
-                                'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
-                            })
-                        current_hw = []
-                    current_hw.append(row)
-                else:
-                    if len(current_hw) >= 6:
-                        hw_df = pd.DataFrame(current_hw)
+            def calc_waves(col_name):
+                threshold = df_base_summer[col_name].quantile(0.90) if not df_base_summer.empty else 30
+                baseline_mean_summer = df_base_summer[col_name].mean() if not df_base_summer.empty else 25
+                
+                df_summer['is_hot'] = df_summer[col_name] > threshold
+                waves = []
+                current_hw = []
+                
+                def add_hw(hw_list):
+                    if len(hw_list) >= 6:
+                        hw_df = pd.DataFrame(hw_list)
                         start_date = hw_df['date'].min()
-                        heatwaves.append({
+                        end_date = hw_df['date'].max()
+                        center_date = start_date + (end_date - start_date)/2
+                        waves.append({
                             'year': start_date.year,
                             'start': start_date.strftime('%Y-%m-%d'),
-                            'duration': len(current_hw),
-                            'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
-                            'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
+                            'end': end_date.strftime('%Y-%m-%d'),
+                            'center': center_date.strftime('%Y-%m-%d'),
+                            'duration': len(hw_list),
+                            'max_temp': float(round(hw_df[col_name].max(), 1)),
+                            'anomaly': float(round(max(0, hw_df[col_name].max() - baseline_mean_summer), 1)),
+                            'baseline_mean': float(round(baseline_mean_summer, 1))
                         })
-                    current_hw = []
-            if len(current_hw) >= 6:
-                hw_df = pd.DataFrame(current_hw)
-                start_date = hw_df['date'].min()
-                heatwaves.append({
-                    'year': start_date.year,
-                    'start': start_date.strftime('%Y-%m-%d'),
-                    'duration': len(current_hw),
-                    'max_temp': float(round(hw_df['temperature_2m_max'].max(), 1)),
-                    'anomaly': float(round(max(0, hw_df['temperature_2m_max'].max() - baseline_mean_summer), 1))
-                })
+
+                for i, row in df_summer.iterrows():
+                    if row['is_hot']:
+                        if len(current_hw) > 0 and (row['date'] - current_hw[-1]['date']).days > 1:
+                            add_hw(current_hw)
+                            current_hw = []
+                        current_hw.append(row)
+                    else:
+                        add_hw(current_hw)
+                        current_hw = []
+                add_hw(current_hw)
+                return waves
+
+            heatwaves = calc_waves('temperature_2m_max')
+            night_heatwaves = calc_waves('temperature_2m_min')
 
             city_data = {
                 "years": years,
@@ -107,7 +103,8 @@ def get_monthly_records(data_dir):
                 "mean_temps": [],
                 "annual_anomalies": annual_anomalies,
                 "annual_years": annual_years,
-                "heatwaves": heatwaves
+                "heatwaves": heatwaves,
+                "night_heatwaves": night_heatwaves
             }
 
             for m in range(1, 13):

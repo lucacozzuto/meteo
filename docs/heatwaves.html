@@ -57,6 +57,22 @@
             padding: 2rem;
         }
 
+        .interactive-btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .interactive-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
         .section-title {
             font-size: 2rem;
             border-bottom: 2px solid var(--border-color);
@@ -229,7 +245,7 @@
 <header>
     <h1>Ondate di Calore Estive - Meteo Dashboard</h1>
     <p class="subtitle">Analisi climatica automatizzata dei record di calore e precipitazioni in Europa e Italia (1940 - <span id="current-date">Oggi</span>).</p>
-    
+    <a href="heatwaves_interactive.html" class="interactive-btn">Esplora Grafico Interattivo Zoomabile</a>
 </header>
 
 <div class="container">

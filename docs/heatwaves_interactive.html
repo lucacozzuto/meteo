@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ondate di Calore - Vista Interattiva</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .controls { display: flex; gap: 20px; margin-bottom: 20px; justify-content: center; }
+        select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 16px; }
+        #plot { width: 100%; height: 800px; }
+        .loading { text-align: center; font-size: 18px; color: #666; margin-top: 50px; }
+        h1 { text-align: center; color: #333; margin-top: 0; }
+        .back-link { display: block; text-align: center; margin-bottom: 20px; color: #0066cc; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="heatwaves.html" class="back-link">← Torna ai grafici statici</a>
+        <h1>Esploratore Ondate di Calore</h1>
+        <div class="controls">
+            <select id="datasetSelect">
+                <option value="Europe">Europa (30 capitali)</option>
+                <option value="Italy">Italia (20 capoluoghi)</option>
+            </select>
+            <select id="typeSelect">
+                <option value="day">Diurne (Max > 90° Perc.)</option>
+                <option value="night">Notturne (Min > 90° Perc.)</option>
+            </select>
+        </div>
+        <div id="plot">
+            <div class="loading">Caricamento dati in corso...</div>
+        </div>
+    </div>
+
+    <script>
+        let globalData = null;
+
+        // Custom Inferno color map function mapping [0, 1] to rgb string
+        function getInfernoColor(t) {
+            t = Math.max(0, Math.min(1, t));
+            const inferno = [
+                [0.000000, 0.000000, 0.015686],
+                [0.125000, 0.090196, 0.258824],
+                [0.250000, 0.247059, 0.427451],
+                [0.375000, 0.419608, 0.431373],
+                [0.500000, 0.627451, 0.352941],
+                [0.625000, 0.827451, 0.223529],
+                [0.750000, 0.968627, 0.160784],
+                [0.875000, 0.992157, 0.450980],
+                [1.000000, 0.988235, 0.898039]
+            ];
+            // Since we want higher anomalies to be "hotter" (yellow/white),
+            // Plotly's Inferno goes from black to yellow/white.
+            // So we use standard inferno mapping.
+            let i = 0;
+            while(i < inferno.length - 2 && t > inferno[i+1][0]) {
+                i++;
+            }
+            let c0 = inferno[i];
+            let c1 = inferno[i+1];
+            let ratio = (t - c0[0]) / (c1[0] - c0[0]);
+            let r = Math.round((c0[1] + ratio * (c1[1] - c0[1])) * 255);
+            let g = Math.round((c0[2] + ratio * (c1[2] - c0[2])) * 255);
+            let b = Math.round((c0[3] + ratio * (c1[3] - c0[3])) * 255);
+            return `rgba(${r},${g},${b},0.8)`;
+        }
+
+        async function loadData() {
+            try {
+                const response = await fetch('monthly_records.json');
+                globalData = await response.json();
+                renderPlot();
+            } catch (error) {
+                document.getElementById('plot').innerHTML = '<div class="loading">Errore nel caricamento dei dati.</div>';
+            }
+        }
+
+        function renderPlot() {
+            if (!globalData) return;
+            
+            document.getElementById('plot').innerHTML = ''; // clear loading
+
+            const dataset = document.getElementById('datasetSelect').value;
+            const type = document.getElementById('typeSelect').value;
+            
+            const cityDataMap = globalData[dataset];
+            // Sort cities Z-A so top city is A on the Y axis (since Y goes up)
+            const cities = Object.keys(cityDataMap).sort((a,b) => b.localeCompare(a));
+            
+            const traces = [];
+            let yBase = 0;
+            const ySpacing = 20;
+            
+            const yTickVals = [];
+            const yTickText = [];
+
+            // To calculate synchronicity, we need a flat list of all heatwave days
+            const dateCounts = {};
+
+            cities.forEach((city, index) => {
+                const currentYBase = index * ySpacing;
+                yTickVals.push(currentYBase);
+                yTickText.push(city);
+
+                const hwKey = type === 'day' ? 'heatwaves' : 'night_heatwaves';
+                const hws = cityDataMap[city][hwKey] || [];
+                
+                // Keep only heatwaves >= 1980
+                const filteredHws = hws.filter(hw => hw.year >= 1980);
+
+                // Add a baseline trace for the city
+                traces.push({
+                    x: ['1980-06-01', '2025-08-31'],
+                    y: [currentYBase, currentYBase],
+                    mode: 'lines',
+                    line: { color: 'rgba(200, 200, 200, 0.3)', width: 1 },
+                    hoverinfo: 'none',
+                    showlegend: false
+                });
+
+                filteredHws.forEach(hw => {
+                    const centerDate = new Date(hw.center);
+                    const widthDays = Math.max(hw.duration, 2);
+                    const sigma = widthDays / 2;
+                    const h = hw.anomaly; // height
+                    
+                    const x_vals = [];
+                    const y_vals = [];
+                    
+                    // Generate 20 points for the Gaussian curve
+                    for (let step = -3; step <= 3; step += 0.3) {
+                        const d = new Date(centerDate.getTime() + step * sigma * 86400000);
+                        const diffDays = step * sigma;
+                        const y = currentYBase + h * Math.exp(-(Math.pow(diffDays, 2)) / (2 * Math.pow(sigma, 2)));
+                        x_vals.push(d.toISOString().split('T')[0]);
+                        y_vals.push(y);
+                    }
+
+                    // To make a filled polygon that correctly sits on the baseline:
+                    // We need to complete the path back along the baseline
+                    const x_polygon = [...x_vals];
+                    const y_polygon = [...y_vals];
+                    // add end baseline
+                    x_polygon.push(x_vals[x_vals.length-1]);
+                    y_polygon.push(currentYBase);
+                    // add start baseline
+                    x_polygon.push(x_vals[0]);
+                    y_polygon.push(currentYBase);
+                    // close path
+                    x_polygon.push(x_vals[0]);
+                    y_polygon.push(y_vals[0]);
+
+                    // Color based on anomaly (normalize between 0 and 10)
+                    const normH = Math.min(Math.max(h / 10, 0), 1);
+                    const fillColor = getInfernoColor(normH);
+
+                    traces.push({
+                        x: x_polygon,
+                        y: y_polygon,
+                        fill: 'toself',
+                        fillcolor: fillColor,
+                        mode: 'lines',
+                        line: { color: 'rgba(255,255,255,0.2)', width: 0.5 },
+                        name: `${city} ${hw.year}`,
+                        text: `Città: ${city}<br>Data: ${hw.start} al ${hw.end}<br>Durata: ${hw.duration} giorni<br>Picco: ${hw.max_temp}°C<br>Anomalia: +${hw.anomaly}°C`,
+                        hoverinfo: 'text',
+                        showlegend: false
+                    });
+
+                    // Count dates for synchronicity
+                    let currentD = new Date(hw.start);
+                    const endD = new Date(hw.end);
+                    while (currentD <= endD) {
+                        const dStr = currentD.toISOString().split('T')[0];
+                        dateCounts[dStr] = (dateCounts[dStr] || 0) + 1;
+                        currentD.setDate(currentD.getDate() + 1);
+                    }
+                });
+            });
+
+            // Find sync events
+            const threshold = dataset === 'Italy' ? cities.length * 0.5 : cities.length * 0.25;
+            const syncDates = Object.keys(dateCounts).filter(d => dateCounts[d] >= threshold).sort();
+            
+            const shapes = [];
+            
+            if (syncDates.length > 0) {
+                let currentEvent = [syncDates[0]];
+                for (let i = 1; i < syncDates.length; i++) {
+                    const d1 = new Date(syncDates[i-1]);
+                    const d2 = new Date(syncDates[i]);
+                    const diff = (d2 - d1) / 86400000;
+                    if (diff === 1) {
+                        currentEvent.push(syncDates[i]);
+                    } else {
+                        addSyncShape(shapes, currentEvent, cities.length * ySpacing);
+                        currentEvent = [syncDates[i]];
+                    }
+                }
+                addSyncShape(shapes, currentEvent, cities.length * ySpacing);
+            }
+
+            function addSyncShape(shapesArray, eventDates, maxY) {
+                const start = eventDates[0];
+                const end = eventDates[eventDates.length - 1];
+                shapesArray.push({
+                    type: 'rect',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: start,
+                    x1: end,
+                    y0: 0,
+                    y1: maxY,
+                    fillcolor: 'rgba(128, 128, 128, 0.2)',
+                    line: { width: 0 },
+                    layer: 'below'
+                });
+                shapesArray.push({
+                    type: 'line',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: start,
+                    x1: start,
+                    y0: 0,
+                    y1: maxY,
+                    line: { color: 'rgba(128,128,128,0.8)', width: 1, dash: 'dot' },
+                    layer: 'below'
+                });
+            }
+
+            const layout = {
+                title: `Ondate di Calore (${dataset === 'Italy' ? 'Italia' : 'Europa'} - ${type === 'day' ? 'Diurne' : 'Notturne'})`,
+                xaxis: {
+                    title: 'Anno',
+                    type: 'date',
+                    range: ['1980-06-01', '2025-08-31'],
+                    rangebreaks: [
+                        { bounds: [9, 6], pattern: 'month' } // Hide September (9) to May (6). Shows 6, 7, 8 (June, July, August)
+                    ],
+                    tickformat: '%Y',
+                    dtick: 'M12'
+                },
+                yaxis: {
+                    tickvals: yTickVals,
+                    ticktext: yTickText,
+                    showgrid: false,
+                    zeroline: false,
+                    range: [-5, cities.length * ySpacing + 10]
+                },
+                shapes: shapes,
+                hovermode: 'closest',
+                plot_bgcolor: '#111',
+                paper_bgcolor: '#f8f9fa',
+                margin: { l: 100, r: 20, t: 60, b: 60 }
+            };
+
+            Plotly.newPlot('plot', traces, layout, {responsive: true});
+        }
+
+        document.getElementById('datasetSelect').addEventListener('change', renderPlot);
+        document.getElementById('typeSelect').addEventListener('change', renderPlot);
+
+        // Init
+        loadData();
+    </script>
+</body>
+</html>
