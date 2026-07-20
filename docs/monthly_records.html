@@ -119,6 +119,7 @@
     <div class="chart-container" id="recordChart"></div>
     <div class="chart-container" id="anomalyChart" style="height: 400px; margin-top: 3rem;"></div>
     <div class="chart-container" id="heatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
+    <div class="chart-container" id="nightHeatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
 </div>
 
 <script>
@@ -157,6 +158,7 @@
         renderHeatmap();
         renderAnomalyChart();
         renderHeatwavesChart();
+        renderNightHeatwavesChart();
     }
 
     function renderHeatmap() {
@@ -354,6 +356,60 @@
         };
 
         Plotly.newPlot('heatwaveChart', data, layout, {responsive: true});
+    }
+
+    function renderNightHeatwavesChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData[dataset][city];
+
+        if (!cityData.night_heatwaves || cityData.night_heatwaves.length === 0) {
+            document.getElementById('nightHeatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore notturna registrata per questa città.</p>';
+            return;
+        }
+
+        const hws = cityData.night_heatwaves.filter(hw => hw.year >= 1980);
+        if (hws.length === 0) {
+            document.getElementById('nightHeatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore notturna (dal 1980 in poi) registrata per questa città.</p>';
+            return;
+        }
+
+        const dates = hws.map(hw => hw.start);
+        const anomalies = hws.map(hw => hw.anomaly);
+        const durationText = hws.map(hw => `Durata: ${hw.duration} giorni<br>Picco Minima: ${hw.max_temp}°C`);
+        const durationWidths = hws.map(hw => hw.duration * 86400000);
+        
+        var data = [{
+            x: dates,
+            y: anomalies,
+            type: 'bar',
+            text: durationText,
+            width: durationWidths,
+            hovertemplate: '%{x}<br>Anomalia: +%{y}°C<br>%{text}<extra></extra>',
+            marker: {
+                color: anomalies,
+                colorscale: 'Inferno',
+                cmin: 0,
+                cmax: Math.max(...anomalies, 10)
+            }
+        }];
+
+        var layout = {
+            title: `Ondate di Calore NOTTURNE Estreme (Min > 90° Perc. JJA) - ${city}`,
+            xaxis: { 
+                title: 'Data di Inizio', 
+                type: 'date', 
+                range: ['1980-06-01', '2026-08-31'], 
+                autorange: false,
+                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ]
+            },
+            yaxis: { title: 'Anomalia Termica (°C)' },
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('nightHeatwaveChart', data, layout, {responsive: true});
     }
 
     datasetSelect.addEventListener('change', () => {
