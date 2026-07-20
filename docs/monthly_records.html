@@ -320,14 +320,15 @@
 
         const dates = hws.map(hw => hw.start);
         const anomalies = hws.map(hw => hw.anomaly);
-        const durations = hws.map(hw => `Durata: ${hw.duration} giorni<br>Picco Assoluto: ${hw.max_temp}°C`);
+        const durationText = hws.map(hw => `Durata: ${hw.duration} giorni<br>Picco Assoluto: ${hw.max_temp}°C`);
+        const durationWidths = hws.map(hw => hw.duration * 86400000); // exact duration in ms
         
         var data = [{
             x: dates,
             y: anomalies,
             type: 'bar',
-            text: durations,
-            width: 20 * 86400000, // 20 days in milliseconds for consistent width
+            text: durationText,
+            width: durationWidths,
             hovertemplate: '%{x}<br>Anomalia: +%{y}°C<br>%{text}<extra></extra>',
             marker: {
                 color: anomalies,
