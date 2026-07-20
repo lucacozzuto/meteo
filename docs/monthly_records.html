@@ -327,6 +327,7 @@
             y: anomalies,
             type: 'bar',
             text: durations,
+            width: 20 * 86400000, // 20 days in milliseconds for consistent width
             hovertemplate: '%{x}<br>Anomalia: +%{y}°C<br>%{text}<extra></extra>',
             marker: {
                 color: anomalies,
