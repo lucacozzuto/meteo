@@ -27,13 +27,13 @@
         "old_date": "1983-07-21"
     },
     {
-        "city": "Oslo",
+        "city": "Barcelona",
         "region": "Europe",
-        "metric": "massima",
-        "new_record": 33.30649948120117,
+        "metric": "minima",
+        "new_record": 26.30599975585937,
         "new_date": "2026-07-16",
-        "old_record": 32.95,
-        "old_date": "1975-08-09"
+        "old_record": 26.156,
+        "old_date": "2018-08-04"
     },
     {
         "city": "Lisbon",
