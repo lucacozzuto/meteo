@@ -3,28 +3,28 @@
         "city": "Catanzaro",
         "region": "Italy",
         "metric": "minima",
-        "new_record": 28.951499938964844,
-        "new_date": "2026-07-18",
+        "new_record": 29.151500701904297,
+        "new_date": "2026-07-21",
         "old_record": 28.571,
         "old_date": "2023-07-22"
     },
     {
-        "city": "Oslo",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 22.506500244140625,
-        "new_date": "2026-07-17",
-        "old_record": 22.4,
-        "old_date": "2014-07-22"
-    },
-    {
-        "city": "Cagliari",
+        "city": "LAquila",
         "region": "Italy",
         "metric": "massima",
-        "new_record": 42.522499084472656,
+        "new_record": 37.11300277709961,
         "new_date": "2026-07-17",
-        "old_record": 41.2705,
-        "old_date": "1983-07-21"
+        "old_record": 36.413002,
+        "old_date": "2023-07-17"
+    },
+    {
+        "city": "Campobasso",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 37.49250030517578,
+        "new_date": "2026-07-17",
+        "old_record": 37.451,
+        "old_date": "2000-08-21"
     },
     {
         "city": "Barcelona",
