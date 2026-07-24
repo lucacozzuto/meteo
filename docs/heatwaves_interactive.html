@@ -107,12 +107,12 @@
                 const hwKey = type === 'day' ? 'heatwaves' : 'night_heatwaves';
                 const hws = cityDataMap[city][hwKey] || [];
                 
-                // Keep only heatwaves >= 1980
-                const filteredHws = hws.filter(hw => hw.year >= 1980);
-
+                // Keep only heatwaves >= 1950
+                const filteredHws = hws.filter(hw => hw.year >= 1950);
+                
                 // Add a baseline trace for the city
                 traces.push({
-                    x: ['1980-06-01', '2026-08-31'],
+                    x: ['1950-06-01', '2026-08-31'],
                     y: [currentYBase, currentYBase],
                     mode: 'lines',
                     line: { color: 'rgba(200, 200, 200, 0.3)', width: 1 },
@@ -237,6 +237,11 @@
                     type: 'date',
                     autorange: false,
                     range: ['1980-06-01', '2026-08-31'],
+                    rangeslider: {
+                        range: ['1950-06-01', '2026-08-31'],
+                        visible: true,
+                        thickness: 0.1
+                    },
                     rangebreaks: [
                         { bounds: [9, 6], pattern: 'month' } // Hide September (9) to May (6). Shows 6, 7, 8 (June, July, August)
                     ],
