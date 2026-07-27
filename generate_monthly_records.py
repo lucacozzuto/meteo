@@ -94,6 +94,32 @@ def get_monthly_records(data_dir):
             heatwaves = calc_waves('temperature_2m_max')
             night_heatwaves = calc_waves('temperature_2m_min')
 
+            # Daily evolution 2026 vs baseline 1991-2020 (AEMET style)
+            df['md'] = df['date'].dt.strftime('%m-%d')
+            df_base_daily = df[(df['year'] >= 1991) & (df['year'] <= 2020) & (df['md'] != '02-29')]
+            all_mds = [
+                f"{m:02d}-{d:02d}" for m in range(1, 13) for d in range(1, 32)
+                if not (m == 2 and d > 28) and not (m in [4, 6, 9, 11] and d > 30)
+            ]
+            daily_normals_raw = df_base_daily.groupby('md')['temp_mean'].mean().reindex(all_mds)
+            s_3 = pd.concat([daily_normals_raw, daily_normals_raw, daily_normals_raw])
+            daily_normals_smoothed = s_3.rolling(window=21, center=True, min_periods=1).mean().iloc[365:730].round(2).tolist()
+            dates_365 = [f"2026-{md}" for md in all_mds]
+            md_to_norm = dict(zip(all_mds, daily_normals_smoothed))
+
+            df_2026 = df[df['year'] == 2026].sort_values('date')
+            dates_2026 = df_2026['date'].dt.strftime('%Y-%m-%d').tolist()
+            temps_2026 = [round(x, 1) if pd.notna(x) else None for x in df_2026['temp_mean']]
+            normals_2026 = [md_to_norm.get(md, None) for md in df_2026['md']]
+
+            daily_2026 = {
+                "dates": dates_2026,
+                "temps": temps_2026,
+                "normals": normals_2026,
+                "dates_365": dates_365,
+                "normals_365": daily_normals_smoothed
+            }
+
             city_data = {
                 "years": years,
                 "records": [],
@@ -104,7 +130,8 @@ def get_monthly_records(data_dir):
                 "annual_anomalies": annual_anomalies,
                 "annual_years": annual_years,
                 "heatwaves": heatwaves,
-                "night_heatwaves": night_heatwaves
+                "night_heatwaves": night_heatwaves,
+                "daily_2026": daily_2026
             }
 
             for m in range(1, 13):

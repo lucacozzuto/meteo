@@ -117,6 +117,7 @@
     </div>
 
     <div class="chart-container" id="recordChart"></div>
+    <div class="chart-container" id="dailyEvolutionChart" style="height: 500px; margin-top: 3rem;"></div>
     <div class="chart-container" id="anomalyChart" style="height: 400px; margin-top: 3rem;"></div>
     <div class="chart-container" id="heatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
     <div class="chart-container" id="nightHeatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
@@ -156,6 +157,7 @@
 
     function renderCharts() {
         renderHeatmap();
+        renderDailyEvolutionChart();
         renderAnomalyChart();
         renderHeatwavesChart();
         renderNightHeatwavesChart();
@@ -302,6 +304,119 @@
         };
 
         Plotly.newPlot('anomalyChart', data, layout, {responsive: true});
+    }
+
+    function renderDailyEvolutionChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData[dataset][city];
+
+        if (!cityData || !cityData.daily_2026) {
+            const chartDiv = document.getElementById('dailyEvolutionChart');
+            if (chartDiv) chartDiv.innerHTML = '';
+            return;
+        }
+
+        const daily = cityData.daily_2026;
+        const dates_2026 = daily.dates;
+        const temps_2026 = daily.temps;
+        const normals_2026 = daily.normals;
+        const dates_365 = daily.dates_365;
+        const normals_365 = daily.normals_365;
+
+        const pos_curve = temps_2026.map((t, i) => {
+            if (t === null || normals_2026[i] === null) return null;
+            return t > normals_2026[i] ? t : normals_2026[i];
+        });
+
+        const neg_curve = temps_2026.map((t, i) => {
+            if (t === null || normals_2026[i] === null) return null;
+            return t < normals_2026[i] ? t : normals_2026[i];
+        });
+
+        const traces = [
+            {
+                x: dates_2026,
+                y: normals_2026,
+                mode: 'lines',
+                line: { width: 0 },
+                showlegend: false,
+                hoverinfo: 'skip'
+            },
+            {
+                x: dates_2026,
+                y: pos_curve,
+                customdata: temps_2026,
+                mode: 'lines',
+                line: { color: '#ef4444', width: 1 },
+                fill: 'tonexty',
+                fillcolor: 'rgba(239, 68, 68, 0.85)',
+                name: 'Anomalia positiva (sopra media)',
+                hovertemplate: '<b>%{x}</b><br>Temp. 2026: %{customdata}°C<br>Normale (1991-2020): %{y}°C<extra></extra>'
+            },
+            {
+                x: dates_2026,
+                y: normals_2026,
+                mode: 'lines',
+                line: { width: 0 },
+                showlegend: false,
+                hoverinfo: 'skip'
+            },
+            {
+                x: dates_2026,
+                y: neg_curve,
+                customdata: temps_2026,
+                mode: 'lines',
+                line: { color: '#3b82f6', width: 1 },
+                fill: 'tonexty',
+                fillcolor: 'rgba(59, 130, 246, 0.85)',
+                name: 'Anomalia negativa (sotto media)',
+                hovertemplate: '<b>%{x}</b><br>Temp. 2026: %{customdata}°C<br>Normale (1991-2020): %{y}°C<extra></extra>'
+            },
+            {
+                x: dates_365,
+                y: normals_365,
+                mode: 'lines',
+                line: { color: '#16a34a', width: 2.5 },
+                name: 'Temperatura normale (media 1991-2020)',
+                hovertemplate: '<b>%{x}</b><br>Normale (1991-2020): %{y}°C<extra></extra>'
+            },
+            {
+                x: dates_2026,
+                y: temps_2026,
+                mode: 'lines',
+                line: { color: '#1e293b', width: 1.5 },
+                name: 'Evoluzione 2026',
+                showlegend: false,
+                hoverinfo: 'skip'
+            }
+        ];
+
+        const layout = {
+            title: `Evoluzione Giornaliera Temperatura Media (2026 vs Normale 1991-2020) - ${city}`,
+            xaxis: {
+                title: 'Data',
+                type: 'date',
+                tickformat: '%d %b',
+                range: ['2026-01-01', '2026-12-31']
+            },
+            yaxis: {
+                title: 'Temperatura Media (°C)',
+                zeroline: false
+            },
+            legend: {
+                orientation: 'h',
+                yanchor: 'top',
+                y: -0.15,
+                xanchor: 'center',
+                x: 0.5
+            },
+            margin: { t: 50, r: 20, l: 50, b: 80 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('dailyEvolutionChart', traces, layout, {responsive: true});
     }
 
     function renderHeatwavesChart() {
