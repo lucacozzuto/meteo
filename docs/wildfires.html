@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incendi Boschivi nel Mediterraneo (1980–2026) — Meteo Records</title>
+    <title>Incendi Boschivi ed Ondate di Calore nel Mediterraneo (1980–2026) — Meteo Records</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,6 +12,7 @@
             --border-color: rgba(255, 255, 255, 0.12);
             --accent-fire: #ff3d00;
             --accent-orange: #ff7539;
+            --accent-cyan: #00ffcc;
             --text-main: #f0f6fc;
             --text-muted: #8b949e;
         }
@@ -42,7 +43,7 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 0.5rem;
         }
-        .header p { color: var(--text-muted); font-size: 1.1rem; max-width: 850px; margin: 0 auto; }
+        .header p { color: var(--text-muted); font-size: 1.1rem; max-width: 900px; margin: 0 auto; }
         
         .nav-link {
             display: inline-block;
@@ -74,7 +75,7 @@
             transition: transform 0.2s;
         }
         .card img:hover {
-            transform: scale(1.005);
+            transform: scale(1.003);
         }
 
         .legend-box {
@@ -123,20 +124,29 @@
 <a href="index.html" class="nav-link">← Torna alla Dashboard Meteo</a>
 
 <div class="header">
-    <h1>🔥 Incendi Boschivi nel Mediterraneo (1980–2026)</h1>
-    <p>Serie storica continuativa di 46 anni sulla superficie forestale bruciata nei 5 paesi europei del bacino mediterraneo (Portogallo, Spagna, Francia, Italia, Grecia), basata sui dati storici EFFIS e satellitari GWIS / MODIS / VIIRS.</p>
+    <h1>🔥 Incendi Boschivi & 🌊 Ondate di Calore nel Mediterraneo (1980–2026)</h1>
+    <p>Confronto diretto tra la serie storica delle **Ondate di Calore Estive** calcolata sulle città del bacino mediterraneo (Madrid, Barcellona, Lisbona, Roma, Parigi, Atene, Tirana, Podgorica) e il tabellone della **Superficie Forestale Bruciata** (dati ufficiali EFFIS 1980–2026).</p>
 </div>
 
+<!-- SEZIONE 1: ONDATE DI CALORE MEDITERRANEO -->
 <div class="card">
-    <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 1rem;">Tabellone Storico degli Anni Record per Paese e per l'Intero Bacino</h2>
+    <h2 style="font-size: 1.4rem; color: var(--accent-cyan); margin-bottom: 0.5rem;">1. Ondate di Calore Estive nei Paesi del Mediterraneo (1980–2026)</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">Eventi estivi (Giugno-Agosto) con $\ge 6$ giorni consecutivi sopra il 90° percentile storico. Le linee verticali tratteggiate ciano segnalano gli anni con ondate di caldo sincronizzate nel Mediterraneo.</p>
+    <img src="heatwaves_mediterranean.png" alt="Ondate di Calore Mediterraneo 1980-2026" class="zoomable">
+</div>
+
+<!-- SEZIONE 2: HEATMAP INCENDI MEDITERRANEO -->
+<div class="card">
+    <h2 style="font-size: 1.4rem; color: var(--accent-fire); margin-bottom: 0.5rem;">2. Tabellone degli Incendi Boschivi nel Mediterraneo (1980–2026)</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">Superficie forestale bruciata in ettari (dati ufficiali di terra EFFIS). Gli asterischi (*) sull'asse X indicano gli anni in cui si sono verificate gravi ondate di caldo nel Mediterraneo.</p>
     <img src="record_heatmap_wildfires_mediterranean.png" alt="Heatmap Incendi Mediterraneo 1980-2026" class="zoomable">
     
     <div class="legend-box">
-        <h3>Come leggere questa Heatmap</h3>
+        <h3>Legenda e Correlazione Climatica</h3>
         <ul>
-            <li>🔥 <strong>Caselle Rosse (Soglia 80° Percentile del Paese):</strong> Colorate in rosso/arancio con la superficie espressa in migliaia o milioni di ettari (`ha`, `k`, `M`) solo negli anni che superano l'80° percentile storico del singolo paese (top 20% degli anni più distruttivi per quella nazione).</li>
-            <li>⬜ <strong>Caselle Bianche:</strong> Annate normali al di sotto dell'80° percentile.</li>
-            <li>🟦 <strong>Rettangolo Blu sulla Colonna dell'Anno:</strong> Evidenzia la colonna dell'anno quando il <strong>TOTALE MEDITERRANEO</strong> (riga in fondo) supera il suo <strong>90° percentile storico</strong> (i megaincendi record per l'intero bacino: **1981**, **1985**, **1989**, **1994**, **2003**).</li>
+            <li>🔥 <strong>Caselle Rosse (Soglia 80° Percentile del Paese):</strong> Colorate in rosso/arancio con la superficie bruciata in ettari (`ha`, `k`, `M`) solo negli anni che superano l'80° percentile storico del singolo paese (top 20% degli anni più distruttivi).</li>
+            <li>🟦 <strong>Rettangolo Blu sulla Colonna dell'Anno:</strong> Evidenzia la colonna dell'anno quando il <strong>TOTALE MEDITERRANEO</strong> (riga in fondo) supera il suo <strong>90° percentile storico</strong> (mega-incendi a livello dell'intero bacino).</li>
+            <li>✳️ <strong>Asterisco (`*`) sull'Anno:</strong> Segnala gli anni in cui il dataset del Mediterraneo ha registrato gravi **Ondate di Calore Estive Sincronizzate** (confronta con il grafico 1 in alto).</li>
         </ul>
     </div>
 </div>
