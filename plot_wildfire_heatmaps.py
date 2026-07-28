@@ -76,98 +76,42 @@ MEDITERRANEAN_5 = {
     'France': 46.2, 'Italy': 41.9, 'Spain': 40.4, 'Portugal': 39.4, 'Greece': 39.0
 }
 
-CITY_MAP = {
-    'Spain': 'data/Madrid.csv',
-    'Italy': 'data/Rome.csv',
-    'Greece': 'data/Athens.csv',
-    'Portugal': 'data/Lisbon.csv',
-    'France': 'data/Paris.csv'
-}
-
-def get_country_heatwave_flags():
-    country_hw_matrix = {}
-    for country, fpath in CITY_MAP.items():
-        hw_set = set()
-        if os.path.exists(fpath):
-            df = pd.read_csv(fpath)
-            df['date'] = pd.to_datetime(df['date'])
-            df = df.sort_values('date').reset_index(drop=True)
-            df = df[df['date'].dt.year >= 1980].copy()
-            df = df[df['date'].dt.month.isin([6, 7, 8])].copy()
-            
-            df_base = df[(df['date'].dt.year >= 1991) & (df['date'].dt.year <= 2020)]['temperature_2m_max'].dropna()
-            thresh = df_base.quantile(0.90) if not df_base.empty else 30
-            
-            df['is_hot'] = df['temperature_2m_max'] > thresh
-            
-            current_hw = []
-            for i, row in df.iterrows():
-                if row['is_hot']:
-                    if len(current_hw) > 0 and (row['date'] - current_hw[-1]['date']).days > 1:
-                        if len(current_hw) >= 6:
-                            for r in current_hw:
-                                hw_set.add(r['date'].year)
-                        current_hw = []
-                    current_hw.append(row)
-                else:
-                    if len(current_hw) >= 6:
-                        for r in current_hw:
-                            hw_set.add(r['date'].year)
-                    current_hw = []
-            if len(current_hw) >= 6:
-                for r in current_hw:
-                    hw_set.add(r['date'].year)
-                    
-        country_hw_matrix[country] = hw_set
-    return country_hw_matrix
-
-def generate_wildfire_heatmap_with_cell_asterisks(matrix_ha, title, subtitle, output_path, figsize=(30, 8.5)):
-    hw_matrix = get_country_heatwave_flags()
-    
-    # Calculate 90th percentile for individual countries
+def generate_pure_wildfire_heatmap(matrix_ha, title, subtitle, output_path, figsize=(30, 8.5)):
+    # Calculate 90th percentile for individual countries (rows 0..N-2)
     p90_countries = matrix_ha.iloc[:-1].apply(lambda row: np.percentile(row.dropna(), 90), axis=1)
+    
+    # Calculate 90th percentile for TOTALE (last row)
     p90_total = np.percentile(matrix_ha.loc['TOTALE'].dropna(), 90)
 
     heatmap_data = pd.DataFrame(0, index=matrix_ha.index, columns=matrix_ha.columns)
     annot_data = pd.DataFrame("", index=matrix_ha.index, columns=matrix_ha.columns, dtype=object)
 
-    # 1. Country rows (90th percentile threshold + cell asterisk for heatwave years)
+    # 1. Fill country rows based on 90th percentile threshold
     for idx in matrix_ha.index[:-1]:
-        c_name = idx.split(' (')[0]
         thresh = p90_countries[idx]
-        hw_years = hw_matrix.get(c_name, set())
-        
         for col in matrix_ha.columns:
             val = matrix_ha.loc[idx, col]
-            has_hw = (col in hw_years)
-            ast = "*" if has_hw else ""
-            
             if val >= thresh and val > 0:
                 heatmap_data.loc[idx, col] = 1
                 if val >= 1000000:
-                    val_str = f"{val/1000000:.2f}M"
+                    annot_data.loc[idx, col] = f"{val/1000000:.2f}M"
                 elif val >= 1000:
-                    val_str = f"{int(round(val/1000))}k"
+                    annot_data.loc[idx, col] = f"{int(round(val/1000))}k"
                 else:
-                    val_str = f"{int(round(val))}ha"
-                annot_data.loc[idx, col] = f"{val_str}{ast}"
+                    annot_data.loc[idx, col] = f"{int(round(val))}ha"
             else:
                 heatmap_data.loc[idx, col] = 0
-                annot_data.loc[idx, col] = ast
+                annot_data.loc[idx, col] = ""
 
-    # 2. TOTALE row (90th percentile threshold + asterisk if any country had heatwave)
+    # 2. Fill TOTALE row based on 90th percentile threshold
     for col in matrix_ha.columns:
         val = matrix_ha.loc['TOTALE', col]
-        any_hw = any(col in hw_matrix[c] for c in hw_matrix)
-        ast = "*" if any_hw else ""
-        
         if val >= p90_total:
             heatmap_data.loc['TOTALE', col] = 1
-            val_str = f"{val/1000000:.2f}M" if val >= 1000000 else f"{int(round(val/1000))}k"
-            annot_data.loc['TOTALE', col] = f"{val_str}{ast}"
+            annot_data.loc['TOTALE', col] = f"{val/1000000:.2f}M" if val >= 1000000 else f"{int(round(val/1000))}k"
         else:
             heatmap_data.loc['TOTALE', col] = 0
-            annot_data.loc['TOTALE', col] = ast
+            annot_data.loc['TOTALE', col] = ""
 
     fig, ax = plt.subplots(figsize=figsize, dpi=300)
     
@@ -180,7 +124,7 @@ def generate_wildfire_heatmap_with_cell_asterisks(matrix_ha, title, subtitle, ou
         ax=ax, 
         annot=annot_data.values, 
         fmt="", 
-        annot_kws={"size": 8.0, "color": "black", "weight": "bold"},
+        annot_kws={"size": 8.5, "color": "black", "weight": "bold"},
         linewidths=0.3, 
         linecolor='lightgray', 
         xticklabels=True, 
@@ -197,7 +141,6 @@ def generate_wildfire_heatmap_with_cell_asterisks(matrix_ha, title, subtitle, ou
     # Highlight COLUMNS (years) ONLY when TOTALE is >= 90th percentile
     column_highlight = [col for col in matrix_ha.columns if matrix_ha.loc['TOTALE', col] >= p90_total]
 
-    # Clean X-axis tick labels without asterisk on year labels
     ax.set_xticklabels(matrix_ha.columns, rotation=45, ha='right')
 
     for i, year in enumerate(matrix_ha.columns):
@@ -216,10 +159,10 @@ def generate_wildfire_heatmap_with_cell_asterisks(matrix_ha, title, subtitle, ou
 
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"Wildfire heatmap with cell-level heatwave asterisks saved to {output_path}")
+    print(f"Pure Wildfire heatmap saved to {output_path}")
 
 def main():
-    print("--- GENERATING WILDFIRE HEATMAP WITH CELL-LEVEL HEATWAVE ASTERISKS (1980-2026) ---")
+    print("--- GENERATING PURE WILDFIRE HEATMAP (1980-2026) ---")
     years_1980 = list(range(1980, 2027))
     matrix_med = pd.DataFrame(index=list(MEDITERRANEAN_5.keys()), columns=years_1980, dtype=float).fillna(0.0)
 
@@ -238,10 +181,10 @@ def main():
     total_row = matrix_med.sum(axis=0)
     matrix_med.loc['TOTALE'] = total_row
 
-    generate_wildfire_heatmap_with_cell_asterisks(
+    generate_pure_wildfire_heatmap(
         matrix_ha=matrix_med,
-        title='Superficie Forestale Bruciata nel Mediterraneo (1980–2026) [* = Anno con Ondata di Calore nel Paese]',
-        subtitle='Anno (Evidenziate in Rosso le Annate Incendio > 90° Percentile — L\'asterisco * indica la presenza di un\'Ondata di Calore Estiva in quel Paese/Anno)',
+        title='Superficie Forestale Bruciata nei Paesi del Mediterraneo (1980–2026) [Dati Ufficiali EFFIS di Terra]',
+        subtitle='Anno (Evidenziate in Rosso le Annate Incendio > 90° Percentile del Paese — Rettangolo Blu sulla Colonna se il Totale > 90° Percentile)',
         output_path='docs/record_heatmap_wildfires_mediterranean.png',
         figsize=(30, 8.5)
     )
