@@ -78,19 +78,19 @@ MEDITERRANEAN_5 = {
 # Mediterranean 5-Country Summer Heatwave Sync Years (1980-2026) displayed in "heatwaves_mediterranean.png"
 HEATWAVE_YEARS = {2003, 2012, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026}
 
-def generate_custom_p80_p80_heatmap(matrix_ha, title, subtitle, output_path, figsize=(30, 8.5)):
-    # Calculate 80th percentile for individual countries (rows 0..N-2)
-    p80_countries = matrix_ha.iloc[:-1].apply(lambda row: np.percentile(row.dropna(), 80), axis=1)
+def generate_custom_p90_p90_heatmap(matrix_ha, title, subtitle, output_path, figsize=(30, 8.5)):
+    # Calculate 90th percentile for individual countries (rows 0..N-2)
+    p90_countries = matrix_ha.iloc[:-1].apply(lambda row: np.percentile(row.dropna(), 90), axis=1)
     
-    # Calculate 80th percentile for TOTALE MEDITERRANEO (last row)
-    p80_total = np.percentile(matrix_ha.loc['TOTALE MEDITERRANEO'].dropna(), 80)
+    # Calculate 90th percentile for TOTALE MEDITERRANEO (last row)
+    p90_total = np.percentile(matrix_ha.loc['TOTALE MEDITERRANEO'].dropna(), 90)
 
     heatmap_data = pd.DataFrame(0, index=matrix_ha.index, columns=matrix_ha.columns)
     annot_data = pd.DataFrame("", index=matrix_ha.index, columns=matrix_ha.columns, dtype=object)
 
-    # 1. Fill country rows based on 80th percentile threshold
+    # 1. Fill country rows based on 90th percentile threshold
     for idx in matrix_ha.index[:-1]:
-        thresh = p80_countries[idx]
+        thresh = p90_countries[idx]
         for col in matrix_ha.columns:
             val = matrix_ha.loc[idx, col]
             if val >= thresh and val > 0:
@@ -104,10 +104,10 @@ def generate_custom_p80_p80_heatmap(matrix_ha, title, subtitle, output_path, fig
             else:
                 heatmap_data.loc[idx, col] = 0
 
-    # 2. Fill TOTALE MEDITERRANEO row based on 80th percentile threshold
+    # 2. Fill TOTALE MEDITERRANEO row based on 90th percentile threshold
     for col in matrix_ha.columns:
         val = matrix_ha.loc['TOTALE MEDITERRANEO', col]
-        if val >= p80_total:
+        if val >= p90_total:
             heatmap_data.loc['TOTALE MEDITERRANEO', col] = 1
             annot_data.loc['TOTALE MEDITERRANEO', col] = f"{val/1000000:.2f}M" if val >= 1000000 else f"{int(round(val/1000))}k"
         else:
@@ -115,7 +115,7 @@ def generate_custom_p80_p80_heatmap(matrix_ha, title, subtitle, output_path, fig
 
     fig, ax = plt.subplots(figsize=figsize, dpi=300)
     
-    # 0 = White (Normal), 1 = Red/Orange (>= 80th percentile threshold)
+    # 0 = White (Normal), 1 = Red/Orange (>= 90th percentile threshold)
     cmap = mcolors.ListedColormap(['#ffffff', '#ff5722'])
 
     sns.heatmap(
@@ -138,8 +138,8 @@ def generate_custom_p80_p80_heatmap(matrix_ha, title, subtitle, output_path, fig
     n_rows = matrix_ha.shape[0]
     ax.axhline(n_rows - 1, color='cyan', linewidth=3)
 
-    # Highlight COLUMNS (years) ONLY when TOTALE MEDITERRANEO is >= 80th percentile
-    column_highlight = [col for col in matrix_ha.columns if matrix_ha.loc['TOTALE MEDITERRANEO', col] >= p80_total]
+    # Highlight COLUMNS (years) ONLY when TOTALE MEDITERRANEO is >= 90th percentile
+    column_highlight = [col for col in matrix_ha.columns if matrix_ha.loc['TOTALE MEDITERRANEO', col] >= p90_total]
 
     # Format X-axis tick labels with an asterisk (*) for Heatwave years
     x_labels = [f"{year}*" if year in HEATWAVE_YEARS else f"{year}" for year in matrix_ha.columns]
@@ -161,7 +161,7 @@ def generate_custom_p80_p80_heatmap(matrix_ha, title, subtitle, output_path, fig
 
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"80th Percentile All Mediterranean wildfire heatmap saved to {output_path}")
+    print(f"90th Percentile All Mediterranean wildfire heatmap saved to {output_path}")
 
 def main():
     print("--- GENERATING 100% EFFIS GROUND STATISTICS HEATMAP (1980-2026) ---")
@@ -183,10 +183,10 @@ def main():
     total_row = matrix_med.sum(axis=0)
     matrix_med.loc['TOTALE MEDITERRANEO'] = total_row
 
-    generate_custom_p80_p80_heatmap(
+    generate_custom_p90_p90_heatmap(
         matrix_ha=matrix_med,
-        title='Superficie Forestale Bruciata nei Paesi del Mediterraneo (1980–2026) [Soglia 80° Percentile per Tutto]',
-        subtitle='Anno (Evidenziate in Rosso le Annate > 80° Percentile — Rettangolo Blu sulla Colonna se il Totale > 80° Percentile)',
+        title='Superficie Forestale Bruciata nei Paesi del Mediterraneo (1980–2026) [Soglia 90° Percentile per Tutto]',
+        subtitle='Anno (Evidenziate in Rosso le Annate > 90° Percentile — Rettangolo Blu sulla Colonna se il Totale > 90° Percentile)',
         output_path='docs/record_heatmap_wildfires_mediterranean.png',
         figsize=(30, 8.5)
     )
