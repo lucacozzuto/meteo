@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incendi Boschivi nel Mediterraneo (1980–2026) — Meteo Records</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0c10;
+            --bg-card: rgba(22, 27, 34, 0.75);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --accent-fire: #ff3d00;
+            --accent-orange: #ff7539;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 5%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 61, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 117, 57, 0.05) 0%, transparent 40%);
+            min-height: 100vh;
+        }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff8a00, #ff2000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .header p { color: var(--text-muted); font-size: 1.1rem; max-width: 850px; margin: 0 auto; }
+        
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #fff; text-decoration: underline; }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card img:hover {
+            transform: scale(1.005);
+        }
+
+        .legend-box {
+            background: rgba(255, 61, 0, 0.05);
+            border: 1px solid rgba(255, 61, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        .legend-box h3 { color: var(--accent-orange); margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .legend-box ul { list-style: none; padding-left: 0; }
+        .legend-box li { margin-bottom: 0.5rem; color: #d0d7de; font-size: 0.95rem; }
+
+        /* Modal Lightbox */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 30px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            overflow: auto;
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 95%;
+            max-width: 1600px;
+        }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="nav-link">← Torna alla Dashboard Meteo</a>
+
+<div class="header">
+    <h1>🔥 Incendi Boschivi nel Mediterraneo (1980–2026)</h1>
+    <p>Serie storica continuativa di 46 anni sulla superficie forestale bruciata nei 5 paesi europei del bacino mediterraneo (Portogallo, Spagna, Francia, Italia, Grecia), basata sui dati storici EFFIS e satellitari GWIS / MODIS / VIIRS.</p>
+</div>
+
+<div class="card">
+    <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 1rem;">Tabellone Storico degli Anni Record per Paese e per l'Intero Bacino</h2>
+    <img src="record_heatmap_wildfires_mediterranean.png" alt="Heatmap Incendi Mediterraneo 1980-2026" class="zoomable">
+    
+    <div class="legend-box">
+        <h3>Come leggere questa Heatmap</h3>
+        <ul>
+            <li>🔥 <strong>Caselle Rosse (Soglia 80° Percentile del Paese):</strong> Colorate in rosso/arancio con la superficie espressa in migliaia o milioni di ettari (`ha`, `k`, `M`) solo negli anni che superano l'80° percentile storico del singolo paese (top 20% degli anni più distruttivi per quella nazione).</li>
+            <li>⬜ <strong>Caselle Bianche:</strong> Annate normali al di sotto dell'80° percentile.</li>
+            <li>🟦 <strong>Rettangolo Blu sulla Colonna dell'Anno:</strong> Evidenzia la colonna dell'anno quando il <strong>TOTALE MEDITERRANEO</strong> (riga in fondo) supera il suo <strong>90° percentile storico</strong> (i megaincendi record per l'intero bacino: **1981**, **1985**, **1989**, **1994**, **2003**).</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Modal Lightbox -->
+<div id="imageModal" class="modal">
+  <span class="close" id="modalClose">&times;</span>
+  <img class="modal-content" id="img01">
+</div>
+
+<script>
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("img01");
+    const closeBtn = document.getElementById("modalClose");
+    const zoomableImages = document.querySelectorAll('.zoomable');
+
+    zoomableImages.forEach(img => {
+        img.onclick = function() {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        }
+    });
+
+    closeBtn.onclick = function() { modal.style.display = "none"; }
+    modal.onclick = function(e) {
+        if (e.target !== modalImg) { modal.style.display = "none"; }
+    }
+</script>
+
+</body>
+</html>
