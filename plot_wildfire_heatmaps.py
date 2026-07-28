@@ -82,8 +82,8 @@ def generate_custom_p90_p90_heatmap(matrix_ha, title, subtitle, output_path, fig
     # Calculate 90th percentile for individual countries (rows 0..N-2)
     p90_countries = matrix_ha.iloc[:-1].apply(lambda row: np.percentile(row.dropna(), 90), axis=1)
     
-    # Calculate 90th percentile for TOTALE MEDITERRANEO (last row)
-    p90_total = np.percentile(matrix_ha.loc['TOTALE MEDITERRANEO'].dropna(), 90)
+    # Calculate 90th percentile for TOTALE (last row)
+    p90_total = np.percentile(matrix_ha.loc['TOTALE'].dropna(), 90)
 
     heatmap_data = pd.DataFrame(0, index=matrix_ha.index, columns=matrix_ha.columns)
     annot_data = pd.DataFrame("", index=matrix_ha.index, columns=matrix_ha.columns, dtype=object)
@@ -104,14 +104,14 @@ def generate_custom_p90_p90_heatmap(matrix_ha, title, subtitle, output_path, fig
             else:
                 heatmap_data.loc[idx, col] = 0
 
-    # 2. Fill TOTALE MEDITERRANEO row based on 90th percentile threshold
+    # 2. Fill TOTALE row based on 90th percentile threshold
     for col in matrix_ha.columns:
-        val = matrix_ha.loc['TOTALE MEDITERRANEO', col]
+        val = matrix_ha.loc['TOTALE', col]
         if val >= p90_total:
-            heatmap_data.loc['TOTALE MEDITERRANEO', col] = 1
-            annot_data.loc['TOTALE MEDITERRANEO', col] = f"{val/1000000:.2f}M" if val >= 1000000 else f"{int(round(val/1000))}k"
+            heatmap_data.loc['TOTALE', col] = 1
+            annot_data.loc['TOTALE', col] = f"{val/1000000:.2f}M" if val >= 1000000 else f"{int(round(val/1000))}k"
         else:
-            heatmap_data.loc['TOTALE MEDITERRANEO', col] = 0
+            heatmap_data.loc['TOTALE', col] = 0
 
     fig, ax = plt.subplots(figsize=figsize, dpi=300)
     
@@ -134,12 +134,12 @@ def generate_custom_p90_p90_heatmap(matrix_ha, title, subtitle, output_path, fig
         vmax=1
     )
 
-    # Draw horizontal separating line above the TOTALE MEDITERRANEO row
+    # Draw horizontal separating line above the TOTALE row
     n_rows = matrix_ha.shape[0]
     ax.axhline(n_rows - 1, color='cyan', linewidth=3)
 
-    # Highlight COLUMNS (years) ONLY when TOTALE MEDITERRANEO is >= 90th percentile
-    column_highlight = [col for col in matrix_ha.columns if matrix_ha.loc['TOTALE MEDITERRANEO', col] >= p90_total]
+    # Highlight COLUMNS (years) ONLY when TOTALE is >= 90th percentile
+    column_highlight = [col for col in matrix_ha.columns if matrix_ha.loc['TOTALE', col] >= p90_total]
 
     # Format X-axis tick labels with an asterisk (*) for Heatwave years
     x_labels = [f"{year}*" if year in HEATWAVE_YEARS else f"{year}" for year in matrix_ha.columns]
@@ -181,7 +181,7 @@ def main():
 
     # Add TOTAL MEDITERRANEAN Row at the bottom
     total_row = matrix_med.sum(axis=0)
-    matrix_med.loc['TOTALE MEDITERRANEO'] = total_row
+    matrix_med.loc['TOTALE'] = total_row
 
     generate_custom_p90_p90_heatmap(
         matrix_ha=matrix_med,
