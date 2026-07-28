@@ -75,8 +75,8 @@ MEDITERRANEAN_5 = {
     'France': 46.2, 'Italy': 41.9, 'Spain': 40.4, 'Portugal': 39.4, 'Greece': 39.0
 }
 
-# Major Summer Heatwave Years (1980-2026) identified in "Ondate di Calore Estive"
-HEATWAVE_YEARS = {1982, 1983, 1994, 1998, 2003, 2007, 2012, 2015, 2017, 2019, 2021, 2022, 2023, 2024, 2025, 2026}
+# Major Summer Heatwave Sync Years (1980-2026) displayed in "heatwaves_europe.png" (Cyan lines)
+HEATWAVE_YEARS = {1994, 2003, 2006, 2007, 2012, 2013, 2017, 2018, 2023, 2024, 2025, 2026}
 
 def generate_custom_p80_p90_heatmap(matrix_ha, title, subtitle, output_path, figsize=(30, 8.5)):
     # Calculate 80th percentile for individual countries (rows 0..N-2)
