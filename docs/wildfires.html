@@ -124,29 +124,22 @@
 <a href="index.html" class="nav-link">← Torna alla Dashboard Meteo</a>
 
 <div class="header">
-    <h1>🔥 Incendi Boschivi & 🌊 Ondate di Calore nel Mediterraneo (1980–2026)</h1>
-    <p>Confronto diretto tra la serie storica delle **Ondate di Calore Estive** calcolata sulle città del bacino mediterraneo (Madrid, Barcellona, Lisbona, Roma, Parigi, Atene, Tirana, Podgorica) e il tabellone della **Superficie Forestale Bruciata** (dati ufficiali EFFIS 1980–2026).</p>
+    <h1>🔥 Incendi Boschivi & 🌡️ Ondate di Calore nel Mediterraneo (1980–2026)</h1>
+    <p>Superficie forestale bruciata in ettari (dati ufficiali EFFIS di terra 1980–2026) con integrazione puntuale delle <strong>Ondate di Calore Estive</strong> al livello della singola casella Paese/Anno.</p>
 </div>
 
-<!-- SEZIONE 1: ONDATE DI CALORE MEDITERRANEO -->
+<!-- HEATMAP INCENDI CON ASTERISCHI NELLE CASELLE -->
 <div class="card">
-    <h2 style="font-size: 1.4rem; color: var(--accent-cyan); margin-bottom: 0.5rem;">1. Ondate di Calore Estive nei Paesi del Mediterraneo (1980–2026)</h2>
-    <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">Eventi estivi (Giugno-Agosto) con $\ge 6$ giorni consecutivi sopra il 90° percentile storico. Le linee verticali tratteggiate ciano segnalano gli anni con ondate di caldo sincronizzate nel Mediterraneo.</p>
-    <img src="heatwaves_mediterranean.png" alt="Ondate di Calore Mediterraneo 1980-2026" class="zoomable">
-</div>
-
-<!-- SEZIONE 2: HEATMAP INCENDI MEDITERRANEO -->
-<div class="card">
-    <h2 style="font-size: 1.4rem; color: var(--accent-fire); margin-bottom: 0.5rem;">2. Tabellone degli Incendi Boschivi nel Mediterraneo (1980–2026)</h2>
-    <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">Superficie forestale bruciata in ettari (dati ufficiali di terra EFFIS). Gli asterischi (*) sull'asse X indicano gli anni in cui si sono verificate gravi ondate di caldo nel Mediterraneo.</p>
-    <img src="record_heatmap_wildfires_mediterranean.png" alt="Heatmap Incendi Mediterraneo 1980-2026" class="zoomable">
+    <h2 style="font-size: 1.4rem; color: var(--accent-fire); margin-bottom: 0.5rem;">Tabellone degli Incendi Boschivi nel Mediterraneo (1980–2026)</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">Le caselle rosse evidenziano le annate record d'incendio (> 90° percentile del paese). L'asterisco (*) nella singola casella indica la presenza di un'Ondata di Calore Estiva nello stesso anno per quel paese.</p>
+    <img src="record_heatmap_wildfires_mediterranean.png" alt="Heatmap Incendi ed Ondate di Calore Mediterraneo 1980-2026" class="zoomable">
     
     <div class="legend-box">
-        <h3>Legenda e Correlazione Climatica</h3>
+        <h3>Legenda del Tabellone</h3>
         <ul>
-            <li>🔥 <strong>Caselle Rosse (Soglia 80° Percentile del Paese):</strong> Colorate in rosso/arancio con la superficie bruciata in ettari (`ha`, `k`, `M`) solo negli anni che superano l'80° percentile storico del singolo paese (top 20% degli anni più distruttivi).</li>
-            <li>🟦 <strong>Rettangolo Blu sulla Colonna dell'Anno:</strong> Evidenzia la colonna dell'anno quando il <strong>TOTALE MEDITERRANEO</strong> (riga in fondo) supera il suo <strong>90° percentile storico</strong> (mega-incendi a livello dell'intero bacino).</li>
-            <li>✳️ <strong>Asterisco (`*`) sull'Anno:</strong> Segnala gli anni in cui il dataset del Mediterraneo ha registrato gravi **Ondate di Calore Estive Sincronizzate** (confronta con il grafico 1 in alto).</li>
+            <li>🔥 <strong>Casella Rossa (Soglia 90° Percentile del Paese):</strong> Anno record per superficie bruciata nel singolo paese (top 10% degli anni più distruttivi).</li>
+            <li>✳️ <strong>Asterisco (`*`) nella Casella Paese/Anno:</strong> Indica che in quell'anno si è verificata almeno un'<strong>Ondata di Calore Estiva</strong> ($\ge 6$ giorni consecutivi $> 90^\text{th}$ percentile tmax) per quel paese (visibile sia sulle caselle rosse che su quelle bianche).</li>
+            <li>🟦 <strong>Rettangolo Blu sulla Colonna dell'Anno:</strong> Evidenzia la colonna dell'anno quando la riga <strong>TOTALE</strong> supera il suo 90° percentile storico (mega-incendi a livello dell'intero bacino mediterraneo: <strong>1981</strong>, <strong>1985</strong>, <strong>1989</strong>, <strong>1994</strong>, <strong>2003</strong>).</li>
         </ul>
     </div>
 </div>
