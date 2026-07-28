@@ -75,8 +75,8 @@ MEDITERRANEAN_5 = {
     'France': 46.2, 'Italy': 41.9, 'Spain': 40.4, 'Portugal': 39.4, 'Greece': 39.0
 }
 
-# Mediterranean Summer Heatwave Sync Years (1980-2026) displayed in "heatwaves_mediterranean.png"
-HEATWAVE_YEARS = {1987, 1988, 1990, 2000, 2003, 2007, 2009, 2011, 2012, 2013, 2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026}
+# Mediterranean 5-Country Summer Heatwave Sync Years (1980-2026) displayed in "heatwaves_mediterranean.png"
+HEATWAVE_YEARS = {2003, 2012, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026}
 
 def generate_custom_p80_p90_heatmap(matrix_ha, title, subtitle, output_path, figsize=(30, 8.5)):
     # Calculate 80th percentile for individual countries (rows 0..N-2)

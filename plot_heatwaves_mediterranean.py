@@ -7,13 +7,10 @@ from datetime import timedelta
 
 MEDITERRANEAN_CITY_FILES = [
     'data/Athens.csv',
-    'data/Barcelona.csv',
     'data/Lisbon.csv',
     'data/Madrid.csv',
     'data/Paris.csv',
-    'data/Rome.csv',
-    'data/Podgorica.csv',
-    'data/Tirana.csv'
+    'data/Rome.csv'
 ]
 
 def compute_heatwaves(city_file):
