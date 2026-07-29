@@ -131,9 +131,9 @@
 
 <!-- GRAFICO CUMULATIVO INTERATTIVO PER PAESE -->
 <div class="card">
-    <h2 style="font-size: 1.4rem; color: var(--accent-fire); margin-bottom: 0.5rem;">📈 Cumulata Annuale degli Incendi Boschivi per Paese (2012–2026)</h2>
+    <h2 style="font-size: 1.4rem; color: var(--accent-fire); margin-bottom: 0.5rem;">📈 Cumulata Annuale degli Incendi Boschivi per Paese (1980–2026)</h2>
     <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">
-        Evoluzione cumulativa della superficie forestale bruciata (in ettari) dall'inizio dell'anno ad oggi. L'anno in corso <strong>2026 (linea ROSSA)</strong> è messo a confronto diretto con la serie storica degli anni precedenti (<strong>linee GRIGIE</strong>).
+        Evoluzione cumulativa della superficie forestale bruciata (in ettari) dall'inizio dell'anno ad oggi. L'anno in corso <strong>2026 (linea ROSSA)</strong> è messo a confronto diretto con la serie storica degli anni precedenti (1980–2025 in <strong>linee GRIGIE</strong>).
     </p>
     
     <div style="margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
@@ -253,7 +253,7 @@
 
         const layout = {
             title: {
-                text: `Evoluzione Cumulata Incendi Boschivi - ${country} (2012–2026)`,
+                text: `Evoluzione Cumulata Incendi Boschivi - ${country} (1980–2026)`,
                 font: { family: 'Outfit', size: 20, color: '#ff7539' }
             },
             xaxis: {
@@ -273,14 +273,8 @@
             paper_bgcolor: 'rgba(0, 0, 0, 0)',
             plot_bgcolor: 'rgba(22, 27, 34, 0.75)',
             font: { family: 'Inter', color: '#f0f6fc' },
-            legend: {
-                orientation: 'h',
-                y: -0.2,
-                x: 0.5,
-                xanchor: 'center',
-                font: { size: 11 }
-            },
-            margin: { t: 60, r: 20, l: 60, b: 80 }
+            showlegend: false,
+            margin: { t: 60, r: 20, l: 60, b: 60 }
         };
 
         Plotly.newPlot('wildfireCumulativeChart', traces, layout, { responsive: true });
