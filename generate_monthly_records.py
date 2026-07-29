@@ -106,7 +106,6 @@ def get_monthly_records(data_dir):
             daily_normals_smoothed = s_3.rolling(window=21, center=True, min_periods=1).mean().iloc[365:730].round(2).tolist()
             dates_365 = [f"2026-{md}" for md in all_mds]
             md_to_norm = dict(zip(all_mds, daily_normals_smoothed))
-
             df_2026 = df[df['year'] == 2026].sort_values('date')
             dates_2026 = df_2026['date'].dt.strftime('%Y-%m-%d').tolist()
             temps_2026 = [round(x, 1) if pd.notna(x) else None for x in df_2026['temp_mean']]
@@ -120,6 +119,38 @@ def get_monthly_records(data_dir):
                 "normals_365": daily_normals_smoothed
             }
 
+            # TOP 10 HOTTEST SUMMERS (JJA Mean Temp)
+            df_jja = df[df['month'].isin([6, 7, 8])].copy()
+            summer_stats = []
+            if not df_jja.empty:
+                grouped_jja = df_jja.groupby('year')
+                for y, group in grouped_jja:
+                    n_days = len(group)
+                    if n_days == 0:
+                        continue
+                    m_temp = float(round(group['temp_mean'].mean(), 2))
+                    m_max = float(round(group['temperature_2m_max'].mean(), 1))
+                    m_min = float(round(group['temperature_2m_min'].mean(), 1))
+                    is_partial = (y == 2026 and n_days < 92)
+                    summer_stats.append({
+                        "year": int(y),
+                        "mean_temp": m_temp,
+                        "mean_max": m_max,
+                        "mean_min": m_min,
+                        "days": int(n_days),
+                        "is_partial": is_partial
+                    })
+                
+                # Sort descending by mean_temp
+                summer_stats.sort(key=lambda x: x['mean_temp'], reverse=True)
+                top_summers = []
+                for rank_idx, s in enumerate(summer_stats[:10]):
+                    s_copy = dict(s)
+                    s_copy['rank'] = rank_idx + 1
+                    top_summers.append(s_copy)
+            else:
+                top_summers = []
+
             city_data = {
                 "years": years,
                 "records": [],
@@ -131,7 +162,8 @@ def get_monthly_records(data_dir):
                 "annual_years": annual_years,
                 "heatwaves": heatwaves,
                 "night_heatwaves": night_heatwaves,
-                "daily_2026": daily_2026
+                "daily_2026": daily_2026,
+                "top_summers": top_summers
             }
 
             for m in range(1, 13):
