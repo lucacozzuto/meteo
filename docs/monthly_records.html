@@ -537,8 +537,18 @@
 
     function renderTopSummersTable() {
         const dataset = datasetSelect.value;
-        const city = citySelect.value;
-        const cityData = recordsData ? recordsData[dataset][city] : null;
+        let city = citySelect.value;
+        
+        if (!recordsData || !recordsData[dataset]) return;
+        
+        let cityData = recordsData[dataset][city];
+        if (!cityData) {
+            const available = Object.keys(recordsData[dataset]);
+            if (available.length > 0) {
+                city = available[0];
+                cityData = recordsData[dataset][city];
+            }
+        }
 
         const container = document.getElementById('topSummersTableContainer');
         if (!cityData || !cityData.top_summers || cityData.top_summers.length === 0) {
