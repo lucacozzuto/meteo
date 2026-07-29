@@ -140,7 +140,7 @@
 
     async function loadData() {
         try {
-            const response = await fetch('monthly_records.json');
+            const response = await fetch('monthly_records.json?v=' + new Date().getTime());
             recordsData = await response.json();
             updateCityDropdown();
             renderCharts();
@@ -538,11 +538,11 @@
     function renderTopSummersTable() {
         const dataset = datasetSelect.value;
         const city = citySelect.value;
-        const cityData = recordsData[dataset][city];
+        const cityData = recordsData ? recordsData[dataset][city] : null;
 
         const container = document.getElementById('topSummersTableContainer');
         if (!cityData || !cityData.top_summers || cityData.top_summers.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666;">Nessun dato disponibile per la classifica estiva.</p>';
+            container.innerHTML = '<p style="text-align:center; color:#666; font-size:1.1rem; padding:1rem;">Nessun dato disponibile per la classifica estiva.</p>';
             return;
         }
 
@@ -551,15 +551,15 @@
 
         let html = `
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; color: #1e293b; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <thead>
-                    <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-color);">
-                        <th style="padding: 10px; width: 70px;">Pos.</th>
-                        <th style="padding: 10px; width: 140px;">Anno</th>
-                        <th style="padding: 10px;">Media Estiva (°C)</th>
-                        <th style="padding: 10px;">Media Massime (°C)</th>
-                        <th style="padding: 10px;">Media Minime (°C)</th>
-                        <th style="padding: 10px;">Giorni Monitorati</th>
+                    <tr style="background-color: #f1f5f9; border-bottom: 2px solid #e2e8f0; color: #334155; font-weight: 700;">
+                        <th style="padding: 12px 16px; width: 80px;">Pos.</th>
+                        <th style="padding: 12px 16px; width: 150px;">Anno</th>
+                        <th style="padding: 12px 16px;">Media Estiva (°C)</th>
+                        <th style="padding: 12px 16px;">Media Massime (°C)</th>
+                        <th style="padding: 12px 16px;">Media Minime (°C)</th>
+                        <th style="padding: 12px 16px;">Giorni Monitorati</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -567,32 +567,32 @@
 
         summers.forEach(s => {
             let medal = '';
-            if (s.rank === 1) medal = '🥇 ';
-            else if (s.rank === 2) medal = '🥈 ';
-            else if (s.rank === 3) medal = '🥉 ';
+            if (s.rank === 1) medal = '🥇 1°';
+            else if (s.rank === 2) medal = '🥈 2°';
+            else if (s.rank === 3) medal = '🥉 3°';
             else medal = `#${s.rank}`;
 
             let yearLabel = `${s.year}`;
             let badge = '';
             if (s.is_partial) {
-                badge = `<span style="background-color: #ef4444; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-left: 6px;">In corso</span>`;
+                badge = `<span style="background-color: #ef4444; color: #ffffff; padding: 3px 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; margin-left: 6px; display: inline-block;">In corso</span>`;
             }
 
             const pct = Math.max(10, Math.min(100, (s.mean_temp / maxTemp) * 100));
 
             html += `
-            <tr style="border-bottom: 1px solid var(--border-color); ${s.year === 2026 ? 'background-color: rgba(239, 68, 68, 0.08); font-weight: bold;' : ''}">
-                <td style="padding: 10px; font-weight: bold;">${medal}</td>
-                <td style="padding: 10px; font-weight: bold;">${yearLabel} ${badge}</td>
-                <td style="padding: 10px; font-weight: bold; color: #ef4444;">
+            <tr style="border-bottom: 1px solid #e2e8f0; ${s.year === 2026 ? 'background-color: #fef2f2;' : ''}">
+                <td style="padding: 12px 16px; font-weight: 700; color: #0f172a;">${medal}</td>
+                <td style="padding: 12px 16px; font-weight: 700; color: #0f172a;">${yearLabel} ${badge}</td>
+                <td style="padding: 12px 16px; font-weight: 700; color: #dc2626;">
                     ${s.mean_temp.toFixed(2)} °C
-                    <div style="background-color: #fee2e2; border-radius: 4px; height: 6px; width: 120px; margin-top: 4px; overflow: hidden;">
+                    <div style="background-color: #fee2e2; border-radius: 4px; height: 7px; width: 140px; margin-top: 5px; overflow: hidden;">
                         <div style="background-color: #ef4444; height: 100%; width: ${pct}%;"></div>
                     </div>
                 </td>
-                <td style="padding: 10px;">${s.mean_max.toFixed(1)} °C</td>
-                <td style="padding: 10px;">${s.mean_min.toFixed(1)} °C</td>
-                <td style="padding: 10px; color: #666;">${s.days} / 92 gg</td>
+                <td style="padding: 12px 16px; color: #334155; font-weight: 600;">${s.mean_max.toFixed(1)} °C</td>
+                <td style="padding: 12px 16px; color: #334155; font-weight: 600;">${s.mean_min.toFixed(1)} °C</td>
+                <td style="padding: 12px 16px; color: #64748b; font-weight: 500;">${s.days} / 92 gg</td>
             </tr>
             `;
         });
