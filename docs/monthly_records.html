@@ -172,6 +172,10 @@
             }
             citySelect.appendChild(option);
         });
+
+        if (cities.length > 0) {
+            citySelect.value = cities[0];
+        }
     }
 
     function renderCharts() {
