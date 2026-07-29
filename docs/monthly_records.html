@@ -151,13 +151,25 @@
 
     function updateCityDropdown() {
         const dataset = datasetSelect.value;
-        const cities = Object.keys(recordsData[dataset]);
+        let cities = Object.keys(recordsData[dataset]);
+
+        // Put Italia / Europa at the top of the list if present
+        const topKey = dataset === 'Italy' ? 'Italia' : 'Europa';
+        if (cities.includes(topKey)) {
+            cities = [topKey, ...cities.filter(c => c !== topKey)];
+        }
 
         citySelect.innerHTML = '';
         cities.forEach(city => {
             const option = document.createElement('option');
             option.value = city;
-            option.textContent = city;
+            if (city === 'Italia') {
+                option.textContent = '🇮🇹 Italia (Intera Nazione)';
+            } else if (city === 'Europa') {
+                option.textContent = '🇪🇺 Europa (Intero Continente)';
+            } else {
+                option.textContent = city;
+            }
             citySelect.appendChild(option);
         });
     }
