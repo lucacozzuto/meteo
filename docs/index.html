@@ -300,6 +300,19 @@
         </a>
     </div>
 
+    <!-- SEZIONE TOP 10 ESTATI PIÙ CALDE (ITALIA ED EUROPA) -->
+    <h2 class="section-title" style="margin-top: 3.5rem;">🏆 Classifica delle Top 10 Estati Più Calde (1940–2026)</h2>
+    <div class="card" style="padding: 1.5rem; background-color: var(--card-bg);">
+        <p style="text-align: center; color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
+            Classifica delle 10 estati (Giugno–Agosto) con la temperatura media più alta mai registrata. Per il 2026 viene considerata la media dei giorni estivi monitorati fino ad oggi.
+        </p>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; justify-content: center;">
+            <button id="btnHomeItaly" onclick="switchHomeSummers('Italy')" style="padding: 0.65rem 1.5rem; border-radius: 8px; border: 2px solid var(--accent-color); background-color: var(--accent-color); color: white; font-weight: bold; cursor: pointer; transition: all 0.2s;">🇮🇹 Italia</button>
+            <button id="btnHomeEurope" onclick="switchHomeSummers('Europe')" style="padding: 0.65rem 1.5rem; border-radius: 8px; border: 2px solid var(--border-color); background-color: white; color: #333; font-weight: bold; cursor: pointer; transition: all 0.2s;">🇪🇺 Europa</button>
+        </div>
+        <div id="homeTopSummersContainer"></div>
+    </div>
+
     <h2 class="section-title">🚨 Ultimi Record Battuti (Anno Corrente) - Italia</h2>
     <h3 style="color: var(--record-heat); margin-bottom: 1rem;">Record di Temperature Massime</h3>
     <div id="latest-records-italy-max" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem;">
@@ -385,7 +398,106 @@
             });
     }
 
-    // Modal Image Viewer (kept for compatibility if any zoomable image is added later)
+    // Top 10 Hottest Summers (Italy & Europe) logic
+    let overallSummersData = null;
+    let currentSummersTab = 'Italy';
+
+    async function loadHomeTopSummers() {
+        try {
+            const res = await fetch('monthly_records.json?v=' + new Date().getTime());
+            const data = await res.json();
+            if (data && data.overall_top_summers) {
+                overallSummersData = data.overall_top_summers;
+                renderHomeTopSummers();
+            }
+        } catch (err) {
+            console.error("Errore caricamento top summers home:", err);
+        }
+    }
+
+    function switchHomeSummers(tab) {
+        currentSummersTab = tab;
+        const btnIt = document.getElementById('btnHomeItaly');
+        const btnEu = document.getElementById('btnHomeEurope');
+
+        if (btnIt && btnEu) {
+            btnIt.style.backgroundColor = tab === 'Italy' ? 'var(--accent-color)' : 'white';
+            btnIt.style.color = tab === 'Italy' ? 'white' : '#333';
+            btnIt.style.borderColor = tab === 'Italy' ? 'var(--accent-color)' : 'var(--border-color)';
+
+            btnEu.style.backgroundColor = tab === 'Europe' ? 'var(--accent-color)' : 'white';
+            btnEu.style.color = tab === 'Europe' ? 'white' : '#333';
+            btnEu.style.borderColor = tab === 'Europe' ? 'var(--accent-color)' : 'var(--border-color)';
+        }
+
+        renderHomeTopSummers();
+    }
+
+    function renderHomeTopSummers() {
+        const container = document.getElementById('homeTopSummersContainer');
+        if (!container) return;
+        if (!overallSummersData || !overallSummersData[currentSummersTab]) {
+            container.innerHTML = '<p style="text-align:center; color:#666; padding:1rem;">Nessun dato disponibile.</p>';
+            return;
+        }
+
+        const summers = overallSummersData[currentSummersTab];
+        const maxTemp = summers[0].mean_temp;
+
+        let html = `
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; color: #1e293b; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <thead>
+                    <tr style="background-color: #f1f5f9; border-bottom: 2px solid #e2e8f0; color: #334155; font-weight: 700;">
+                        <th style="padding: 12px 16px; width: 80px;">Pos.</th>
+                        <th style="padding: 12px 16px; width: 150px;">Anno</th>
+                        <th style="padding: 12px 16px;">Media Estiva (°C)</th>
+                        <th style="padding: 12px 16px;">Media Massime (°C)</th>
+                        <th style="padding: 12px 16px;">Media Minime (°C)</th>
+                        <th style="padding: 12px 16px;">Stato Monitoraggio</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        summers.forEach(s => {
+            let medal = '';
+            if (s.rank === 1) medal = '🥇 1°';
+            else if (s.rank === 2) medal = '🥈 2°';
+            else if (s.rank === 3) medal = '🥉 3°';
+            else medal = `#${s.rank}`;
+
+            let badge = s.is_partial ? `<span style="background-color: #ef4444; color: #ffffff; padding: 3px 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; margin-left: 6px; display: inline-block;">In corso</span>` : '';
+            const pct = Math.max(10, Math.min(100, (s.mean_temp / maxTemp) * 100));
+
+            html += `
+            <tr style="border-bottom: 1px solid #e2e8f0; ${s.year === 2026 ? 'background-color: #fef2f2;' : ''}">
+                <td style="padding: 12px 16px; font-weight: 700; color: #0f172a;">${medal}</td>
+                <td style="padding: 12px 16px; font-weight: 700; color: #0f172a;">${s.year} ${badge}</td>
+                <td style="padding: 12px 16px; font-weight: 700; color: #dc2626;">
+                    ${s.mean_temp.toFixed(2)} °C
+                    <div style="background-color: #fee2e2; border-radius: 4px; height: 7px; width: 140px; margin-top: 5px; overflow: hidden;">
+                        <div style="background-color: #ef4444; height: 100%; width: ${pct}%;"></div>
+                    </div>
+                </td>
+                <td style="padding: 12px 16px; color: #334155; font-weight: 600;">${s.mean_max.toFixed(1)} °C</td>
+                <td style="padding: 12px 16px; color: #334155; font-weight: 600;">${s.mean_min.toFixed(1)} °C</td>
+                <td style="padding: 12px 16px; color: #64748b; font-weight: 500;">${s.is_partial ? s.days + ' gg in corso' : '92 / 92 gg'}</td>
+            </tr>
+            `;
+        });
+
+        html += `
+                </tbody>
+            </table>
+        </div>
+        `;
+        container.innerHTML = html;
+    }
+
+    loadHomeTopSummers();
+
+    // Modal Image Viewer (kept for compatibility)
     const modal = document.getElementById("imageModal");
     const modalImg = document.getElementById("img01");
     const closeBtn = document.getElementById("modalClose");

@@ -192,20 +192,76 @@ def get_monthly_records(data_dir):
 
     return dict(sorted(records.items()))
 
+def compute_overall_top_summers(data_dir):
+    all_dfs = []
+    if not os.path.exists(data_dir):
+        return []
+    for file in os.listdir(data_dir):
+        if file.endswith('.csv'):
+            filepath = os.path.join(data_dir, file)
+            df = pd.read_csv(filepath)
+            all_dfs.append(df)
+    if not all_dfs:
+        return []
+    
+    df_all = pd.concat(all_dfs, ignore_index=True)
+    df_all['date'] = pd.to_datetime(df_all['date'])
+    df_all['year'] = df_all['date'].dt.year
+    df_all['month'] = df_all['date'].dt.month
+    df_all['temp_mean'] = (df_all['temperature_2m_max'] + df_all['temperature_2m_min']) / 2
+    
+    df_jja = df_all[(df_all['year'] >= 1940) & (df_all['month'].isin([6, 7, 8]))].copy()
+    if df_jja.empty:
+        return []
+        
+    summer_stats = []
+    grouped = df_jja.groupby('year')
+    for y, group in grouped:
+        n_days = group['date'].nunique()
+        if n_days == 0:
+            continue
+        m_temp = float(round(group['temp_mean'].mean(), 2))
+        m_max = float(round(group['temperature_2m_max'].mean(), 1))
+        m_min = float(round(group['temperature_2m_min'].mean(), 1))
+        is_partial = (y == 2026 and n_days < 92)
+        summer_stats.append({
+            "year": int(y),
+            "mean_temp": m_temp,
+            "mean_max": m_max,
+            "mean_min": m_min,
+            "days": int(n_days),
+            "is_partial": is_partial
+        })
+        
+    summer_stats.sort(key=lambda x: x['mean_temp'], reverse=True)
+    top_summers = []
+    for rank_idx, s in enumerate(summer_stats[:10]):
+        s_copy = dict(s)
+        s_copy['rank'] = rank_idx + 1
+        top_summers.append(s_copy)
+    return top_summers
+
 def main():
     europe_records = get_monthly_records('data')
     italy_records = get_monthly_records('data_italy')
 
+    europe_top_summers = compute_overall_top_summers('data')
+    italy_top_summers = compute_overall_top_summers('data_italy')
+
     all_records = {
         'Europe': europe_records,
-        'Italy': italy_records
+        'Italy': italy_records,
+        'overall_top_summers': {
+            'Europe': europe_top_summers,
+            'Italy': italy_top_summers
+        }
     }
 
     os.makedirs('docs', exist_ok=True)
     with open('docs/monthly_records.json', 'w') as f:
         json.dump(all_records, f)
 
-    print("docs/monthly_records.json generated successfully.")
+    print("docs/monthly_records.json generated successfully with overall top summers.")
 
 if __name__ == "__main__":
     main()
