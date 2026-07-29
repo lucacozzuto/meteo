@@ -192,19 +192,22 @@ def get_monthly_records(data_dir):
 
     return dict(sorted(records.items()))
 
-def compute_overall_top_summers(data_dir):
-    all_dfs = []
-    if not os.path.exists(data_dir):
-        return []
-    for file in os.listdir(data_dir):
-        if file.endswith('.csv'):
-            filepath = os.path.join(data_dir, file)
-            df = pd.read_csv(filepath)
-            all_dfs.append(df)
-    if not all_dfs:
-        return []
-    
-    df_all = pd.concat(all_dfs, ignore_index=True)
+def compute_overall_top_summers(data_dir, specific_file=None):
+    if specific_file and os.path.exists(os.path.join(data_dir, specific_file)):
+        df_all = pd.read_csv(os.path.join(data_dir, specific_file))
+    else:
+        all_dfs = []
+        if not os.path.exists(data_dir):
+            return []
+        for file in os.listdir(data_dir):
+            if file.endswith('.csv'):
+                filepath = os.path.join(data_dir, file)
+                df = pd.read_csv(filepath)
+                all_dfs.append(df)
+        if not all_dfs:
+            return []
+        df_all = pd.concat(all_dfs, ignore_index=True)
+
     df_all['date'] = pd.to_datetime(df_all['date'])
     df_all['year'] = df_all['date'].dt.year
     df_all['month'] = df_all['date'].dt.month
@@ -245,8 +248,8 @@ def main():
     europe_records = get_monthly_records('data')
     italy_records = get_monthly_records('data_italy')
 
-    europe_top_summers = compute_overall_top_summers('data')
-    italy_top_summers = compute_overall_top_summers('data_italy')
+    europe_top_summers = compute_overall_top_summers('data', 'Europa.csv')
+    italy_top_summers = compute_overall_top_summers('data_italy', 'Italia.csv')
 
     all_records = {
         'Europe': europe_records,
@@ -261,7 +264,7 @@ def main():
     with open('docs/monthly_records.json', 'w') as f:
         json.dump(all_records, f)
 
-    print("docs/monthly_records.json generated successfully with overall top summers.")
+    print("docs/monthly_records.json generated successfully with overall top summers from national datasets.")
 
 if __name__ == "__main__":
     main()
