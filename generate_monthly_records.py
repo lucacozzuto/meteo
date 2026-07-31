@@ -40,15 +40,27 @@ def get_monthly_records(data_dir):
 
             years = sorted(monthly_yearly_max['year'].unique().tolist())
             
-            # ANNUAL ANOMALIES (Exclude 2026 as it's incomplete)
+            # ANNUAL ANOMALIES (1940-2025 full years + 2026 ongoing)
             annual_years_list = [y for y in years if y < 2026]
             annual_df = df[df['year'] < 2026]
             annual_mean = annual_df.groupby('year')['temp_mean'].mean().reindex(annual_years_list)
             baseline_mean = annual_mean.mean()
-            annual_anomalies = (annual_mean - baseline_mean).round(2)
+            annual_anomalies_list = (annual_mean - baseline_mean).round(2)
+
             import numpy as np
-            annual_anomalies = annual_anomalies.replace({np.nan: None}).tolist()
+            annual_anomalies = annual_anomalies_list.replace({np.nan: None}).tolist()
             annual_years = annual_years_list
+
+            # Include 2026 ongoing anomaly
+            df_2026 = df[df['year'] == 2026]
+            if not df_2026.empty:
+                md_2026 = set(df_2026['date'].dt.strftime('%m-%d'))
+                mean_2026 = df_2026['temp_mean'].mean()
+                baseline_2026_period = df[(df['year'] < 2026) & (df['date'].dt.strftime('%m-%d').isin(md_2026))]['temp_mean'].mean()
+                if pd.notna(mean_2026) and pd.notna(baseline_2026_period):
+                    anom_2026 = float(round(mean_2026 - baseline_2026_period, 2))
+                    annual_years.append(2026)
+                    annual_anomalies.append(anom_2026)
 
             # Heatwaves calculation
             df_summer = df[df['month'].isin([6, 7, 8])].copy()

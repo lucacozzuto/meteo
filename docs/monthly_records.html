@@ -300,26 +300,43 @@
     function renderAnomalyChart() {
         const dataset = datasetSelect.value;
         const city = citySelect.value;
-        const cityData = recordsData[dataset][city];
+        const cityData = recordsData ? recordsData[dataset][city] : null;
 
-        if (!cityData.annual_anomalies) return;
+        if (!cityData || !cityData.annual_anomalies) return;
 
         const years = cityData.annual_years;
         const anomalies = cityData.annual_anomalies;
 
-        const markerColors = anomalies.map(a => a >= 0 ? '#ef4444' : '#3b82f6'); // Red for positive, blue for negative
+        const markerColors = years.map((y, idx) => {
+            const a = anomalies[idx];
+            if (y === 2026) {
+                return a >= 0 ? '#991b1b' : '#1e3a8a'; // Dark Red / Dark Blue for 2026 (ongoing)
+            }
+            return a >= 0 ? '#ef4444' : '#3b82f6';
+        });
+
+        const hoverText = years.map((y, idx) => {
+            const a = anomalies[idx];
+            const sign = a >= 0 ? '+' : '';
+            if (y === 2026) {
+                return `<b>2026 (In corso)</b><br>Anomalia parziale: <b>${sign}${a}°C</b>`;
+            }
+            return `<b>Anno ${y}</b><br>Anomalia: <b>${sign}${a}°C</b>`;
+        });
 
         var data = [{
             x: years,
             y: anomalies,
             type: 'bar',
+            hoverinfo: 'text',
+            text: hoverText,
             marker: {
                 color: markerColors
             }
         }];
 
         var layout = {
-            title: `Anomalia Termica Annuale - ${city} (rispetto alla media del periodo)`,
+            title: `Anomalia Termica Annuale - ${city} (rispetto alla media del periodo; 2026 in scuro)`,
             xaxis: { title: 'Anno', dtick: 5, tickangle: -45 },
             yaxis: { title: 'Anomalia (°C)' },
             margin: { t: 50, r: 20, l: 50, b: 60 },
