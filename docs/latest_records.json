@@ -81,6 +81,24 @@
         "old_date": "2015-07-22"
     },
     {
+        "city": "Europa",
+        "region": "Europe",
+        "metric": "massima",
+        "new_record": 36.25,
+        "new_date": "2026-06-28",
+        "old_record": 35.75,
+        "old_date": "2019-07-25"
+    },
+    {
+        "city": "Europa",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 22.95,
+        "new_date": "2026-06-28",
+        "old_record": 22.7,
+        "old_date": "2018-08-01"
+    },
+    {
         "city": "Minsk",
         "region": "Europe",
         "metric": "massima",

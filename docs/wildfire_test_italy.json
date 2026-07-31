@@ -1,0 +1,1174 @@
+{
+  "country": "Italy",
+  "capital": "Roma",
+  "tmax_90th_threshold": 33.5,
+  "years": {
+    "1980": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 5,
+        "hot_days_90th": 0,
+        "avg_fire_danger": 1.01,
+        "max_fire_danger": 2.41
+      },
+      "burnt_italy": {
+        "summer_ha": 144200.0,
+        "annual_ha": 144200.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1981": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 8,
+        "hot_days_90th": 3,
+        "avg_fire_danger": 1.25,
+        "max_fire_danger": 2.97
+      },
+      "burnt_italy": {
+        "summer_ha": 265000.0,
+        "annual_ha": 265000.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1982": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 9,
+        "hot_days_90th": 2,
+        "avg_fire_danger": 1.36,
+        "max_fire_danger": 2.4
+      },
+      "burnt_italy": {
+        "summer_ha": 130000.0,
+        "annual_ha": 130000.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1983": {
+      "metrics_roma": {
+        "extreme_fire_days": 7,
+        "high_fire_days": 19,
+        "hot_days_90th": 9,
+        "avg_fire_danger": 1.44,
+        "max_fire_danger": 3.04
+      },
+      "burnt_italy": {
+        "summer_ha": 212600.0,
+        "annual_ha": 212600.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1984": {
+      "metrics_roma": {
+        "extreme_fire_days": 1,
+        "high_fire_days": 5,
+        "hot_days_90th": 0,
+        "avg_fire_danger": 1.18,
+        "max_fire_danger": 2.6
+      },
+      "burnt_italy": {
+        "summer_ha": 75000.0,
+        "annual_ha": 75000.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1985": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 11,
+        "hot_days_90th": 3,
+        "avg_fire_danger": 1.48,
+        "max_fire_danger": 2.63
+      },
+      "burnt_italy": {
+        "summer_ha": 190600.0,
+        "annual_ha": 190600.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1986": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 8,
+        "hot_days_90th": 0,
+        "avg_fire_danger": 1.23,
+        "max_fire_danger": 2.14
+      },
+      "burnt_italy": {
+        "summer_ha": 119000.0,
+        "annual_ha": 119000.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1987": {
+      "metrics_roma": {
+        "extreme_fire_days": 1,
+        "high_fire_days": 8,
+        "hot_days_90th": 1,
+        "avg_fire_danger": 1.36,
+        "max_fire_danger": 2.59
+      },
+      "burnt_italy": {
+        "summer_ha": 120600.0,
+        "annual_ha": 120600.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1988": {
+      "metrics_roma": {
+        "extreme_fire_days": 8,
+        "high_fire_days": 27,
+        "hot_days_90th": 12,
+        "avg_fire_danger": 1.48,
+        "max_fire_danger": 2.81
+      },
+      "burnt_italy": {
+        "summer_ha": 186400.0,
+        "annual_ha": 186400.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1989": {
+      "metrics_roma": {
+        "extreme_fire_days": 1,
+        "high_fire_days": 12,
+        "hot_days_90th": 2,
+        "avg_fire_danger": 1.33,
+        "max_fire_danger": 2.6
+      },
+      "burnt_italy": {
+        "summer_ha": 95000.0,
+        "annual_ha": 95000.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1990": {
+      "metrics_roma": {
+        "extreme_fire_days": 1,
+        "high_fire_days": 10,
+        "hot_days_90th": 1,
+        "avg_fire_danger": 1.39,
+        "max_fire_danger": 2.57
+      },
+      "burnt_italy": {
+        "summer_ha": 195300.0,
+        "annual_ha": 195300.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1991": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 14,
+        "hot_days_90th": 1,
+        "avg_fire_danger": 1.46,
+        "max_fire_danger": 2.29
+      },
+      "burnt_italy": {
+        "summer_ha": 99800.0,
+        "annual_ha": 99800.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1992": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 19,
+        "hot_days_90th": 6,
+        "avg_fire_danger": 1.27,
+        "max_fire_danger": 2.49
+      },
+      "burnt_italy": {
+        "summer_ha": 105400.0,
+        "annual_ha": 105400.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1993": {
+      "metrics_roma": {
+        "extreme_fire_days": 4,
+        "high_fire_days": 22,
+        "hot_days_90th": 7,
+        "avg_fire_danger": 1.56,
+        "max_fire_danger": 2.87
+      },
+      "burnt_italy": {
+        "summer_ha": 203700.0,
+        "annual_ha": 203700.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1994": {
+      "metrics_roma": {
+        "extreme_fire_days": 3,
+        "high_fire_days": 25,
+        "hot_days_90th": 8,
+        "avg_fire_danger": 1.57,
+        "max_fire_danger": 2.55
+      },
+      "burnt_italy": {
+        "summer_ha": 116400.0,
+        "annual_ha": 116400.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1995": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 11,
+        "hot_days_90th": 2,
+        "avg_fire_danger": 1.32,
+        "max_fire_danger": 2.44
+      },
+      "burnt_italy": {
+        "summer_ha": 47800.0,
+        "annual_ha": 47800.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1996": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 5,
+        "hot_days_90th": 0,
+        "avg_fire_danger": 1.31,
+        "max_fire_danger": 2.23
+      },
+      "burnt_italy": {
+        "summer_ha": 58200.0,
+        "annual_ha": 58200.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1997": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 4,
+        "hot_days_90th": 0,
+        "avg_fire_danger": 1.34,
+        "max_fire_danger": 2.25
+      },
+      "burnt_italy": {
+        "summer_ha": 111400.0,
+        "annual_ha": 111400.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1998": {
+      "metrics_roma": {
+        "extreme_fire_days": 6,
+        "high_fire_days": 29,
+        "hot_days_90th": 11,
+        "avg_fire_danger": 1.57,
+        "max_fire_danger": 3.04
+      },
+      "burnt_italy": {
+        "summer_ha": 155500.0,
+        "annual_ha": 155500.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "1999": {
+      "metrics_roma": {
+        "extreme_fire_days": 1,
+        "high_fire_days": 10,
+        "hot_days_90th": 3,
+        "avg_fire_danger": 1.41,
+        "max_fire_danger": 2.65
+      },
+      "burnt_italy": {
+        "summer_ha": 71100.0,
+        "annual_ha": 71100.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2000": {
+      "metrics_roma": {
+        "extreme_fire_days": 8,
+        "high_fire_days": 23,
+        "hot_days_90th": 9,
+        "avg_fire_danger": 1.6,
+        "max_fire_danger": 2.65
+      },
+      "burnt_italy": {
+        "summer_ha": 114600.0,
+        "annual_ha": 114600.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2001": {
+      "metrics_roma": {
+        "extreme_fire_days": 1,
+        "high_fire_days": 19,
+        "hot_days_90th": 3,
+        "avg_fire_danger": 1.6,
+        "max_fire_danger": 2.54
+      },
+      "burnt_italy": {
+        "summer_ha": 76400.0,
+        "annual_ha": 76400.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2002": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 11,
+        "hot_days_90th": 2,
+        "avg_fire_danger": 1.2,
+        "max_fire_danger": 2.55
+      },
+      "burnt_italy": {
+        "summer_ha": 75753.0,
+        "annual_ha": 75753.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2003": {
+      "metrics_roma": {
+        "extreme_fire_days": 12,
+        "high_fire_days": 43,
+        "hot_days_90th": 27,
+        "avg_fire_danger": 1.93,
+        "max_fire_danger": 2.84
+      },
+      "burnt_italy": {
+        "summer_ha": 153030.0,
+        "annual_ha": 153030.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2004": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 17,
+        "hot_days_90th": 2,
+        "avg_fire_danger": 1.47,
+        "max_fire_danger": 2.9
+      },
+      "burnt_italy": {
+        "summer_ha": 166682.0,
+        "annual_ha": 166682.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2005": {
+      "metrics_roma": {
+        "extreme_fire_days": 4,
+        "high_fire_days": 19,
+        "hot_days_90th": 4,
+        "avg_fire_danger": 1.51,
+        "max_fire_danger": 3.13
+      },
+      "burnt_italy": {
+        "summer_ha": 54931.0,
+        "annual_ha": 54931.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2006": {
+      "metrics_roma": {
+        "extreme_fire_days": 5,
+        "high_fire_days": 23,
+        "hot_days_90th": 7,
+        "avg_fire_danger": 1.55,
+        "max_fire_danger": 2.81
+      },
+      "burnt_italy": {
+        "summer_ha": 50702.0,
+        "annual_ha": 50702.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2007": {
+      "metrics_roma": {
+        "extreme_fire_days": 3,
+        "high_fire_days": 23,
+        "hot_days_90th": 7,
+        "avg_fire_danger": 1.49,
+        "max_fire_danger": 2.91
+      },
+      "burnt_italy": {
+        "summer_ha": 227302.0,
+        "annual_ha": 227302.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2008": {
+      "metrics_roma": {
+        "extreme_fire_days": 0,
+        "high_fire_days": 26,
+        "hot_days_90th": 2,
+        "avg_fire_danger": 1.53,
+        "max_fire_danger": 2.49
+      },
+      "burnt_italy": {
+        "summer_ha": 130190.0,
+        "annual_ha": 130190.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2009": {
+      "metrics_roma": {
+        "extreme_fire_days": 7,
+        "high_fire_days": 26,
+        "hot_days_90th": 11,
+        "avg_fire_danger": 1.56,
+        "max_fire_danger": 2.73
+      },
+      "burnt_italy": {
+        "summer_ha": 54287.0,
+        "annual_ha": 54287.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2010": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 14,
+        "hot_days_90th": 4,
+        "avg_fire_danger": 1.46,
+        "max_fire_danger": 2.84
+      },
+      "burnt_italy": {
+        "summer_ha": 71889.0,
+        "annual_ha": 71889.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2011": {
+      "metrics_roma": {
+        "extreme_fire_days": 9,
+        "high_fire_days": 18,
+        "hot_days_90th": 9,
+        "avg_fire_danger": 1.41,
+        "max_fire_danger": 2.75
+      },
+      "burnt_italy": {
+        "summer_ha": 86701.0,
+        "annual_ha": 86701.0,
+        "source": "EFFIS Ground Statistics (1980-2011)"
+      }
+    },
+    "2012": {
+      "metrics_roma": {
+        "extreme_fire_days": 9,
+        "high_fire_days": 40,
+        "hot_days_90th": 18,
+        "avg_fire_danger": 1.78,
+        "max_fire_danger": 2.76
+      },
+      "burnt_italy": {
+        "summer_ha": 199209.0,
+        "annual_ha": 283320.0
+      }
+    },
+    "2013": {
+      "metrics_roma": {
+        "extreme_fire_days": 5,
+        "high_fire_days": 19,
+        "hot_days_90th": 10,
+        "avg_fire_danger": 1.58,
+        "max_fire_danger": 3.06
+      },
+      "burnt_italy": {
+        "summer_ha": 68409.0,
+        "annual_ha": 92330.0
+      }
+    },
+    "2014": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 11,
+        "hot_days_90th": 0,
+        "avg_fire_danger": 1.19,
+        "max_fire_danger": 2.58
+      },
+      "burnt_italy": {
+        "summer_ha": 58907.0,
+        "annual_ha": 106717.0
+      }
+    },
+    "2015": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 23,
+        "hot_days_90th": 18,
+        "avg_fire_danger": 1.59,
+        "max_fire_danger": 2.59
+      },
+      "burnt_italy": {
+        "summer_ha": 68371.0,
+        "annual_ha": 107517.0
+      }
+    },
+    "2016": {
+      "metrics_roma": {
+        "extreme_fire_days": 2,
+        "high_fire_days": 20,
+        "hot_days_90th": 4,
+        "avg_fire_danger": 1.51,
+        "max_fire_danger": 2.63
+      },
+      "burnt_italy": {
+        "summer_ha": 89692.0,
+        "annual_ha": 116890.0
+      }
+    },
+    "2017": {
+      "metrics_roma": {
+        "extreme_fire_days": 23,
+        "high_fire_days": 56,
+        "hot_days_90th": 29,
+        "avg_fire_danger": 2.12,
+        "max_fire_danger": 3.22
+      },
+      "burnt_italy": {
+        "summer_ha": 257577.0,
+        "annual_ha": 342084.0
+      }
+    },
+    "2018": {
+      "metrics_roma": {
+        "extreme_fire_days": 4,
+        "high_fire_days": 34,
+        "hot_days_90th": 12,
+        "avg_fire_danger": 1.76,
+        "max_fire_danger": 2.64
+      },
+      "burnt_italy": {
+        "summer_ha": 37097.0,
+        "annual_ha": 61279.0
+      }
+    },
+    "2019": {
+      "metrics_roma": {
+        "extreme_fire_days": 17,
+        "high_fire_days": 50,
+        "hot_days_90th": 30,
+        "avg_fire_danger": 2.04,
+        "max_fire_danger": 3.03
+      },
+      "burnt_italy": {
+        "summer_ha": 76482.0,
+        "annual_ha": 115769.0
+      }
+    },
+    "2020": {
+      "metrics_roma": {
+        "extreme_fire_days": 16,
+        "high_fire_days": 47,
+        "hot_days_90th": 27,
+        "avg_fire_danger": 1.87,
+        "max_fire_danger": 3.27
+      },
+      "burnt_italy": {
+        "summer_ha": 54143.0,
+        "annual_ha": 108044.0
+      }
+    },
+    "2021": {
+      "metrics_roma": {
+        "extreme_fire_days": 17,
+        "high_fire_days": 47,
+        "hot_days_90th": 28,
+        "avg_fire_danger": 1.92,
+        "max_fire_danger": 3.48
+      },
+      "burnt_italy": {
+        "summer_ha": 193268.0,
+        "annual_ha": 247622.0
+      }
+    },
+    "2022": {
+      "metrics_roma": {
+        "extreme_fire_days": 28,
+        "high_fire_days": 69,
+        "hot_days_90th": 44,
+        "avg_fire_danger": 2.26,
+        "max_fire_danger": 3.4
+      },
+      "burnt_italy": {
+        "summer_ha": 90314.0,
+        "annual_ha": 136724.0
+      }
+    },
+    "2023": {
+      "metrics_roma": {
+        "extreme_fire_days": 22,
+        "high_fire_days": 45,
+        "hot_days_90th": 32,
+        "avg_fire_danger": 1.91,
+        "max_fire_danger": 3.46
+      },
+      "burnt_italy": {
+        "summer_ha": 96970.0,
+        "annual_ha": 172082.0
+      }
+    },
+    "2024": {
+      "metrics_roma": {
+        "extreme_fire_days": 34,
+        "high_fire_days": 63,
+        "hot_days_90th": 53,
+        "avg_fire_danger": 2.13,
+        "max_fire_danger": 3.33
+      },
+      "burnt_italy": {
+        "summer_ha": 64407.0,
+        "annual_ha": 74602.0
+      }
+    },
+    "2025": {
+      "metrics_roma": {
+        "extreme_fire_days": 25,
+        "high_fire_days": 55,
+        "hot_days_90th": 41,
+        "avg_fire_danger": 2.09,
+        "max_fire_danger": 3.17
+      },
+      "burnt_italy": {
+        "summer_ha": 100340.0,
+        "annual_ha": 128023.0
+      }
+    },
+    "2026": {
+      "metrics_roma": {
+        "extreme_fire_days": 13,
+        "high_fire_days": 42,
+        "hot_days_90th": 35,
+        "avg_fire_danger": 2.14,
+        "max_fire_danger": 2.85
+      },
+      "burnt_italy": {
+        "summer_ha": 54429.0,
+        "annual_ha": 61993.0
+      }
+    }
+  },
+  "daily_2026_roma": [
+    {
+      "date": "2026-05-01",
+      "tmax": 23.4,
+      "rh_min": 35.9,
+      "fire_danger": 1.85
+    },
+    {
+      "date": "2026-05-02",
+      "tmax": 22.8,
+      "rh_min": 42.6,
+      "fire_danger": 1.44
+    },
+    {
+      "date": "2026-05-03",
+      "tmax": 23.0,
+      "rh_min": 48.3,
+      "fire_danger": 1.18
+    },
+    {
+      "date": "2026-05-04",
+      "tmax": 20.1,
+      "rh_min": 66.9,
+      "fire_danger": -0.03
+    },
+    {
+      "date": "2026-05-05",
+      "tmax": 21.8,
+      "rh_min": 65.3,
+      "fire_danger": 0.22
+    },
+    {
+      "date": "2026-05-06",
+      "tmax": 23.9,
+      "rh_min": 56.7,
+      "fire_danger": 0.85
+    },
+    {
+      "date": "2026-05-07",
+      "tmax": 21.4,
+      "rh_min": 66.7,
+      "fire_danger": 0.1
+    },
+    {
+      "date": "2026-05-08",
+      "tmax": 24.6,
+      "rh_min": 49.7,
+      "fire_danger": 1.28
+    },
+    {
+      "date": "2026-05-09",
+      "tmax": 22.6,
+      "rh_min": 66.3,
+      "fire_danger": 0.24
+    },
+    {
+      "date": "2026-05-10",
+      "tmax": 22.4,
+      "rh_min": 68.6,
+      "fire_danger": 0.1
+    },
+    {
+      "date": "2026-05-11",
+      "tmax": 23.4,
+      "rh_min": 62.6,
+      "fire_danger": 0.51
+    },
+    {
+      "date": "2026-05-12",
+      "tmax": 19.1,
+      "rh_min": 72.1,
+      "fire_danger": -0.39
+    },
+    {
+      "date": "2026-05-13",
+      "tmax": 21.3,
+      "rh_min": 53.9,
+      "fire_danger": 0.73
+    },
+    {
+      "date": "2026-05-14",
+      "tmax": 20.8,
+      "rh_min": 62.2,
+      "fire_danger": 0.27
+    },
+    {
+      "date": "2026-05-15",
+      "tmax": 18.1,
+      "rh_min": 69.3,
+      "fire_danger": -0.35
+    },
+    {
+      "date": "2026-05-16",
+      "tmax": 20.7,
+      "rh_min": 48.1,
+      "fire_danger": 0.96
+    },
+    {
+      "date": "2026-05-17",
+      "tmax": 21.1,
+      "rh_min": 53.0,
+      "fire_danger": 0.77
+    },
+    {
+      "date": "2026-05-18",
+      "tmax": 23.1,
+      "rh_min": 50.0,
+      "fire_danger": 1.12
+    },
+    {
+      "date": "2026-05-19",
+      "tmax": 25.4,
+      "rh_min": 46.6,
+      "fire_danger": 1.51
+    },
+    {
+      "date": "2026-05-20",
+      "tmax": 28.2,
+      "rh_min": 39.3,
+      "fire_danger": 2.16
+    },
+    {
+      "date": "2026-05-21",
+      "tmax": 29.0,
+      "rh_min": 41.8,
+      "fire_danger": 2.11
+    },
+    {
+      "date": "2026-05-22",
+      "tmax": 30.4,
+      "rh_min": 38.9,
+      "fire_danger": 2.4
+    },
+    {
+      "date": "2026-05-23",
+      "tmax": 30.9,
+      "rh_min": 41.4,
+      "fire_danger": 2.32
+    },
+    {
+      "date": "2026-05-24",
+      "tmax": 32.3,
+      "rh_min": 39.1,
+      "fire_danger": 2.58
+    },
+    {
+      "date": "2026-05-25",
+      "tmax": 32.9,
+      "rh_min": 39.1,
+      "fire_danger": 2.63
+    },
+    {
+      "date": "2026-05-26",
+      "tmax": 33.3,
+      "rh_min": 43.6,
+      "fire_danger": 2.45
+    },
+    {
+      "date": "2026-05-27",
+      "tmax": 33.5,
+      "rh_min": 47.6,
+      "fire_danger": 2.27
+    },
+    {
+      "date": "2026-05-28",
+      "tmax": 29.2,
+      "rh_min": 56.1,
+      "fire_danger": 1.41
+    },
+    {
+      "date": "2026-05-29",
+      "tmax": 30.4,
+      "rh_min": 47.1,
+      "fire_danger": 1.98
+    },
+    {
+      "date": "2026-05-30",
+      "tmax": 30.9,
+      "rh_min": 46.5,
+      "fire_danger": 2.07
+    },
+    {
+      "date": "2026-05-31",
+      "tmax": 28.6,
+      "rh_min": 52.6,
+      "fire_danger": 1.53
+    },
+    {
+      "date": "2026-06-01",
+      "tmax": 27.5,
+      "rh_min": 63.9,
+      "fire_danger": 0.86
+    },
+    {
+      "date": "2026-06-02",
+      "tmax": 26.2,
+      "rh_min": 64.2,
+      "fire_danger": 0.71
+    },
+    {
+      "date": "2026-06-03",
+      "tmax": 27.8,
+      "rh_min": 52.2,
+      "fire_danger": 1.47
+    },
+    {
+      "date": "2026-06-04",
+      "tmax": 25.9,
+      "rh_min": 58.2,
+      "fire_danger": 0.98
+    },
+    {
+      "date": "2026-06-05",
+      "tmax": 27.9,
+      "rh_min": 58.5,
+      "fire_danger": 1.17
+    },
+    {
+      "date": "2026-06-06",
+      "tmax": 30.9,
+      "rh_min": 43.7,
+      "fire_danger": 2.21
+    },
+    {
+      "date": "2026-06-07",
+      "tmax": 31.9,
+      "rh_min": 45.9,
+      "fire_danger": 2.2
+    },
+    {
+      "date": "2026-06-08",
+      "tmax": 31.3,
+      "rh_min": 47.2,
+      "fire_danger": 2.07
+    },
+    {
+      "date": "2026-06-09",
+      "tmax": 29.8,
+      "rh_min": 51.7,
+      "fire_danger": 1.69
+    },
+    {
+      "date": "2026-06-10",
+      "tmax": 26.0,
+      "rh_min": 74.2,
+      "fire_danger": 0.19
+    },
+    {
+      "date": "2026-06-11",
+      "tmax": 31.1,
+      "rh_min": 44.5,
+      "fire_danger": 2.18
+    },
+    {
+      "date": "2026-06-12",
+      "tmax": 32.4,
+      "rh_min": 44.6,
+      "fire_danger": 2.3
+    },
+    {
+      "date": "2026-06-13",
+      "tmax": 31.2,
+      "rh_min": 50.4,
+      "fire_danger": 1.91
+    },
+    {
+      "date": "2026-06-14",
+      "tmax": 30.2,
+      "rh_min": 50.2,
+      "fire_danger": 1.81
+    },
+    {
+      "date": "2026-06-15",
+      "tmax": 31.2,
+      "rh_min": 51.3,
+      "fire_danger": 1.86
+    },
+    {
+      "date": "2026-06-16",
+      "tmax": 34.7,
+      "rh_min": 44.3,
+      "fire_danger": 2.56
+    },
+    {
+      "date": "2026-06-17",
+      "tmax": 34.9,
+      "rh_min": 44.3,
+      "fire_danger": 2.57
+    },
+    {
+      "date": "2026-06-18",
+      "tmax": 36.5,
+      "rh_min": 46.2,
+      "fire_danger": 2.64
+    },
+    {
+      "date": "2026-06-19",
+      "tmax": 36.0,
+      "rh_min": 47.7,
+      "fire_danger": 2.51
+    },
+    {
+      "date": "2026-06-20",
+      "tmax": 37.6,
+      "rh_min": 44.3,
+      "fire_danger": 2.85
+    },
+    {
+      "date": "2026-06-21",
+      "tmax": 35.5,
+      "rh_min": 52.1,
+      "fire_danger": 2.25
+    },
+    {
+      "date": "2026-06-22",
+      "tmax": 35.5,
+      "rh_min": 48.3,
+      "fire_danger": 2.43
+    },
+    {
+      "date": "2026-06-23",
+      "tmax": 34.8,
+      "rh_min": 49.1,
+      "fire_danger": 2.32
+    },
+    {
+      "date": "2026-06-24",
+      "tmax": 35.4,
+      "rh_min": 47.3,
+      "fire_danger": 2.47
+    },
+    {
+      "date": "2026-06-25",
+      "tmax": 35.7,
+      "rh_min": 48.9,
+      "fire_danger": 2.42
+    },
+    {
+      "date": "2026-06-26",
+      "tmax": 36.0,
+      "rh_min": 52.7,
+      "fire_danger": 2.27
+    },
+    {
+      "date": "2026-06-27",
+      "tmax": 37.8,
+      "rh_min": 46.1,
+      "fire_danger": 2.78
+    },
+    {
+      "date": "2026-06-28",
+      "tmax": 37.5,
+      "rh_min": 51.4,
+      "fire_danger": 2.48
+    },
+    {
+      "date": "2026-06-29",
+      "tmax": 36.5,
+      "rh_min": 47.7,
+      "fire_danger": 2.57
+    },
+    {
+      "date": "2026-06-30",
+      "tmax": 36.7,
+      "rh_min": 47.7,
+      "fire_danger": 2.58
+    },
+    {
+      "date": "2026-07-01",
+      "tmax": 31.9,
+      "rh_min": 50.8,
+      "fire_danger": 1.94
+    },
+    {
+      "date": "2026-07-02",
+      "tmax": 33.2,
+      "rh_min": 47.7,
+      "fire_danger": 2.23
+    },
+    {
+      "date": "2026-07-03",
+      "tmax": 33.8,
+      "rh_min": 45.8,
+      "fire_danger": 2.39
+    },
+    {
+      "date": "2026-07-04",
+      "tmax": 33.8,
+      "rh_min": 45.8,
+      "fire_danger": 2.39
+    },
+    {
+      "date": "2026-07-05",
+      "tmax": 33.7,
+      "rh_min": 42.9,
+      "fire_danger": 2.52
+    },
+    {
+      "date": "2026-07-06",
+      "tmax": 34.9,
+      "rh_min": 47.9,
+      "fire_danger": 2.4
+    },
+    {
+      "date": "2026-07-07",
+      "tmax": 34.8,
+      "rh_min": 47.8,
+      "fire_danger": 2.38
+    },
+    {
+      "date": "2026-07-08",
+      "tmax": 33.5,
+      "rh_min": 52.0,
+      "fire_danger": 2.04
+    },
+    {
+      "date": "2026-07-09",
+      "tmax": 34.0,
+      "rh_min": 49.7,
+      "fire_danger": 2.21
+    },
+    {
+      "date": "2026-07-10",
+      "tmax": 35.2,
+      "rh_min": 50.8,
+      "fire_danger": 2.28
+    },
+    {
+      "date": "2026-07-11",
+      "tmax": 35.5,
+      "rh_min": 51.6,
+      "fire_danger": 2.26
+    },
+    {
+      "date": "2026-07-12",
+      "tmax": 35.1,
+      "rh_min": 50.1,
+      "fire_danger": 2.3
+    },
+    {
+      "date": "2026-07-13",
+      "tmax": 34.2,
+      "rh_min": 54.0,
+      "fire_danger": 2.02
+    },
+    {
+      "date": "2026-07-14",
+      "tmax": 36.8,
+      "rh_min": 49.1,
+      "fire_danger": 2.53
+    },
+    {
+      "date": "2026-07-15",
+      "tmax": 36.0,
+      "rh_min": 48.3,
+      "fire_danger": 2.49
+    },
+    {
+      "date": "2026-07-16",
+      "tmax": 38.0,
+      "rh_min": 47.8,
+      "fire_danger": 2.7
+    },
+    {
+      "date": "2026-07-17",
+      "tmax": 38.0,
+      "rh_min": 52.1,
+      "fire_danger": 2.5
+    },
+    {
+      "date": "2026-07-18",
+      "tmax": 38.5,
+      "rh_min": 47.0,
+      "fire_danger": 2.81
+    },
+    {
+      "date": "2026-07-19",
+      "tmax": 36.1,
+      "rh_min": 56.9,
+      "fire_danger": 2.06
+    },
+    {
+      "date": "2026-07-20",
+      "tmax": 37.7,
+      "rh_min": 50.7,
+      "fire_danger": 2.54
+    },
+    {
+      "date": "2026-07-21",
+      "tmax": 37.3,
+      "rh_min": 53.2,
+      "fire_danger": 2.38
+    },
+    {
+      "date": "2026-07-22",
+      "tmax": 35.8,
+      "rh_min": 51.7,
+      "fire_danger": 2.29
+    },
+    {
+      "date": "2026-07-23",
+      "tmax": 32.8,
+      "rh_min": 55.3,
+      "fire_danger": 1.82
+    },
+    {
+      "date": "2026-07-24",
+      "tmax": 34.2,
+      "rh_min": 52.2,
+      "fire_danger": 2.11
+    },
+    {
+      "date": "2026-07-25",
+      "tmax": 31.5,
+      "rh_min": 52.8,
+      "fire_danger": 1.81
+    },
+    {
+      "date": "2026-07-26",
+      "tmax": 31.5,
+      "rh_min": 62.3,
+      "fire_danger": 1.34
+    }
+  ]
+}
