@@ -1,5 +1,41 @@
 [
     {
+        "city": "Bratislava",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 25.24399948120117,
+        "new_date": "2026-08-01",
+        "old_record": 25.030499,
+        "old_date": "2012-06-30"
+    },
+    {
+        "city": "Budapest",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 27.295499801635746,
+        "new_date": "2026-08-01",
+        "old_record": 26.7615,
+        "old_date": "2007-07-19"
+    },
+    {
+        "city": "LAquila",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 37.79850006103516,
+        "new_date": "2026-08-01",
+        "old_record": 36.413002,
+        "old_date": "2023-07-17"
+    },
+    {
+        "city": "Italia",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 40.60850143432617,
+        "new_date": "2026-08-01",
+        "old_record": 40.1,
+        "old_date": "2017-08-03"
+    },
+    {
         "city": "Europa",
         "region": "Europe",
         "metric": "massima",
@@ -7,15 +43,6 @@
         "new_date": "2026-07-30",
         "old_record": 35.75,
         "old_date": "2019-07-25"
-    },
-    {
-        "city": "Dublin",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 20.208499908447266,
-        "new_date": "2026-07-28",
-        "old_record": 20.0145,
-        "old_date": "1983-07-12"
     },
     {
         "city": "Cagliari",
@@ -34,15 +61,6 @@
         "new_date": "2026-07-20",
         "old_record": 26.65,
         "old_date": "2023-07-21"
-    },
-    {
-        "city": "LAquila",
-        "region": "Italy",
-        "metric": "massima",
-        "new_record": 37.11300277709961,
-        "new_date": "2026-07-17",
-        "old_record": 36.413002,
-        "old_date": "2023-07-17"
     },
     {
         "city": "Campobasso",
