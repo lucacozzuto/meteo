@@ -1,5 +1,32 @@
 [
     {
+        "city": "Budapest",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 28.89550018310547,
+        "new_date": "2026-08-02",
+        "old_record": 26.7615,
+        "old_date": "2007-07-19"
+    },
+    {
+        "city": "Trieste",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 39.121002197265625,
+        "new_date": "2026-08-02",
+        "old_record": 38.154003,
+        "old_date": "2025-08-09"
+    },
+    {
+        "city": "Trieste",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 26.371000289916992,
+        "new_date": "2026-08-02",
+        "old_record": 26.204,
+        "old_date": "2025-08-10"
+    },
+    {
         "city": "Bratislava",
         "region": "Europe",
         "metric": "minima",
@@ -7,15 +34,6 @@
         "new_date": "2026-08-01",
         "old_record": 25.030499,
         "old_date": "2012-06-30"
-    },
-    {
-        "city": "Budapest",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 27.295499801635746,
-        "new_date": "2026-08-01",
-        "old_record": 26.7615,
-        "old_date": "2007-07-19"
     },
     {
         "city": "LAquila",
