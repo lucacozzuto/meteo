@@ -1,5 +1,32 @@
 [
     {
+        "city": "Ljubljana",
+        "region": "Europe",
+        "metric": "massima",
+        "new_record": 37.9109992980957,
+        "new_date": "2026-08-03",
+        "old_record": 37.2,
+        "old_date": "2017-08-03"
+    },
+    {
+        "city": "Firenze",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 39.46200180053711,
+        "new_date": "2026-08-03",
+        "old_record": 39.408,
+        "old_date": "1983-07-26"
+    },
+    {
+        "city": "Trieste",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 27.42100143432617,
+        "new_date": "2026-08-03",
+        "old_record": 26.204,
+        "old_date": "2025-08-10"
+    },
+    {
         "city": "Budapest",
         "region": "Europe",
         "metric": "minima",
@@ -16,15 +43,6 @@
         "new_date": "2026-08-02",
         "old_record": 38.154003,
         "old_date": "2025-08-09"
-    },
-    {
-        "city": "Trieste",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 26.371000289916992,
-        "new_date": "2026-08-02",
-        "old_record": 26.204,
-        "old_date": "2025-08-10"
     },
     {
         "city": "Bratislava",
@@ -57,10 +75,19 @@
         "city": "Europa",
         "region": "Europe",
         "metric": "massima",
-        "new_record": 37.7504997253418,
+        "new_record": 36.70000076293945,
         "new_date": "2026-07-30",
         "old_record": 35.75,
         "old_date": "2019-07-25"
+    },
+    {
+        "city": "Aosta",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 39.18600082397461,
+        "new_date": "2026-07-30",
+        "old_record": 37.786,
+        "old_date": "2025-08-10"
     },
     {
         "city": "Cagliari",
@@ -223,15 +250,6 @@
         "new_date": "2026-06-27",
         "old_record": 25.15,
         "old_date": "2019-06-28"
-    },
-    {
-        "city": "Aosta",
-        "region": "Italy",
-        "metric": "massima",
-        "new_record": 38.18600082397461,
-        "new_date": "2026-06-26",
-        "old_record": 37.786,
-        "old_date": "2025-08-10"
     },
     {
         "city": "Brussels",
