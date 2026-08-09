@@ -496,17 +496,6 @@
             }
         }];
 
-        const hwTickVals = [];
-        const hwTickText = [];
-        for (let y = 1980; y <= 2026; y++) {
-            hwTickVals.push(`${y}-06-15`);
-            hwTickText.push(`Giu ${y}`);
-            hwTickVals.push(`${y}-07-15`);
-            hwTickText.push(`Lug ${y}`);
-            hwTickVals.push(`${y}-08-15`);
-            hwTickText.push(`Ago ${y}`);
-        }
-
         var layout = {
             title: `Ondate di Calore Estreme (90° Perc. JJA) - ${city}`,
             xaxis: { 
@@ -514,10 +503,18 @@
                 type: 'date', 
                 range: ['1980-05-31', '2026-09-01'], 
                 autorange: false,
-                tickmode: 'array',
-                tickvals: hwTickVals,
-                ticktext: hwTickText,
-                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ]
+                tick0: '1980-07-15',
+                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ],
+                tickformatstops: [
+                    {
+                        dtickrange: [null, 63072000000],
+                        value: "%b"
+                    },
+                    {
+                        dtickrange: [63072000000, null],
+                        value: "%Y"
+                    }
+                ]
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
             margin: { t: 50, r: 20, l: 50, b: 60 },
@@ -564,17 +561,6 @@
             }
         }];
 
-        const nightTickVals = [];
-        const nightTickText = [];
-        for (let y = 1980; y <= 2026; y++) {
-            nightTickVals.push(`${y}-06-15`);
-            nightTickText.push(`Giu ${y}`);
-            nightTickVals.push(`${y}-07-15`);
-            nightTickText.push(`Lug ${y}`);
-            nightTickVals.push(`${y}-08-15`);
-            nightTickText.push(`Ago ${y}`);
-        }
-
         var layout = {
             title: `Ondate di Calore NOTTURNE Estreme (Min > 90° Perc. JJA) - ${city}`,
             xaxis: { 
@@ -582,10 +568,18 @@
                 type: 'date', 
                 range: ['1980-05-31', '2026-09-01'], 
                 autorange: false,
-                tickmode: 'array',
-                tickvals: nightTickVals,
-                ticktext: nightTickText,
-                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ]
+                tick0: '1980-07-15',
+                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ],
+                tickformatstops: [
+                    {
+                        dtickrange: [null, 63072000000],
+                        value: "%b"
+                    },
+                    {
+                        dtickrange: [63072000000, null],
+                        value: "%Y"
+                    }
+                ]
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
             margin: { t: 50, r: 20, l: 50, b: 60 },

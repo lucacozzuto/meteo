@@ -230,17 +230,6 @@
                 });
             }
 
-            const hwTickVals = [];
-            const hwTickText = [];
-            for (let y = 1980; y <= 2026; y++) {
-                hwTickVals.push(`${y}-06-15`);
-                hwTickText.push(`Giu ${y}`);
-                hwTickVals.push(`${y}-07-15`);
-                hwTickText.push(`Lug ${y}`);
-                hwTickVals.push(`${y}-08-15`);
-                hwTickText.push(`Ago ${y}`);
-            }
-
             const layout = {
                 title: `Ondate di Calore (${dataset === 'Italy' ? 'Italia' : 'Europa'} - ${type === 'day' ? 'Diurne' : 'Notturne'})`,
                 xaxis: {
@@ -253,12 +242,20 @@
                         visible: true,
                         thickness: 0.1
                     },
+                    tick0: '1980-07-15',
                     rangebreaks: [
                         { bounds: [9, 6], pattern: 'month' } // Hide September (9) to May (6). Shows 6, 7, 8 (June, July, August)
                     ],
-                    tickmode: 'array',
-                    tickvals: hwTickVals,
-                    ticktext: hwTickText
+                    tickformatstops: [
+                        {
+                            dtickrange: [null, 63072000000],
+                            value: "%b"
+                        },
+                        {
+                            dtickrange: [63072000000, null],
+                            value: "%Y"
+                        }
+                    ]
                 },
                 yaxis: {
                     tickvals: yTickVals,
