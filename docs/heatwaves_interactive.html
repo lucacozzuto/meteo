@@ -233,10 +233,12 @@
             const hwTickVals = [];
             const hwTickText = [];
             for (let y = 1980; y <= 2026; y++) {
-                if (y % 5 === 0 || y === 2026) {
-                    hwTickVals.push(`${y}-07-15`);
-                    hwTickText.push(`${y}`);
-                }
+                hwTickVals.push(`${y}-06-15`);
+                hwTickText.push(`Giu ${y}`);
+                hwTickVals.push(`${y}-07-15`);
+                hwTickText.push(`Lug ${y}`);
+                hwTickVals.push(`${y}-08-15`);
+                hwTickText.push(`Ago ${y}`);
             }
 
             const layout = {
