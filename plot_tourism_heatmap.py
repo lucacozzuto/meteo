@@ -3,7 +3,8 @@
 Fetch monthly tourism arrivals data from Eurostat (dataset tour_occ_arm) for Mediterranean countries
 and generate:
 1. Total Tourists Heatmap (months x years + yearly total)
-2. Line Chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line) over time (1990-2026).
+2. Line Chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line) over time (1990-2026),
+   computing DOM = TOTAL - FOR when DOM is not directly published by Eurostat.
 """
 
 import pandas as pd
@@ -175,16 +176,24 @@ def generate_total_heatmap(df_total, country_code, country_name):
     print(f"Saved: {output_path}")
 
 
-def generate_line_chart(df_foreign, df_domestic, country_code, country_name):
-    """Generate a single line chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line)."""
+def generate_line_chart(df_total, df_foreign, df_domestic, country_code, country_name):
+    """Generate a single line chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line).
+       Computes DOM = TOTAL - FOR when Eurostat DOM is unpopulated.
+    """
+    cdf_tot = df_total[df_total['geo'] == country_code].copy()
     cdf_for = df_foreign[df_foreign['geo'] == country_code].copy()
     cdf_dom = df_domestic[df_domestic['geo'] == country_code].copy()
     
-    if cdf_for.empty or cdf_dom.empty:
+    if cdf_tot.empty or cdf_for.empty:
         print(f"Missing line chart data for {country_name}")
         return
 
     # Pivot annual totals
+    piv_tot = cdf_tot.pivot_table(index='month', columns='year', values='value_millions', aggfunc='first')
+    tot_tot = piv_tot.sum(axis=0, skipna=True)
+    cnt_tot = piv_tot.notna().sum(axis=0)
+    tot_tot[cnt_tot < 10] = np.nan
+
     piv_for = cdf_for.pivot_table(index='month', columns='year', values='value_millions', aggfunc='first')
     tot_for = piv_for.sum(axis=0, skipna=True)
     cnt_for = piv_for.notna().sum(axis=0)
@@ -195,11 +204,21 @@ def generate_line_chart(df_foreign, df_domestic, country_code, country_name):
     cnt_dom = piv_dom.notna().sum(axis=0)
     tot_dom[cnt_dom < 10] = np.nan
 
-    # Combine into a single DataFrame
-    years = sorted(list(set(tot_for.index).union(set(tot_dom.index))))
+    # Fill DOM = TOTAL - FOR whenever DOM is missing
+    years = sorted(list(set(tot_tot.dropna().index).union(set(tot_for.dropna().index))))
+    dom_filled = []
+    for y in years:
+        d_val = tot_dom.get(y, np.nan)
+        if pd.isna(d_val):
+            t_val = tot_tot.get(y, np.nan)
+            f_val = tot_for.get(y, np.nan)
+            if pd.notna(t_val) and pd.notna(f_val):
+                d_val = t_val - f_val
+        dom_filled.append(d_val)
+
     df_line = pd.DataFrame({
         'Stranieri': [tot_for.get(y, np.nan) for y in years],
-        'Locali': [tot_dom.get(y, np.nan) for y in years]
+        'Locali': dom_filled
     }, index=years)
 
     fig, ax = plt.subplots(figsize=(max(16, len(years) * 0.45), 6.5))
@@ -301,9 +320,9 @@ def main():
     # 4. Generate Total Heatmap + Line Chart per country
     for country_code, country_name in COUNTRIES.items():
         generate_total_heatmap(df_total, country_code, country_name)
-        generate_line_chart(df_foreign, df_domestic, country_code, country_name)
+        generate_line_chart(df_total, df_foreign, df_domestic, country_code, country_name)
     
-    print("\n✅ Total Heatmaps & Foreign vs Domestic Line Charts generated successfully!")
+    print("\n✅ Total Heatmaps & Foreign vs Domestic Line Charts generated successfully with complete series!")
 
 
 if __name__ == '__main__':
