@@ -503,9 +503,17 @@
                 type: 'date', 
                 range: ['1980-05-31', '2026-09-01'], 
                 autorange: false,
-                dtick: 'M1',
-                tickformat: '%b %Y',
-                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ]
+                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ],
+                tickformatstops: [
+                    {
+                        dtickrange: [null, 63072000000],
+                        value: "%b %Y"
+                    },
+                    {
+                        dtickrange: [63072000000, null],
+                        value: "%Y"
+                    }
+                ]
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
             margin: { t: 50, r: 20, l: 50, b: 60 },
@@ -559,9 +567,17 @@
                 type: 'date', 
                 range: ['1980-05-31', '2026-09-01'], 
                 autorange: false,
-                dtick: 'M1',
-                tickformat: '%b %Y',
-                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ]
+                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ],
+                tickformatstops: [
+                    {
+                        dtickrange: [null, 63072000000],
+                        value: "%b %Y"
+                    },
+                    {
+                        dtickrange: [63072000000, null],
+                        value: "%Y"
+                    }
+                ]
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
             margin: { t: 50, r: 20, l: 50, b: 60 },

@@ -245,8 +245,16 @@
                     rangebreaks: [
                         { bounds: [9, 6], pattern: 'month' } // Hide September (9) to May (6). Shows 6, 7, 8 (June, July, August)
                     ],
-                    tickformat: '%b %Y',
-                    dtick: 'M1'
+                    tickformatstops: [
+                        {
+                            dtickrange: [null, 63072000000],
+                            value: "%b %Y"
+                        },
+                        {
+                            dtickrange: [63072000000, null],
+                            value: "%Y"
+                        }
+                    ]
                 },
                 yaxis: {
                     tickvals: yTickVals,
