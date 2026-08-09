@@ -496,27 +496,26 @@
             }
         }];
 
+        // Gray shapes for non-summer months
+        const hwShapes = [];
+        for (let y = 1979; y <= 2026; y++) {
+            hwShapes.push({
+                type: 'rect', xref: 'x', yref: 'paper',
+                x0: `${y}-09-01`, x1: `${y+1}-06-01`,
+                y0: 0, y1: 1,
+                fillcolor: 'rgba(200,200,200,0.25)', line: { width: 0 }
+            });
+        }
+
         var layout = {
             title: `Ondate di Calore Estreme (90° Perc. JJA) - ${city}`,
             xaxis: { 
-                title: 'Stagione Estiva (Giugno–Agosto)', 
+                title: 'Anno', 
                 type: 'date', 
-                range: ['1980-05-31', '2026-09-01'], 
-                autorange: false,
-                tick0: '1980-07-15',
-                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ],
-                tickformatstops: [
-                    {
-                        dtickrange: [null, 63072000000],
-                        value: "%b"
-                    },
-                    {
-                        dtickrange: [63072000000, null],
-                        value: "%Y"
-                    }
-                ]
+                range: ['1980-01-01', '2026-12-31']
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
+            shapes: hwShapes,
             margin: { t: 50, r: 20, l: 50, b: 60 },
             plot_bgcolor: "white",
             paper_bgcolor: "white"
@@ -561,27 +560,26 @@
             }
         }];
 
+        // Gray shapes for non-summer months
+        const nightShapes = [];
+        for (let y = 1979; y <= 2026; y++) {
+            nightShapes.push({
+                type: 'rect', xref: 'x', yref: 'paper',
+                x0: `${y}-09-01`, x1: `${y+1}-06-01`,
+                y0: 0, y1: 1,
+                fillcolor: 'rgba(200,200,200,0.25)', line: { width: 0 }
+            });
+        }
+
         var layout = {
             title: `Ondate di Calore NOTTURNE Estreme (Min > 90° Perc. JJA) - ${city}`,
             xaxis: { 
-                title: 'Stagione Estiva (Giugno–Agosto)', 
+                title: 'Anno', 
                 type: 'date', 
-                range: ['1980-05-31', '2026-09-01'], 
-                autorange: false,
-                tick0: '1980-07-15',
-                rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ],
-                tickformatstops: [
-                    {
-                        dtickrange: [null, 63072000000],
-                        value: "%b"
-                    },
-                    {
-                        dtickrange: [63072000000, null],
-                        value: "%Y"
-                    }
-                ]
+                range: ['1980-01-01', '2026-12-31']
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
+            shapes: nightShapes,
             margin: { t: 50, r: 20, l: 50, b: 60 },
             plot_bgcolor: "white",
             paper_bgcolor: "white"

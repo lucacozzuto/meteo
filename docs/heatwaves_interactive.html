@@ -230,32 +230,29 @@
                 });
             }
 
+            // Gray shapes for non-summer months
+            for (let y = 1949; y <= 2026; y++) {
+                shapes.push({
+                    type: 'rect', xref: 'x', yref: 'paper',
+                    x0: `${y}-09-01`, x1: `${y+1}-06-01`,
+                    y0: 0, y1: 1,
+                    fillcolor: 'rgba(200,200,200,0.15)', line: { width: 0 },
+                    layer: 'below'
+                });
+            }
+
             const layout = {
                 title: `Ondate di Calore (${dataset === 'Italy' ? 'Italia' : 'Europa'} - ${type === 'day' ? 'Diurne' : 'Notturne'})`,
                 xaxis: {
                     title: 'Anno',
                     type: 'date',
                     autorange: false,
-                    range: ['1980-06-01', '2026-08-31'],
+                    range: ['1980-01-01', '2026-12-31'],
                     rangeslider: {
-                        range: ['1950-06-01', '2026-08-31'],
+                        range: ['1950-01-01', '2026-12-31'],
                         visible: true,
                         thickness: 0.1
-                    },
-                    tick0: '1980-07-15',
-                    rangebreaks: [
-                        { bounds: [9, 6], pattern: 'month' } // Hide September (9) to May (6). Shows 6, 7, 8 (June, July, August)
-                    ],
-                    tickformatstops: [
-                        {
-                            dtickrange: [null, 63072000000],
-                            value: "%b"
-                        },
-                        {
-                            dtickrange: [63072000000, null],
-                            value: "%Y"
-                        }
-                    ]
+                    }
                 },
                 yaxis: {
                     tickvals: yTickVals,
