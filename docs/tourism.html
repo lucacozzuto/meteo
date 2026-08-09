@@ -11,7 +11,8 @@
             --bg-card: rgba(22, 27, 34, 0.75);
             --border-color: rgba(255, 255, 255, 0.12);
             --accent-green: #10b981;
-            --accent-blue: #3b82f6;
+            --accent-blue: #2563eb;
+            --accent-red: #ef4444;
             --accent-amber: #f59e0b;
             --text-main: #f0f6fc;
             --text-muted: #8b949e;
@@ -65,22 +66,21 @@
             padding: 1.25rem;
             border-radius: 14px;
             border: 1px solid var(--border-color);
-            flex-wrap: wrap;
         }
 
         .control-panel label {
             font-weight: 600;
             color: var(--text-main);
-            font-size: 1.05rem;
+            font-size: 1.1rem;
         }
 
         .control-panel select {
             background-color: #161b22;
             color: #fff;
             border: 1px solid var(--accent-green);
-            padding: 0.65rem 1.25rem;
+            padding: 0.65rem 1.5rem;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             outline: none;
@@ -96,7 +96,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 1.75rem;
             margin-bottom: 2.5rem;
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -181,17 +181,8 @@
 
     <div class="control-panel">
         <div>
-            <label for="categorySelect" style="margin-right: 0.5rem;">Categoria Turisti:</label>
-            <select id="categorySelect" onchange="updateCountryHeatmap()">
-                <option value="total" selected>🌐 Turisti Totali (Stranieri + Residenti)</option>
-                <option value="foreign">✈️ Turisti Stranieri / Esteri</option>
-                <option value="domestic">🏡 Turisti Locali / Residenti</option>
-            </select>
-        </div>
-
-        <div>
-            <label for="countrySelect" style="margin-right: 0.5rem;">Paese:</label>
-            <select id="countrySelect" onchange="updateCountryHeatmap()">
+            <label for="countrySelect" style="margin-right: 0.75rem;">Seleziona Paese:</label>
+            <select id="countrySelect" onchange="updateCountryCharts()">
                 <option value="it" selected>🇮🇹 Italia</option>
                 <option value="es">🇪🇸 Spagna</option>
                 <option value="fr">🇫🇷 Francia</option>
@@ -201,23 +192,33 @@
         </div>
     </div>
 
+    <!-- 1. Heatmap Totale -->
     <div class="card">
-        <h2 id="heatmapTitle" style="margin-bottom: 1rem; font-size: 1.4rem; color: var(--text-main);">🇮🇹 Turisti Totali Mensili – Italia</h2>
+        <h2 id="heatmapTitle" style="margin-bottom: 1rem; font-size: 1.4rem; color: var(--text-main);">🇮🇹 Heatmap Arrivi Turistici Totali Mensili – Italia</h2>
         <img id="heatmapImg" src="tourism_heatmap_total_it.png" alt="Heatmap Turistica Italia" onclick="openModal(this.src)">
 
         <div class="legend-box">
-            <h3>ℹ️ Come interpretare il grafico</h3>
+            <h3>ℹ️ Come interpretare l'heatmap mensile</h3>
             <ul>
-                <li><strong>Le 3 Categorie Disponibili:</strong>
-                    <br>• <strong>Turisti Totali (<code>TOTAL</code>):</strong> Somma complessiva di turisti stranieri e residenti.
-                    <br>• <strong>Turisti Stranieri / Esteri (<code>FOR</code>):</strong> Arrivi di visitatori provenienti dall'estero.
-                    <br>• <strong>Turisti Locali / Residenti (<code>DOM</code>):</strong> Arrivi di cittadini residenti nello stesso paese.
-                </li>
-                <li style="margin-top: 0.5rem;"><strong>Valori in Cella:</strong> Espressi in <strong>milioni di arrivi</strong> (es. 18.9 = 18.900.000 persone).</li>
+                <li><strong>Valori in Cella:</strong> Espressi in <strong>milioni di arrivi</strong> (es. 18.9 = 18.900.000 persone).</li>
                 <li><strong>Grafico Superiore (Mesi Gen–Dic):</strong> Scala cromatica indipendente calibrata sull'intensità dei singoli mesi.</li>
                 <li><strong>Grafico Inferiore (TOTALE):</strong> Somma annuale degli arrivi su un secondo subplot dedicato.</li>
                 <li><strong>🟢 Bordo Verde Brillante:</strong> Identifica il <strong>record assoluto storico</strong> per quel determinato mese (o per il totale annuale).</li>
-                <li><strong>Fonte Dati:</strong> <a href="https://ec.europa.eu/eurostat/web/tourism/database" target="_blank" style="color: var(--accent-green);">Eurostat REST API</a> (Dataset <code>tour_occ_arm</code>).</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 2. Grafico a Linee Stranieri vs Residenti -->
+    <div class="card">
+        <h2 id="lineTitle" style="margin-bottom: 1rem; font-size: 1.4rem; color: var(--text-main);">🇮🇹 Confronto Turisti Stranieri vs Residenti – Italia</h2>
+        <img id="lineImg" src="tourism_line_it.png" alt="Grafico a Linee Turismo Italia" onclick="openModal(this.src)">
+
+        <div class="legend-box" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
+            <h3 style="color: var(--accent-blue);">📈 Come interpretare il grafico a linee</h3>
+            <ul>
+                <li><strong style="color: var(--accent-red);">🔴 Linea Rossa (Turisti Stranieri / Esteri - FOR):</strong> Arrivi annuali di visitatori provenienti da paesi esteri.</li>
+                <li><strong style="color: var(--accent-blue);">🔵 Linea Blu (Turisti Locali / Residenti - DOM):</strong> Arrivi annuali di cittadini residenti nello stesso paese.</li>
+                <li><strong>Fonte Dati Eurostat:</strong> Dataset <code>tour_occ_arm</code> per strutture ricettive commerciali ufficiali (Hotel, Resort, Campeggi).</li>
             </ul>
         </div>
     </div>
@@ -249,20 +250,18 @@
             'pt': '🇵🇹'
         };
 
-        const categoryLabels = {
-            'total': 'Turisti Totali',
-            'foreign': 'Turisti Stranieri / Esteri',
-            'domestic': 'Turisti Locali / Residenti'
-        };
-
-        function updateCountryHeatmap() {
+        function updateCountryCharts() {
             const country = document.getElementById('countrySelect').value;
-            const cat = document.getElementById('categorySelect').value;
-            const img = document.getElementById('heatmapImg');
-            const title = document.getElementById('heatmapTitle');
+            const heatmapImg = document.getElementById('heatmapImg');
+            const lineImg = document.getElementById('lineImg');
+            const heatmapTitle = document.getElementById('heatmapTitle');
+            const lineTitle = document.getElementById('lineTitle');
 
-            img.src = `tourism_heatmap_${cat}_${country}.png`;
-            title.textContent = `${flags[country] || ''} ${categoryLabels[cat] || ''} Mensili – ${countryNames[country] || ''}`;
+            heatmapImg.src = `tourism_heatmap_total_${country}.png`;
+            lineImg.src = `tourism_line_${country}.png`;
+
+            heatmapTitle.textContent = `${flags[country] || ''} Heatmap Arrivi Turistici Totali Mensili – ${countryNames[country] || ''}`;
+            lineTitle.textContent = `${flags[country] || ''} Confronto Turisti Stranieri vs Residenti – ${countryNames[country] || ''}`;
         }
 
         function openModal(src) {

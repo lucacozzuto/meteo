@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
 Fetch monthly tourism arrivals data from Eurostat (dataset tour_occ_arm) for Mediterranean countries
-and generate 3 intensity heatmaps per country:
-1. Total Tourists (TOTAL)
-2. Foreign / International Tourists (FOR)
-3. Domestic / Local Tourists (DOM)
+and generate:
+1. Total Tourists Heatmap (months x years + yearly total)
+2. Line Chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line) over time (1990-2026).
 """
 
 import pandas as pd
@@ -22,12 +21,6 @@ COUNTRIES = {
     'IT': 'Italia',
     'EL': 'Grecia',
     'PT': 'Portogallo'
-}
-
-CATEGORIES = {
-    'total': {'code': 'TOTAL', 'title': 'Turisti Totali (Stranieri + Residenti)'},
-    'foreign': {'code': 'FOR', 'title': 'Turisti Stranieri / Esteri'},
-    'domestic': {'code': 'DOM', 'title': 'Turisti Locali / Residenti'}
 }
 
 MONTH_NAMES = {
@@ -72,11 +65,11 @@ def process_data(df):
     return df[['country', 'geo', 'year', 'month', 'value', 'value_millions']]
 
 
-def generate_intensity_heatmap(df, country_code, country_name, category_key, category_title):
-    """Generate two stacked heatmaps in the same figure: monthly values (ax1) and yearly total (ax2)."""
-    cdf = df[df['geo'] == country_code].copy()
+def generate_total_heatmap(df_total, country_code, country_name):
+    """Generate two stacked heatmaps in the same figure: monthly total values (ax1) and yearly total (ax2)."""
+    cdf = df_total[df_total['geo'] == country_code].copy()
     if cdf.empty:
-        print(f"No data for {country_name} ({category_key})")
+        print(f"No total data for {country_name}")
         return
     
     # 1. Pivot months (1 to 12)
@@ -127,7 +120,7 @@ def generate_intensity_heatmap(df, country_code, country_name, category_key, cat
         annot_kws={"size": 6},
         linewidths=0.5, linecolor='lightgray',
         xticklabels=False,
-        cbar_kws={'label': 'Arrivi Mensili (milioni)'}
+        cbar_kws={'label': 'Arrivi Turistici Mensili (milioni)'}
     )
     
     # Draw green rectangles for monthly records
@@ -142,7 +135,7 @@ def generate_intensity_heatmap(df, country_code, country_name, category_key, cat
                 fill=False, edgecolor='#00cc44', lw=2.5, zorder=10
             ))
 
-    ax1.set_title(f'{category_title} Mensili – {country_name}\n(milioni di arrivi · bordo verde = record assoluto del mese)', fontsize=14)
+    ax1.set_title(f'Arrivi Turistici Totali Mensili – {country_name}\n(milioni di arrivi · bordo verde = record assoluto del mese)', fontsize=14)
     ax1.set_xlabel('')
     ax1.set_ylabel('Mese', fontsize=12)
 
@@ -171,18 +164,100 @@ def generate_intensity_heatmap(df, country_code, country_name, category_key, cat
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     
-    output_path = os.path.join(OUTPUT_DIR, f'tourism_heatmap_{category_key}_{country_code.lower()}.png')
+    output_path = os.path.join(OUTPUT_DIR, f'tourism_heatmap_total_{country_code.lower()}.png')
+    plt.savefig(output_path, dpi=200, bbox_inches='tight')
+    
+    # Also save as backward compatible tourism_heatmap_{country}.png
+    compat_path = os.path.join(OUTPUT_DIR, f'tourism_heatmap_{country_code.lower()}.png')
+    plt.savefig(compat_path, dpi=200, bbox_inches='tight')
+    
+    plt.close()
+    print(f"Saved: {output_path}")
+
+
+def generate_line_chart(df_foreign, df_domestic, country_code, country_name):
+    """Generate a single line chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line)."""
+    cdf_for = df_foreign[df_foreign['geo'] == country_code].copy()
+    cdf_dom = df_domestic[df_domestic['geo'] == country_code].copy()
+    
+    if cdf_for.empty or cdf_dom.empty:
+        print(f"Missing line chart data for {country_name}")
+        return
+
+    # Pivot annual totals
+    piv_for = cdf_for.pivot_table(index='month', columns='year', values='value_millions', aggfunc='first')
+    tot_for = piv_for.sum(axis=0, skipna=True)
+    cnt_for = piv_for.notna().sum(axis=0)
+    tot_for[cnt_for < 10] = np.nan
+
+    piv_dom = cdf_dom.pivot_table(index='month', columns='year', values='value_millions', aggfunc='first')
+    tot_dom = piv_dom.sum(axis=0, skipna=True)
+    cnt_dom = piv_dom.notna().sum(axis=0)
+    tot_dom[cnt_dom < 10] = np.nan
+
+    # Combine into a single DataFrame
+    years = sorted(list(set(tot_for.index).union(set(tot_dom.index))))
+    df_line = pd.DataFrame({
+        'Stranieri': [tot_for.get(y, np.nan) for y in years],
+        'Locali': [tot_dom.get(y, np.nan) for y in years]
+    }, index=years)
+
+    fig, ax = plt.subplots(figsize=(max(16, len(years) * 0.45), 6.5))
+
+    # Plot Red Line (Stranieri / Esteri)
+    ax.plot(
+        df_line.index, df_line['Stranieri'],
+        color='#ef4444', linewidth=3, marker='o', markersize=6,
+        label='Turisti Stranieri / Esteri (FOR)'
+    )
+
+    # Plot Blue Line (Locali / Residenti)
+    ax.plot(
+        df_line.index, df_line['Locali'],
+        color='#2563eb', linewidth=3, marker='s', markersize=6,
+        label='Turisti Locali / Residenti (DOM)'
+    )
+
+    # Annotate numbers on point markers for key years or all complete years
+    for y in years:
+        val_for = df_line.loc[y, 'Stranieri']
+        val_dom = df_line.loc[y, 'Locali']
+
+        if pd.notna(val_for):
+            ax.annotate(
+                f'{val_for:.1f}', (y, val_for),
+                textcoords="offset points", xytext=(0, 8), ha='center',
+                fontsize=7.5, fontweight='bold', color='#dc2626'
+            )
+        if pd.notna(val_dom):
+            ax.annotate(
+                f'{val_dom:.1f}', (y, val_dom),
+                textcoords="offset points", xytext=(0, -12), ha='center',
+                fontsize=7.5, fontweight='bold', color='#1d4ed8'
+            )
+
+    ax.set_title(f'Confronto Turisti Stranieri vs Residenti – {country_name}\n(Arrivi annuali in milioni · Eurostat)', fontsize=14, fontweight='bold')
+    ax.set_xlabel('Anno', fontsize=12)
+    ax.set_ylabel('Arrivi Annui (milioni)', fontsize=12)
+    ax.set_xticks(years)
+    ax.set_xticklabels(years, rotation=45, ha='right')
+
+    ax.grid(True, linestyle='--', alpha=0.4)
+    ax.legend(fontsize=11, loc='upper left', frameon=True, facecolor='white', framealpha=0.9)
+
+    plt.tight_layout()
+
+    output_path = os.path.join(OUTPUT_DIR, f'tourism_line_{country_code.lower()}.png')
     plt.savefig(output_path, dpi=200, bbox_inches='tight')
     plt.close()
     print(f"Saved: {output_path}")
 
 
-def save_json_data(data_dict):
+def save_json_data(df_total, df_foreign, df_domestic):
     """Save processed data as JSON for web visualization."""
-    result = {}
+    result = {'total': {}, 'foreign': {}, 'domestic': {}}
     
-    for cat_key, df in data_dict.items():
-        result[cat_key] = {}
+    for cat_key, df in [('total', df_total), ('foreign', df_foreign), ('domestic', df_domestic)]:
         for country_code, country_name in COUNTRIES.items():
             cdf = df[df['geo'] == country_code].copy()
             if cdf.empty:
@@ -210,29 +285,25 @@ def save_json_data(data_dict):
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-    data_dict = {}
+    # 1. Download datasets
+    raw_total = download_tourism_category('TOTAL')
+    raw_foreign = download_tourism_category('FOR')
+    raw_domestic = download_tourism_category('DOM')
     
-    # 1. Download and process datasets for the 3 categories
-    for cat_key, cat_info in CATEGORIES.items():
-        raw_df = download_tourism_category(cat_info['code'])
-        df = process_data(raw_df)
-        data_dict[cat_key] = df
+    # 2. Process
+    df_total = process_data(raw_total)
+    df_foreign = process_data(raw_foreign)
+    df_domestic = process_data(raw_domestic)
     
-    # 2. Save JSON
-    save_json_data(data_dict)
+    # 3. Save JSON
+    save_json_data(df_total, df_foreign, df_domestic)
     
-    # 3. Generate intensity heatmaps for all 3 categories per country
+    # 4. Generate Total Heatmap + Line Chart per country
     for country_code, country_name in COUNTRIES.items():
-        for cat_key, cat_info in CATEGORIES.items():
-            generate_intensity_heatmap(
-                data_dict[cat_key], 
-                country_code, 
-                country_name, 
-                category_key=cat_key, 
-                category_title=cat_info['title']
-            )
+        generate_total_heatmap(df_total, country_code, country_name)
+        generate_line_chart(df_foreign, df_domestic, country_code, country_name)
     
-    print("\n✅ All 3 tourism heatmaps (Total, Foreign, Domestic) generated for all countries!")
+    print("\n✅ Total Heatmaps & Foreign vs Domestic Line Charts generated successfully!")
 
 
 if __name__ == '__main__':
