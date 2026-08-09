@@ -180,28 +180,42 @@
     </div>
 
     <div class="control-panel">
-        <label for="countrySelect">Seleziona Paese:</label>
-        <select id="countrySelect" onchange="updateCountryHeatmap()">
-            <option value="it" selected>🇮🇹 Italia</option>
-            <option value="es">🇪🇸 Spagna</option>
-            <option value="fr">🇫🇷 Francia</option>
-            <option value="el">🇬🇷 Grecia</option>
-            <option value="pt">🇵🇹 Portogallo</option>
-        </select>
+        <div>
+            <label for="metricSelect" style="margin-right: 0.5rem;">Metrica:</label>
+            <select id="metricSelect" onchange="updateCountryHeatmap()">
+                <option value="stays" selected>🛏️ Pernottamenti (Notti complessive)</option>
+                <option value="arrivals">🧳 Arrivi / Visitatori (Check-in distinti)</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="countrySelect" style="margin-right: 0.5rem;">Paese:</label>
+            <select id="countrySelect" onchange="updateCountryHeatmap()">
+                <option value="it" selected>🇮🇹 Italia</option>
+                <option value="es">🇪🇸 Spagna</option>
+                <option value="fr">🇫🇷 Francia</option>
+                <option value="el">🇬🇷 Grecia</option>
+                <option value="pt">🇵🇹 Portogallo</option>
+            </select>
+        </div>
     </div>
 
     <div class="card">
         <h2 id="heatmapTitle" style="margin-bottom: 1rem; font-size: 1.4rem; color: var(--text-main);">🇮🇹 Pernottamenti Turistici Mensili – Italia</h2>
-        <img id="heatmapImg" src="tourism_heatmap_it.png" alt="Heatmap Pernottamenti Turistici Italia" onclick="openModal(this.src)">
+        <img id="heatmapImg" src="tourism_heatmap_stays_it.png" alt="Heatmap Turistica Italia" onclick="openModal(this.src)">
 
         <div class="legend-box">
             <h3>ℹ️ Come interpretare il grafico</h3>
             <ul>
-                <li><strong>Valori in Cella:</strong> Numero totale di pernottamenti mensili espresso in <strong>milioni</strong> (es. 87.9 = 87.900.000 pernottamenti).</li>
-                <li><strong>Grafico Superiore (Mesi Gen–Dic):</strong> Scala cromatica indipendente calibrata sull'intensità turistica mensile (da giallo chiaro per la bassa stagione a rosso scuro per il picco estivo).</li>
-                <li><strong>Grafico Inferiore (TOTALE):</strong> Somma annuale dei pernottamenti su un secondo subplot dedicato per non alterare la scala cromatica dei singoli mesi.</li>
+                <li><strong>Differenza tra le Metriche:</strong>
+                    <br>• <strong>Pernottamenti (dataset <code>tour_occ_nim</code>):</strong> Numero totale di <em>notti trascorse</em> nelle strutture ricettive (es. 1 turista per 7 giorni = 7 pernottamenti).
+                    <br>• <strong>Arrivi / Visitatori (dataset <code>tour_occ_arm</code>):</strong> Numero totale di <em>visitatori/persone distinte</em> che hanno effettuato il check-in (es. 1 turista per 7 giorni = 1 arrivo).
+                </li>
+                <li style="margin-top: 0.5rem;"><strong>Valori in Cella:</strong> Espressi in <strong>milioni</strong> (es. 87.9 = 87.900.000).</li>
+                <li><strong>Grafico Superiore (Mesi Gen–Dic):</strong> Scala cromatica indipendente calibrata sull'intensità mensile.</li>
+                <li><strong>Grafico Inferiore (TOTALE):</strong> Somma annuale su un secondo subplot dedicato per non alterare la scala dei singoli mesi.</li>
                 <li><strong>🟢 Bordo Verde Brillante:</strong> Identifica il <strong>record assoluto storico</strong> per quel determinato mese (o per il totale annuale).</li>
-                <li><strong>Fonte Dati:</strong> <a href="https://ec.europa.eu/eurostat/web/tourism/database" target="_blank" style="color: var(--accent-green);">Eurostat REST API</a> (Dataset <code>tour_occ_nim</code> - Overnight stays in tourist accommodation establishments).</li>
+                <li><strong>Fonte Dati:</strong> <a href="https://ec.europa.eu/eurostat/web/tourism/database" target="_blank" style="color: var(--accent-green);">Eurostat REST API</a> (Dataset <code>tour_occ_nim</code> e <code>tour_occ_arm</code>).</li>
             </ul>
         </div>
     </div>
@@ -218,21 +232,30 @@
 
     <script>
         const countryNames = {
-            'it': '🇮🇹 Pernottamenti Turistici Mensili – Italia',
-            'es': '🇪🇸 Pernottamenti Turistici Mensili – Spagna',
-            'fr': '🇫🇷 Pernottamenti Turistici Mensili – Francia',
-            'el': '🇬🇷 Pernottamenti Turistici Mensili – Grecia',
-            'pt': '🇵🇹 Pernottamenti Turistici Mensili – Portogallo'
+            'it': 'Italia',
+            'es': 'Spagna',
+            'fr': 'Francia',
+            'el': 'Grecia',
+            'pt': 'Portogallo'
+        };
+
+        const flags = {
+            'it': '🇮🇹',
+            'es': '🇪🇸',
+            'fr': '🇫🇷',
+            'el': '🇬🇷',
+            'pt': '🇵🇹'
         };
 
         function updateCountryHeatmap() {
-            const select = document.getElementById('countrySelect');
-            const val = select.value;
+            const country = document.getElementById('countrySelect').value;
+            const metric = document.getElementById('metricSelect').value;
             const img = document.getElementById('heatmapImg');
             const title = document.getElementById('heatmapTitle');
 
-            img.src = `tourism_heatmap_${val}.png`;
-            title.textContent = countryNames[val] || 'Pernottamenti Turistici';
+            img.src = `tourism_heatmap_${metric}_${country}.png`;
+            const label = metric === 'stays' ? 'Pernottamenti Turistici' : 'Arrivi / Visitatori Turistici';
+            title.textContent = `${flags[country] || ''} ${label} Mensili – ${countryNames[country] || ''}`;
         }
 
         function openModal(src) {

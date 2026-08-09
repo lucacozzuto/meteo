@@ -31,27 +31,23 @@ MONTH_NAMES = {
 OUTPUT_DIR = 'docs'
 
 
-def download_tourism_data():
-    """Download monthly overnight stays from Eurostat SDMX-CSV API."""
+def download_tourism_dataset(dataset_code):
+    """Download monthly tourism dataset (tour_occ_nim or tour_occ_arm) from Eurostat SDMX-CSV API for Foreign Tourists (FOR)."""
     countries_str = '+'.join(COUNTRIES.keys())
-    # Dimension order: freq.c_resid.unit.nace_r2.geo
+    # c_resid = FOR (Foreign / International tourists only)
     url = (
         f"https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/"
-        f"tour_occ_nim/M.TOTAL.NR.I551-I553.{countries_str}"
+        f"{dataset_code}/M.FOR.NR.I551-I553.{countries_str}"
         f"?format=SDMX-CSV&compressed=false"
     )
     
-    print(f"Downloading tourism data from Eurostat...")
-    print(f"URL: {url}")
-    
+    print(f"Downloading {dataset_code} from Eurostat...")
     response = requests.get(url, timeout=120)
     response.raise_for_status()
     
     from io import StringIO
     df = pd.read_csv(StringIO(response.text))
-    
-    print(f"Downloaded {len(df)} rows")
-    
+    print(f"Downloaded {len(df)} rows for {dataset_code}")
     return df
 
 
@@ -59,31 +55,22 @@ def process_data(df):
     """Process raw Eurostat data into a clean DataFrame with year, month, country, value."""
     df = df.copy()
     
-    # TIME_PERIOD is in format "YYYY-MM" (e.g. "2024-01")
     df['year'] = df['TIME_PERIOD'].str[:4].astype(int)
     df['month'] = df['TIME_PERIOD'].str[5:7].astype(int)
     
     df['country'] = df['geo'].map(COUNTRIES)
     df['value'] = pd.to_numeric(df['OBS_VALUE'], errors='coerce')
-    
-    # Drop rows without values
     df = df.dropna(subset=['value'])
-    
-    # Convert to millions for readability
     df['value_millions'] = df['value'] / 1_000_000
-    
-    print(f"Processed data: {len(df)} rows")
-    print(f"Years: {df['year'].min()} – {df['year'].max()}")
-    print(f"Countries: {list(df['country'].unique())}")
     
     return df[['country', 'geo', 'year', 'month', 'value', 'value_millions']]
 
 
-def generate_intensity_heatmap(df, country_code, country_name):
+def generate_intensity_heatmap(df, country_code, country_name, metric_key='stays', metric_title='Pernottamenti Turistici'):
     """Generate two stacked heatmaps in the same figure: monthly values (ax1) and yearly total (ax2)."""
     cdf = df[df['geo'] == country_code].copy()
     if cdf.empty:
-        print(f"No data for {country_name}")
+        print(f"No data for {country_name} ({metric_key})")
         return
     
     # 1. Pivot months (1 to 12)
@@ -134,7 +121,7 @@ def generate_intensity_heatmap(df, country_code, country_name):
         annot_kws={"size": 6},
         linewidths=0.5, linecolor='lightgray',
         xticklabels=False,
-        cbar_kws={'label': 'Pernottamenti Mensili (milioni)'}
+        cbar_kws={'label': f'{metric_title} Mensili (milioni)'}
     )
     
     # Draw green rectangles for monthly records
@@ -149,7 +136,7 @@ def generate_intensity_heatmap(df, country_code, country_name):
                 fill=False, edgecolor='#00cc44', lw=2.5, zorder=10
             ))
 
-    ax1.set_title(f'Pernottamenti Turistici Mensili – {country_name}\n(milioni · bordo verde = record assoluto del mese)', fontsize=14)
+    ax1.set_title(f'{metric_title} Internazionali – {country_name}\n(milioni · bordo verde = record assoluto del mese)', fontsize=14)
     ax1.set_xlabel('')
     ax1.set_ylabel('Mese', fontsize=12)
 
@@ -178,32 +165,40 @@ def generate_intensity_heatmap(df, country_code, country_name):
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     
-    output_path = os.path.join(OUTPUT_DIR, f'tourism_heatmap_{country_code.lower()}.png')
+    # Save with specific metric name and also backward compatible name for stays
+    output_path = os.path.join(OUTPUT_DIR, f'tourism_heatmap_{metric_key}_{country_code.lower()}.png')
     plt.savefig(output_path, dpi=200, bbox_inches='tight')
+    
+    if metric_key == 'stays':
+        compat_path = os.path.join(OUTPUT_DIR, f'tourism_heatmap_{country_code.lower()}.png')
+        plt.savefig(compat_path, dpi=200, bbox_inches='tight')
+        
     plt.close()
     print(f"Saved: {output_path}")
 
 
-def save_json_data(df):
+def save_json_data(df_stays, df_arrivals):
     """Save processed data as JSON for potential web visualization."""
-    result = {}
-    for country_code, country_name in COUNTRIES.items():
-        cdf = df[df['geo'] == country_code].copy()
-        if cdf.empty:
-            continue
-        
-        country_data = {}
-        for _, row in cdf.iterrows():
-            year = int(row['year'])
-            month = int(row['month'])
-            if year not in country_data:
-                country_data[year] = {}
-            country_data[year][month] = round(row['value_millions'], 2)
-        
-        result[country_code] = {
-            'name': country_name,
-            'data': country_data
-        }
+    result = {'stays': {}, 'arrivals': {}}
+    
+    for metric_name, df in [('stays', df_stays), ('arrivals', df_arrivals)]:
+        for country_code, country_name in COUNTRIES.items():
+            cdf = df[df['geo'] == country_code].copy()
+            if cdf.empty:
+                continue
+            
+            country_data = {}
+            for _, row in cdf.iterrows():
+                year = int(row['year'])
+                month = int(row['month'])
+                if year not in country_data:
+                    country_data[year] = {}
+                country_data[year][month] = round(row['value_millions'], 2)
+            
+            result[metric_name][country_code] = {
+                'name': country_name,
+                'data': country_data
+            }
     
     output_path = os.path.join(OUTPUT_DIR, 'tourism_data.json')
     with open(output_path, 'w', encoding='utf-8') as f:
@@ -214,20 +209,23 @@ def save_json_data(df):
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-    # 1. Download data
-    raw_df = download_tourism_data()
+    # 1. Download datasets
+    raw_stays = download_tourism_dataset('tour_occ_nim')
+    raw_arrivals = download_tourism_dataset('tour_occ_arm')
     
     # 2. Process
-    df = process_data(raw_df)
+    df_stays = process_data(raw_stays)
+    df_arrivals = process_data(raw_arrivals)
     
     # 3. Save JSON
-    save_json_data(df)
+    save_json_data(df_stays, df_arrivals)
     
-    # 4. Generate intensity heatmaps with records and yearly totals
+    # 4. Generate intensity heatmaps for both metrics
     for country_code, country_name in COUNTRIES.items():
-        generate_intensity_heatmap(df, country_code, country_name)
+        generate_intensity_heatmap(df_stays, country_code, country_name, metric_key='stays', metric_title='Pernottamenti Turistici')
+        generate_intensity_heatmap(df_arrivals, country_code, country_name, metric_key='arrivals', metric_title='Arrivi / Visitatori Turistici')
     
-    print("\n✅ All tourism heatmaps generated!")
+    print("\n✅ All tourism heatmaps (stays & arrivals) generated!")
 
 
 if __name__ == '__main__':
