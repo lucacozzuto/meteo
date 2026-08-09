@@ -499,14 +499,12 @@
         var layout = {
             title: `Ondate di Calore Estreme (90° Perc. JJA) - ${city}`,
             xaxis: { 
-                title: 'Anno (Stagione Estiva: Giugno–Agosto)', 
+                title: 'Stagione Estiva (Giugno–Agosto)', 
                 type: 'date', 
                 range: ['1980-05-31', '2026-09-01'], 
                 autorange: false,
-                tickmode: 'linear',
-                tick0: '1980-07-15',
-                dtick: 'M12',
-                tickformat: '%Y',
+                dtick: 'M1',
+                tickformat: '%b %Y',
                 rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ]
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
@@ -557,14 +555,12 @@
         var layout = {
             title: `Ondate di Calore NOTTURNE Estreme (Min > 90° Perc. JJA) - ${city}`,
             xaxis: { 
-                title: 'Anno (Stagione Estiva: Giugno–Agosto)', 
+                title: 'Stagione Estiva (Giugno–Agosto)', 
                 type: 'date', 
                 range: ['1980-05-31', '2026-09-01'], 
                 autorange: false,
-                tickmode: 'linear',
-                tick0: '1980-07-15',
-                dtick: 'M12',
-                tickformat: '%Y',
+                dtick: 'M1',
+                tickformat: '%b %Y',
                 rangebreaks: [ { bounds: [9, 6], pattern: 'month' } ]
             },
             yaxis: { title: 'Anomalia Termica (°C)' },
