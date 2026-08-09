@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Fetch monthly tourism arrivals data from Eurostat (dataset tour_occ_arm) for Mediterranean countries
-and generate:
-1. Total Tourists Heatmap (months x years + yearly total)
-2. Line Chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line) over time (1990-2026),
-   computing DOM = TOTAL - FOR when DOM is not directly published by Eurostat.
+Fetch monthly tourism OVERNIGHT STAYS data from Eurostat (dataset tour_occ_nim - Notti trascorse)
+for Mediterranean countries and generate:
+1. Total Overnight Stays Heatmap (months x years + yearly total in millions of nights)
+2. Line Chart comparing Foreign Stays (Red Line) vs Domestic Stays (Blue Line) over time (1990-2026),
+   computing DOM = TOTAL - FOR when DOM is missing.
 """
 
 import pandas as pd
@@ -33,15 +33,15 @@ OUTPUT_DIR = 'docs'
 
 
 def download_tourism_category(category_code):
-    """Download monthly arrivals (tour_occ_arm) for a specific c_resid category from Eurostat."""
+    """Download monthly overnight stays (tour_occ_nim) for a specific c_resid category from Eurostat."""
     countries_str = '+'.join(COUNTRIES.keys())
     url = (
         f"https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/"
-        f"tour_occ_arm/M.{category_code}.NR.I551-I553.{countries_str}"
+        f"tour_occ_nim/M.{category_code}.NR.I551-I553.{countries_str}"
         f"?format=SDMX-CSV&compressed=false"
     )
     
-    print(f"Downloading arrivals for c_resid={category_code} from Eurostat...")
+    print(f"Downloading overnight stays (tour_occ_nim) for c_resid={category_code} from Eurostat...")
     response = requests.get(url, timeout=120)
     response.raise_for_status()
     
@@ -67,7 +67,7 @@ def process_data(df):
 
 
 def generate_total_heatmap(df_total, country_code, country_name):
-    """Generate two stacked heatmaps in the same figure: monthly total values (ax1) and yearly total (ax2)."""
+    """Generate two stacked heatmaps in the same figure: monthly total nights (ax1) and yearly total (ax2)."""
     cdf = df_total[df_total['geo'] == country_code].copy()
     if cdf.empty:
         print(f"No total data for {country_name}")
@@ -121,7 +121,7 @@ def generate_total_heatmap(df_total, country_code, country_name):
         annot_kws={"size": 6},
         linewidths=0.5, linecolor='lightgray',
         xticklabels=False,
-        cbar_kws={'label': 'Arrivi Turistici Mensili (milioni)'}
+        cbar_kws={'label': 'Notti Trascorse Mensili (milioni)'}
     )
     
     # Draw green rectangles for monthly records
@@ -136,7 +136,7 @@ def generate_total_heatmap(df_total, country_code, country_name):
                 fill=False, edgecolor='#00cc44', lw=2.5, zorder=10
             ))
 
-    ax1.set_title(f'Arrivi Turistici Totali Mensili – {country_name}\n(milioni di arrivi · bordo verde = record assoluto del mese)', fontsize=14)
+    ax1.set_title(f'Pernottamenti Turistici Totali Mensili – {country_name}\n(milioni di notti trascorse · bordo verde = record assoluto del mese)', fontsize=14)
     ax1.set_xlabel('')
     ax1.set_ylabel('Mese', fontsize=12)
 
@@ -148,7 +148,7 @@ def generate_total_heatmap(df_total, country_code, country_name):
         annot_kws={"size": 7, "weight": "bold"},
         linewidths=0.5, linecolor='lightgray',
         xticklabels=True,
-        cbar_kws={'label': 'Totale Anno (milioni)'}
+        cbar_kws={'label': 'Totale Anno (milioni notti)'}
     )
 
     # Draw green rectangle for total year record
@@ -177,7 +177,7 @@ def generate_total_heatmap(df_total, country_code, country_name):
 
 
 def generate_line_chart(df_total, df_foreign, df_domestic, country_code, country_name):
-    """Generate a single line chart comparing Foreign Tourists (Red Line) vs Domestic Tourists (Blue Line).
+    """Generate a single line chart comparing Foreign Stays (Red Line) vs Domestic Stays (Blue Line) in millions of nights.
        Computes DOM = TOTAL - FOR when Eurostat DOM is unpopulated.
     """
     cdf_tot = df_total[df_total['geo'] == country_code].copy()
@@ -227,14 +227,14 @@ def generate_line_chart(df_total, df_foreign, df_domestic, country_code, country
     ax.plot(
         df_line.index, df_line['Stranieri'],
         color='#ef4444', linewidth=3, marker='o', markersize=6,
-        label='Turisti Stranieri / Esteri (FOR)'
+        label='Notti Stranieri / Esteri (FOR)'
     )
 
     # Plot Blue Line (Locali / Residenti)
     ax.plot(
         df_line.index, df_line['Locali'],
         color='#2563eb', linewidth=3, marker='s', markersize=6,
-        label='Turisti Locali / Residenti (DOM)'
+        label='Notti Locali / Residenti (DOM)'
     )
 
     # Annotate numbers on point markers for key years or all complete years
@@ -255,9 +255,9 @@ def generate_line_chart(df_total, df_foreign, df_domestic, country_code, country
                 fontsize=7.5, fontweight='bold', color='#1d4ed8'
             )
 
-    ax.set_title(f'Confronto Turisti Stranieri vs Residenti – {country_name}\n(Arrivi annuali in milioni · Eurostat)', fontsize=14, fontweight='bold')
+    ax.set_title(f'Confronto Pernottamenti Stranieri vs Residenti – {country_name}\n(Milioni di notti trascorse annue · Eurostat tour_occ_nim)', fontsize=14, fontweight='bold')
     ax.set_xlabel('Anno', fontsize=12)
-    ax.set_ylabel('Arrivi Annui (milioni)', fontsize=12)
+    ax.set_ylabel('Notti Trascorse Annue (milioni)', fontsize=12)
     ax.set_xticks(years)
     ax.set_xticklabels(years, rotation=45, ha='right')
 
@@ -304,7 +304,7 @@ def save_json_data(df_total, df_foreign, df_domestic):
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
-    # 1. Download datasets
+    # 1. Download datasets (tour_occ_nim for overnight stays)
     raw_total = download_tourism_category('TOTAL')
     raw_foreign = download_tourism_category('FOR')
     raw_domestic = download_tourism_category('DOM')
@@ -322,7 +322,7 @@ def main():
         generate_total_heatmap(df_total, country_code, country_name)
         generate_line_chart(df_total, df_foreign, df_domestic, country_code, country_name)
     
-    print("\n✅ Total Heatmaps & Foreign vs Domestic Line Charts generated successfully with complete series!")
+    print("\n✅ Total Overnight Stays Heatmaps & Foreign vs Domestic Line Charts generated successfully!")
 
 
 if __name__ == '__main__':
