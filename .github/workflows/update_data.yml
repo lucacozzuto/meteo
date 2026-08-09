@@ -47,6 +47,7 @@ jobs:
           python plot_night_heatwaves_italy.py
           python plot_wildfire_heatmaps.py
           python generate_wildfire_cumulative.py
+          python plot_tourism_heatmap.py
           python generate_monthly_records.py
           python find_latest_records.py
 
