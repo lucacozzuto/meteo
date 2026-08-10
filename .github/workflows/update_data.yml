@@ -1,6 +1,8 @@
 name: Update Meteo Data and Plots
 
 on:
+  push:
+    branches: [ main ]
   schedule:
     # Esegue ogni giorno alle 02:00 UTC
     - cron: '0 2 * * *'
