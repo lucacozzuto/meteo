@@ -25,7 +25,14 @@ def fetch_owid_burnt_area():
     if r.status_code != 200:
         raise Exception(f"Failed to fetch OWID dataset: {r.status_code}")
     df = pd.read_csv(io.StringIO(r.text))
-    df['Day'] = pd.to_datetime(df['Day'])
+    if 'Day' in df.columns:
+        df['Day'] = pd.to_datetime(df['Day'])
+    elif 'Week' in df.columns:
+        df['Day'] = pd.to_datetime(df['Week'] + '-1', format='%G-W%V-%u')
+    elif 'Date' in df.columns:
+        df['Day'] = pd.to_datetime(df['Date'])
+    elif 'date' in df.columns:
+        df['Day'] = pd.to_datetime(df['date'])
     return df
 
 def get_country_summer_burnt_area(df_owid, country_name):

@@ -13,7 +13,15 @@ def generate_wildfire_cumulative():
     df = pd.read_csv(io.StringIO(res.text))
 
     df.rename(columns={'Area burnt by wildfires': 'area_ha'}, inplace=True)
-    df['Day'] = pd.to_datetime(df['Day'])
+    if 'Day' in df.columns:
+        df['Day'] = pd.to_datetime(df['Day'])
+    elif 'Week' in df.columns:
+        df['Day'] = pd.to_datetime(df['Week'] + '-1', format='%G-W%V-%u')
+    elif 'Date' in df.columns:
+        df['Day'] = pd.to_datetime(df['Date'])
+    elif 'date' in df.columns:
+        df['Day'] = pd.to_datetime(df['date'])
+
     df['year'] = df['Day'].dt.year
     df['day_of_year'] = df['Day'].dt.dayofyear
 

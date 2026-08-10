@@ -60,7 +60,14 @@ def main():
 
     r_w = requests.get(url_weekly, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
     df_w = pd.read_csv(io.StringIO(r_w.text))
-    df_w['Day'] = pd.to_datetime(df_w['Day'])
+    if 'Day' in df_w.columns:
+        df_w['Day'] = pd.to_datetime(df_w['Day'])
+    elif 'Week' in df_w.columns:
+        df_w['Day'] = pd.to_datetime(df_w['Week'] + '-1', format='%G-W%V-%u')
+    elif 'Date' in df_w.columns:
+        df_w['Day'] = pd.to_datetime(df_w['Date'])
+    elif 'date' in df_w.columns:
+        df_w['Day'] = pd.to_datetime(df_w['date'])
     df_w['year'] = df_w['Day'].dt.year
 
     years = list(range(1980, 2027))
