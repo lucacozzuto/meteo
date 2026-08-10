@@ -13,9 +13,14 @@ jobs:
     permissions:
       contents: write # Serve per poter fare push sul branch
 
+    env:
+      MPLBACKEND: Agg
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -55,6 +60,5 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add data/ data_italy/ docs/
-          # Verifica se ci sono state modifiche prima di fare il commit
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated data and plots update" && git push)
+          git add -A data/ data_italy/ docs/
+          git diff --quiet && git diff --staged --quiet || (git pull --rebase origin main && git commit -m "Automated data and plots update" && git push origin main)
