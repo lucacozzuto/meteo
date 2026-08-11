@@ -27,67 +27,22 @@
         "old_date": "1957-07-07"
     },
     {
-        "city": "Belgrade",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 29.304500579833984,
-        "new_date": "2026-08-06",
-        "old_record": 27.189,
-        "old_date": "2007-07-23"
-    },
-    {
-        "city": "Budapest",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 28.59549903869629,
-        "new_date": "2026-08-06",
-        "old_record": 26.7615,
-        "old_date": "2007-07-19"
-    },
-    {
         "city": "Kyiv",
         "region": "Europe",
         "metric": "massima",
-        "new_record": 37.92399978637695,
+        "new_record": 37.59999847412109,
         "new_date": "2026-08-06",
         "old_record": 36.394,
         "old_date": "2010-08-07"
     },
     {
-        "city": "Ljubljana",
-        "region": "Europe",
-        "metric": "massima",
-        "new_record": 37.61100006103516,
-        "new_date": "2026-08-06",
-        "old_record": 37.2,
-        "old_date": "2017-08-03"
-    },
-    {
-        "city": "Minsk",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 23.76099967956543,
-        "new_date": "2026-08-06",
-        "old_record": 22.626,
-        "old_date": "2010-08-06"
-    },
-    {
-        "city": "Italia",
-        "region": "Italy",
-        "metric": "massima",
-        "new_record": 40.25849914550781,
-        "new_date": "2026-08-06",
-        "old_record": 40.1,
-        "old_date": "2017-08-03"
-    },
-    {
-        "city": "Torino",
+        "city": "Milano",
         "region": "Italy",
         "metric": "minima",
-        "new_record": 26.364999771118164,
+        "new_record": 27.700000762939453,
         "new_date": "2026-08-06",
-        "old_record": 25.15,
-        "old_date": "2019-06-28"
+        "old_record": 26.45,
+        "old_date": "2022-07-24"
     },
     {
         "city": "Vienna",
@@ -315,13 +270,13 @@
         "old_date": "2018-08-07"
     },
     {
-        "city": "Milano",
+        "city": "Torino",
         "region": "Italy",
         "metric": "minima",
-        "new_record": 27.25,
+        "new_record": 25.89999961853028,
         "new_date": "2026-06-27",
-        "old_record": 26.45,
-        "old_date": "2022-07-24"
+        "old_record": 25.15,
+        "old_date": "2019-06-28"
     },
     {
         "city": "Brussels",
