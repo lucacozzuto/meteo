@@ -1,30 +1,39 @@
 [
     {
-        "city": "Kyiv",
+        "city": "Dublin",
         "region": "Europe",
-        "metric": "minima",
-        "new_record": 25.874000549316406,
-        "new_date": "2026-08-07",
-        "old_record": 24.7025,
-        "old_date": "1946-08-18"
+        "metric": "massima",
+        "new_record": 29.058500289916992,
+        "new_date": "2026-08-12",
+        "old_record": 27.3645,
+        "old_date": "1990-08-01"
     },
     {
-        "city": "Ljubljana",
-        "region": "Europe",
+        "city": "Trieste",
+        "region": "Italy",
         "metric": "minima",
-        "new_record": 24.06100082397461,
-        "new_date": "2026-08-07",
-        "old_record": 23.441,
-        "old_date": "2013-08-05"
+        "new_record": 27.72100067138672,
+        "new_date": "2026-08-12",
+        "old_record": 26.204,
+        "old_date": "2025-08-10"
     },
     {
-        "city": "Zagreb",
-        "region": "Europe",
+        "city": "Italia",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 40.10850143432617,
+        "new_date": "2026-08-11",
+        "old_record": 40.1,
+        "old_date": "2017-08-03"
+    },
+    {
+        "city": "Bologna",
+        "region": "Italy",
         "metric": "minima",
-        "new_record": 25.58699989318848,
-        "new_date": "2026-08-07",
-        "old_record": 25.1035,
-        "old_date": "1957-07-07"
+        "new_record": 26.55649948120117,
+        "new_date": "2026-08-11",
+        "old_record": 26.3,
+        "old_date": "2019-06-27"
     },
     {
         "city": "Kyiv",
@@ -52,6 +61,15 @@
         "new_date": "2026-08-05",
         "old_record": 25.13,
         "old_date": "2015-07-22"
+    },
+    {
+        "city": "Zagreb",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 25.39999961853028,
+        "new_date": "2026-08-05",
+        "old_record": 25.1035,
+        "old_date": "1957-07-07"
     },
     {
         "city": "Firenze",
@@ -88,15 +106,6 @@
         "new_date": "2026-08-04",
         "old_record": 38.58,
         "old_date": "1957-07-07"
-    },
-    {
-        "city": "Trieste",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 27.503999710083008,
-        "new_date": "2026-08-02",
-        "old_record": 26.204,
-        "old_date": "2025-08-10"
     },
     {
         "city": "LAquila",
