@@ -36,24 +36,6 @@
         "old_date": "2025-08-10"
     },
     {
-        "city": "Bologna",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 26.55649948120117,
-        "new_date": "2026-08-11",
-        "old_record": 26.3,
-        "old_date": "2019-06-27"
-    },
-    {
-        "city": "Italia",
-        "region": "Italy",
-        "metric": "massima",
-        "new_record": 40.10850143432617,
-        "new_date": "2026-08-11",
-        "old_record": 40.1,
-        "old_date": "2017-08-03"
-    },
-    {
         "city": "Kyiv",
         "region": "Europe",
         "metric": "massima",
