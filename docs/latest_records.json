@@ -18,24 +18,6 @@
         "old_date": "2023-08-20"
     },
     {
-        "city": "Dublin",
-        "region": "Europe",
-        "metric": "massima",
-        "new_record": 29.058500289916992,
-        "new_date": "2026-08-12",
-        "old_record": 27.3645,
-        "old_date": "1990-08-01"
-    },
-    {
-        "city": "Trieste",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 27.72100067138672,
-        "new_date": "2026-08-12",
-        "old_record": 26.204,
-        "old_date": "2025-08-10"
-    },
-    {
         "city": "Kyiv",
         "region": "Europe",
         "metric": "massima",
@@ -106,6 +88,15 @@
         "new_date": "2026-08-04",
         "old_record": 38.58,
         "old_date": "1957-07-07"
+    },
+    {
+        "city": "Trieste",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 27.503999710083008,
+        "new_date": "2026-08-02",
+        "old_record": 26.204,
+        "old_date": "2025-08-10"
     },
     {
         "city": "Trieste",
