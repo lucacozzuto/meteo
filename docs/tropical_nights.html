@@ -227,65 +227,53 @@
 </div>
 
 <header>
-    <h1>Notti Tropicali - Meteo Dashboard</h1>
-    <p class="subtitle">Analisi climatica automatizzata dei record di calore e precipitazioni in Europa e Italia (1940 - <span id="current-date">Oggi</span>).</p>
+    <h1>Notti Roventi - Meteo Dashboard</h1>
+    <p class="subtitle">Analisi climatica automatizzata del numero di notti con temperatura minima non inferiore a 25°C (massimo stress termico notturno) in Europa e Italia (1940 - <span id="current-date">Oggi</span>).</p>
     
 </header>
 
 <div class="container">
     <a href="index.html" style="display: inline-block; margin-bottom: 2rem; color: var(--accent-color); text-decoration: none; font-weight: bold;">&larr; Torna alla Home</a>
-    <h2 class="section-title">🌙 Notti Tropicali (Minima >= 20°C)</h2>
+    <h2 class="section-title">🔥 Notti Roventi / Equatoriali (Minima >= 25°C)</h2>
     <div class="grid">
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="tropical_nights_italy.png" alt="Notti Tropicali Italia" loading="lazy" class="zoomable">
+                <img src="tropical_nights_italy.png" alt="Notti Roventi Italia" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Italia</h3>
-                <p class="card-desc">Numero assoluto di notti in un anno solare in cui la temperatura minima non è scesa sotto i 20°C.</p>
+                <p class="card-desc">Numero assoluto di notti in un anno solare in cui la temperatura minima non è scesa sotto i 25°C.</p>
             </div>
         </div>
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="tropical_nights_europe.png" alt="Notti Tropicali Europa" loading="lazy" class="zoomable">
+                <img src="tropical_nights_europe.png" alt="Notti Roventi Europa" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Europa</h3>
-                <p class="card-desc">Numero assoluto di notti in un anno solare in cui la temperatura minima non è scesa sotto i 20°C.</p>
-            </div>
-        </div>
-    </div>
-
-    <div style="margin: 2rem 0; padding: 1.25rem 1.5rem; background-color: #fffbebf5; border-left: 4px solid #f59e0b; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <div style="display: flex; align-items: flex-start; gap: 12px;">
-            <span style="font-size: 1.4rem; line-height: 1;">⚠️</span>
-            <div>
-                <strong style="color: #92400e; font-size: 1rem; display: block; margin-bottom: 0.25rem;">Avviso metodologico sulle Temperature Minime (Rianalisi ERA5)</strong>
-                <p style="margin: 0; color: #78350f; font-size: 0.92rem; line-height: 1.5;">
-                    I dati si basano sulla rianalisi atmosferica globale <strong>ECMWF ERA5</strong> (~25 km). Nei decenni pre-satellitari (in particolare 1940–1955), a causa della minore densità di osservazioni storiche e dell'assimilazione della temperatura della superficie marina su celle di griglia costiere, il modello può mostrare una sovrastima (warm bias) delle minime notturne per alcune città marittime rispetto a stazioni di terraferma o in altura (es. Observatori Fabra a Barcellona). L'era satellitare (dal 1979 in poi) garantisce la massima accuratezza.
-                </p>
+                <p class="card-desc">Numero assoluto di notti in un anno solare in cui la temperatura minima non è scesa sotto i 25°C.</p>
             </div>
         </div>
     </div>
     
-    <h2 class="section-title">📊 Anomalie delle Notti Tropicali</h2>
+    <h2 class="section-title">📊 Anomalie delle Notti Roventi</h2>
     <div class="grid">
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="tropical_nights_anomaly_italy.png" alt="Anomalie Notti Tropicali Italia" loading="lazy" class="zoomable">
+                <img src="tropical_nights_anomaly_italy.png" alt="Anomalie Notti Roventi Italia" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Anomalie Italia</h3>
-                <p class="card-desc">Deviazione del numero di notti tropicali rispetto alla media storica. Colori caldi indicano anni con più notti tropicali della norma.</p>
+                <p class="card-desc">Deviazione del numero di notti roventi rispetto alla media storica. Colori caldi indicano anni con più notti roventi della norma.</p>
             </div>
         </div>
         <div class="card">
             <div class="card-img-wrapper">
-                <img src="tropical_nights_anomaly_europe.png" alt="Anomalie Notti Tropicali Europa" loading="lazy" class="zoomable">
+                <img src="tropical_nights_anomaly_europe.png" alt="Anomalie Notti Roventi Europa" loading="lazy" class="zoomable">
             </div>
             <div class="card-content">
                 <h3 class="card-title">Anomalie Europa</h3>
-                <p class="card-desc">Deviazione del numero di notti tropicali rispetto alla media storica. Colori caldi indicano anni con più notti tropicali della norma.</p>
+                <p class="card-desc">Deviazione del numero di notti roventi rispetto alla media storica. Colori caldi indicano anni con più notti roventi della norma.</p>
             </div>
         </div>
     </div>

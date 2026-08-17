@@ -40,8 +40,8 @@ all_data['year'] = all_data['date'].dt.year
 # Filter from 1940 onwards
 all_data = all_data[all_data['year'] >= 1940]
 
-# Notti tropicali: temperatura minima >= 20 C
-all_data['is_tropical'] = (all_data['temperature_2m_min'] >= 20).astype(int)
+# Notti roventi: temperatura minima >= 25 C
+all_data['is_tropical'] = (all_data['temperature_2m_min'] >= 25).astype(int)
 yearly_data = all_data.groupby(['city', 'year'])['is_tropical'].sum().reset_index()
 
 heatmap_data = yearly_data.pivot(index='city', columns='year', values='is_tropical').fillna(0).astype(int)
@@ -55,11 +55,11 @@ annot_data = np.where(heatmap_data == 0, "", heatmap_data.astype(str))
 
 fig, ax = plt.subplots(figsize=(30, 16))
 
-# Use a purplish colormap for nights
+# Use a purplish/fire colormap for scorching nights
 sns.heatmap(heatmap_data, cmap=mcolors.LinearSegmentedColormap.from_list('WhitePurples', ['white', 'plum', 'purple', 'indigo']), ax=ax, annot=annot_data, fmt="", annot_kws={"size": 8},
-            linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Notti >= 20°C'})
+            linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Notti >= 25°C'})
 
-ax.set_title('Numero di Notti Tropicali (Minima >= 20°C) per anno in Europa', fontsize=18)
+ax.set_title('Numero di Notti Roventi (Minima >= 25°C) per anno in Europa', fontsize=18)
 ax.set_xlabel('Anno', fontsize=14)
 ax.set_ylabel('Città (Da Nord a Sud)', fontsize=14)
 
@@ -68,7 +68,7 @@ plt.tight_layout()
 
 output_path = 'docs/tropical_nights_europe.png'
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
-print(f"Tropical nights heatmap saved to {output_path}")
+print(f"Scorching nights heatmap saved to {output_path}")
 plt.close(fig)
 
 # --- ANOMALY HEATMAP ---
@@ -89,9 +89,9 @@ annot_anomaly = anomaly_data.round(0).astype(int).astype(str)
 annot_anomaly = np.where(annot_anomaly == '0', '', annot_anomaly)
 
 sns.heatmap(anomaly_data, cmap='coolwarm', ax=ax2, annot=False,
-            center=0, linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Deviazione Notti >= 20°C'})
+            center=0, linewidths=0.1, linecolor='lightgray', xticklabels=True, cbar_kws={'label': 'Deviazione Notti >= 25°C'})
 
-ax2.set_title('Anomalia del Numero di Notti Tropicali (Deviazione dalla media storica) per anno in Europa', fontsize=18)
+ax2.set_title('Anomalia del Numero di Notti Roventi (Deviazione dalla media storica) per anno in Europa', fontsize=18)
 ax2.set_xlabel('Anno', fontsize=14)
 ax2.set_ylabel('Città (Da Nord a Sud)', fontsize=14)
 
@@ -100,6 +100,6 @@ plt.tight_layout()
 
 anomaly_output_path = 'docs/tropical_nights_anomaly_europe.png'
 plt.savefig(anomaly_output_path, dpi=300, bbox_inches='tight')
-print(f"Tropical nights anomaly heatmap saved to {anomaly_output_path}")
+print(f"Scorching nights anomaly heatmap saved to {anomaly_output_path}")
 plt.close(fig2)
 
