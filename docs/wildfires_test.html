@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rischio Incendi e Aree Bruciate — Meteo Tracker (Test Italia/Roma)</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0c10;
+            --bg-card: rgba(22, 27, 34, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-fire: #ff3d00;
+            --accent-orange: #ff7539;
+            --accent-yellow: #ffd700;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 5%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 61, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 117, 57, 0.05) 0%, transparent 40%);
+            min-height: 100vh;
+        }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff8a00, #ff2000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .header p { color: var(--text-muted); font-size: 1.1rem; max-width: 800px; margin: 0 auto; }
+        
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #fff; text-decoration: underline; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 61, 0, 0.3);
+        }
+        .stat-label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        .stat-val { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 700; color: #fff; }
+        .stat-sub { font-size: 0.8rem; color: var(--accent-orange); margin-top: 0.25rem; }
+        
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .chart-header {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .chart-title { font-size: 1.35rem; font-weight: 600; color: #fff; }
+        .chart-desc { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .plot-div { width: 100%; height: 480px; }
+        
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="nav-link">← Torna alla Home / Analisi Principali</a>
+    
+    <div class="header">
+        <h1>Rischio Incendi & Aree Bruciate</h1>
+        <p>Analisi della correlazione diretta tra lo stress termico/igromettrico atmosferico (Fire Weather Index) della capitale e l'estensione reale degli incendi boschivi (dati satellitari GWIS/OWID).</p>
+        <div style="margin-top: 0.75rem; display: inline-block; background: rgba(255, 61, 0, 0.15); border: 1px solid var(--accent-fire); color: #ffab91; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+            🔬 Modulo di Test Scientifico: ITALIA / ROMA
+        </div>
+    </div>
+    
+    <div class="stats-grid" id="stats-grid">
+        <!-- Populated via JS -->
+    </div>
+    
+    <!-- Chart 1: Dual Axis 2012-2026 -->
+    <div class="chart-container">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Ettari Bruciati in Italia vs Giornate Roventi a Roma (1980–2026)</div>
+                <div class="chart-desc">Confronto tra la superficie forestale andata in fumo in Italia (EFFIS 1980-2011 / GWIS 2012-2026) e la frequenza delle giornate con temperature ad oltranza e rischio fuoco estremo (FWI > 2.5) a Roma.</div>
+            </div>
+        </div>
+        <div id="chart-dual" class="plot-div"></div>
+    </div>
+    
+    <!-- Chart 2: Historical Trend 1940-2026 -->
+    <div class="chart-container">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Trend Storico Rischio Meteo Incendi a Roma (1940–2026)</div>
+                <div class="chart-desc">Numero di giornate estive (Giugno-Agosto) con indice atmosferico di pericolo fuoco estremo. La linea verde rappresenta la media mobile a 10 anni (trend climatico).</div>
+            </div>
+        </div>
+        <div id="chart-hist" class="plot-div"></div>
+    </div>
+
+    <!-- Chart 3: 2026 Daily Evolution -->
+    <div class="chart-container">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Stagione in Corso: Evoluzione Giornaliera Rischio Fuoco (Estate 2026)</div>
+                <div class="chart-desc">Andamento del Fire Danger Score (Angström Modificato) da Maggio a oggi a Roma. I picchi sopra 2.5 indicano condizioni atmosferiche altamente infiammabili per la vegetazione.</div>
+            </div>
+        </div>
+        <div id="chart-daily" class="plot-div"></div>
+    </div>
+    
+    <div class="footer">
+        Dati satellitari aree bruciate: GWIS / Copernicus / Our World in Data (2012–2026). Dati meteorologici capitali: Open-Meteo ERA5 / AEMET / E-OBS (1940–2026).<br>
+        Indice di pericolo calcolato con equazione di Angström modificata e stima umidità FAO-56.
+    </div>
+
+    <script>
+        fetch('wildfire_test_italy.json')
+            .then(res => res.json())
+            .then(data => {
+                renderStats(data);
+                renderDualChart(data);
+                renderHistChart(data);
+                renderDailyChart(data);
+            })
+            .catch(err => {
+                console.error("Errore caricamento dati:", err);
+                document.getElementById('stats-grid').innerHTML = `<div style="color:#ff3d00; grid-column: 1/-1; text-align:center;">Errore nel caricamento del file wildfire_test_italy.json. Verificare che lo script di calcolo sia stato eseguito.</div>`;
+            });
+            
+        function renderStats(data) {
+            const y2025 = data.years[2025] || {};
+            const y2026 = data.years[2026] || {};
+            const b2025 = (y2025.burnt_italy && y2025.burnt_italy.summer_ha) ? Math.round(y2025.burnt_italy.summer_ha).toLocaleString('it-IT') : 'N/A';
+            const b2026 = (y2026.burnt_italy && y2026.burnt_italy.summer_ha) ? Math.round(y2026.burnt_italy.summer_ha).toLocaleString('it-IT') : 'N/A';
+            
+            // Find max burnt year
+            let maxBurnt = 0;
+            let maxBurntYear = '-';
+            Object.keys(data.years).forEach(y => {
+                const val = data.years[y].burnt_italy ? data.years[y].burnt_italy.summer_ha : 0;
+                if (val > maxBurnt) { maxBurnt = val; maxBurntYear = y; }
+            });
+            
+            const hot2024 = (data.years[2024] && data.years[2024].metrics_roma) ? data.years[2024].metrics_roma.hot_days_90th : 0;
+            const hot2026 = (data.years[2026] && data.years[2026].metrics_roma) ? data.years[2026].metrics_roma.hot_days_90th : 0;
+            
+            const grid = document.getElementById('stats-grid');
+            grid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Ettari Bruciati (Estate 2025)</div>
+                    <div class="stat-val">${b2025} ha</div>
+                    <div class="stat-sub">Italia — Giugno/Luglio/Agosto</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Ettari Bruciati (Estate 2026)</div>
+                    <div class="stat-val" style="color: #ffab91;">${b2026} ha</div>
+                    <div class="stat-sub">Italia — Dati provvisori in corso</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Stagione Nera (Record 2012–26)</div>
+                    <div class="stat-val" style="color: #ff3d00;">${Math.round(maxBurnt).toLocaleString('it-IT')} ha</div>
+                    <div class="stat-sub">Registrato nell'estate ${maxBurntYear}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Giorni Roventi a Roma (>90° perc)</div>
+                    <div class="stat-val">${hot2026} gg <span style="font-size:1rem; color:var(--text-muted);">(2026)</span></div>
+                    <div class="stat-sub">Record recente: ${hot2024} giorni nel 2024</div>
+                </div>
+            `;
+        }
+        
+        const plotlyLayoutDefaults = {
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'transparent',
+            font: { family: 'Inter, sans-serif', color: '#f0f6fc' },
+            margin: { t: 40, r: 50, b: 50, l: 60 },
+            hovermode: 'x unified',
+            legend: { orientation: 'h', y: -0.15, x: 0, font: { size: 12 } }
+        };
+
+        function renderDualChart(data) {
+            const years = [];
+            const burntSummer = [];
+            const hotDays = [];
+            const extDays = [];
+            
+            for (let y = 1980; y <= 2026; y++) {
+                if (data.years[y]) {
+                    years.push(y);
+                    burntSummer.push(data.years[y].burnt_italy ? Math.round(data.years[y].burnt_italy.summer_ha || 0) : 0);
+                    hotDays.push(data.years[y].metrics_roma ? data.years[y].metrics_roma.hot_days_90th : 0);
+                    extDays.push(data.years[y].metrics_roma ? data.years[y].metrics_roma.extreme_fire_days : 0);
+                }
+            }
+            
+            const traceBar = {
+                x: years,
+                y: burntSummer,
+                name: 'Ettari Bruciati in Estate (Italia - JJA)',
+                type: 'bar',
+                marker: { color: 'rgba(255, 87, 34, 0.8)', line: { color: '#ff3d00', width: 1 } },
+                yaxis: 'y1',
+                hovertemplate: '<b>%{x}</b><br>Ettari Bruciati: %{y:,} ha<extra></extra>'
+            };
+            
+            const traceHot = {
+                x: years,
+                y: hotDays,
+                name: 'Giorni Roventi a Roma (>90° percentile)',
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: { color: '#ffd700', size: 8 },
+                line: { color: '#ffd700', width: 3 },
+                yaxis: 'y2',
+                hovertemplate: 'Giorni Roventi (>90°): %{y} gg<extra></extra>'
+            };
+            
+            const traceExt = {
+                x: years,
+                y: extDays,
+                name: 'Giorni Rischio Fuoco Estremo a Roma (FWI > 2.5)',
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: { color: '#ff1744', size: 7, symbol: 'square' },
+                line: { color: '#ff1744', width: 2, dash: 'dash' },
+                yaxis: 'y2',
+                hovertemplate: 'Rischio Fuoco Estremo: %{y} gg<extra></extra>'
+            };
+            
+            const layout = {
+                ...plotlyLayoutDefaults,
+                xaxis: { title: 'Anno', tickmode: 'linear', dtick: 1, gridcolor: 'rgba(255,255,255,0.08)' },
+                yaxis: { 
+                    title: { text: 'Ettari Bruciati in Estate (ha)', font: { color: '#ff7539' } },
+                    tickfont: { color: '#ff7539' },
+                    gridcolor: 'rgba(255,255,255,0.08)' 
+                },
+                yaxis2: {
+                    title: { text: 'Numero di Giorni a Roma', font: { color: '#ffd700' } },
+                    tickfont: { color: '#ffd700' },
+                    overlaying: 'y',
+                    side: 'right',
+                    showgrid: false,
+                    zeroline: false
+                }
+            };
+            
+            Plotly.newPlot('chart-dual', [traceBar, traceHot, traceExt], layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function renderHistChart(data) {
+            const years = [];
+            const extDays = [];
+            
+            Object.keys(data.years).sort().forEach(y => {
+                if (parseInt(y) >= 1940) {
+                    years.push(parseInt(y));
+                    extDays.push(data.years[y].metrics_roma ? data.years[y].metrics_roma.extreme_fire_days : 0);
+                }
+            });
+            
+            // Calculate 10-year rolling mean
+            const rolling = [];
+            const win = 10;
+            for (let i = 0; i < extDays.length; i++) {
+                let sum = 0; let count = 0;
+                for (let j = Math.max(0, i - Math.floor(win/2)); j <= Math.min(extDays.length - 1, i + Math.floor(win/2)); j++) {
+                    sum += extDays[j];
+                    count++;
+                }
+                rolling.push(count >= 3 ? (sum / count).toFixed(1) : null);
+            }
+            
+            const traceBar = {
+                x: years,
+                y: extDays,
+                name: 'Giorni Rischio Estremo per Anno (JJA)',
+                type: 'bar',
+                marker: { color: 'rgba(255, 61, 0, 0.6)' },
+                hovertemplate: '<b>Anno %{x}</b><br>Giorni Rischio Estremo: %{y} gg<extra></extra>'
+            };
+            
+            const traceRoll = {
+                x: years,
+                y: rolling,
+                name: 'Media Mobile 10 Anni (Trend Climatico)',
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: '#00e676', width: 3.5 },
+                hovertemplate: 'Media 10 Anni: %{y} gg<extra></extra>'
+            };
+            
+            const layout = {
+                ...plotlyLayoutDefaults,
+                xaxis: { title: 'Anno', gridcolor: 'rgba(255,255,255,0.08)' },
+                yaxis: { title: 'Giorni a Rischio Estremo (FWI > 2.5)', gridcolor: 'rgba(255,255,255,0.08)' }
+            };
+            
+            Plotly.newPlot('chart-hist', [traceBar, traceRoll], layout, { responsive: true, displayModeBar: false });
+        }
+        
+        function renderDailyChart(data) {
+            if (!data.daily_2026_roma || data.daily_2026_roma.length === 0) return;
+            
+            const dates = data.daily_2026_roma.map(d => d.date);
+            const scores = data.daily_2026_roma.map(d => d.fire_danger);
+            const tmaxs = data.daily_2026_roma.map(d => d.tmax);
+            const rhs = data.daily_2026_roma.map(d => d.rh_min);
+            
+            const traceLine = {
+                x: dates,
+                y: scores,
+                name: 'Fire Danger Score (Angström Modificato)',
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: { color: '#ff9100', size: 5 },
+                line: { color: '#ff9100', width: 2.5 },
+                customdata: tmaxs.map((t, i) => [t, rhs[i]]),
+                hovertemplate: '<b>%{x}</b><br>Fire Danger Score: <b>%{y}</b><br>Temp Max: %{customdata[0]}°C<br>Umidità Min Stimat: %{customdata[1]}%<extra></extra>'
+            };
+            
+            const traceThresh = {
+                x: [dates[0], dates[dates.length - 1]],
+                y: [2.5, 2.5],
+                name: 'Soglia Rischio Estremo (2.5)',
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: '#ff1744', width: 2, dash: 'dot' },
+                hoverinfo: 'none'
+            };
+            
+            const layout = {
+                ...plotlyLayoutDefaults,
+                xaxis: { title: 'Data (Maggio — Oggi 2026)', gridcolor: 'rgba(255,255,255,0.08)' },
+                yaxis: { title: 'Punteggio Pericolo Fuoco', gridcolor: 'rgba(255,255,255,0.08)', range: [0, Math.max(...scores, 3.5) * 1.1] }
+            };
+            
+            Plotly.newPlot('chart-daily', [traceLine, traceThresh], layout, { responsive: true, displayModeBar: false });
+        }
+    </script>
+</body>
+</html>

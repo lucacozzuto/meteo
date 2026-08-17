@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Record Mensili</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f9f9f9;
+            --accent-color: #2563eb;
+            --border-color: #e5e5e5;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: var(--card-bg);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        h1 {
+            margin: 0;
+            color: var(--accent-color);
+        }
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        select {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .chart-container {
+            position: relative;
+            height: 600px;
+            width: 100%;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .legend-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Record Assoluti di Temperatura Mensile</h1>
+    <a href="index.html" class="back-link">&larr; Torna alla Dashboard Principale</a>
+</header>
+
+<div class="container">
+    <div class="legend-box">
+        <div class="legend-item"><div class="color-box" style="background-color: lightgray;"></div> Baseline (1940-1954)</div>
+        <div class="legend-item"><div class="color-box" style="background-color: white;"></div> Nessun Record</div>
+        <div class="legend-item"><div class="color-box" style="background-color: #ff7f7f;"></div> Nuovo Record</div>
+    </div>
+    <div class="controls">
+        <select id="datasetSelect">
+            <option value="Italy">Italia</option>
+            <option value="Europe">Europa</option>
+        </select>
+        <select id="metricSelect">
+            <option value="max">Record di Temperature Massime</option>
+            <option value="min">Record di Notti Più Calde (Minima Più Alta)</option>
+            <option value="mean">Temperature Medie</option>
+        </select>
+        <select id="citySelect">
+            <!-- Options populated by JS -->
+        </select>
+    </div>
+
+    <div class="chart-container" id="recordChart"></div>
+    <div class="chart-container" id="dailyEvolutionChart" style="height: 500px; margin-top: 3rem;"></div>
+    <div class="chart-container" id="anomalyChart" style="height: 400px; margin-top: 3rem;"></div>
+    <div class="chart-container" id="heatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
+    <div class="chart-container" id="nightHeatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
+    
+    <div class="top-summers-container" id="topSummersSection" style="margin-top: 3rem; background-color: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+        <h2 style="text-align: center; color: var(--accent-color); font-size: 1.4rem; margin-bottom: 1rem;">
+            🏆 Classifica Top 10 Estati Più Calde (Giugno–Agosto)
+        </h2>
+        <div id="topSummersTableContainer"></div>
+    </div>
+</div>
+
+<script>
+    let recordsData = null;
+    // Note: Heatmap y-axis goes from bottom to top in Plotly by default
+    const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+
+    const datasetSelect = document.getElementById('datasetSelect');
+    const citySelect = document.getElementById('citySelect');
+
+    async function loadData() {
+        try {
+            const response = await fetch('monthly_records.json?v=' + new Date().getTime());
+            recordsData = await response.json();
+            updateCityDropdown();
+            renderCharts();
+        } catch (error) {
+            console.error("Errore nel caricamento dei dati:", error);
+        }
+    }
+
+    function updateCityDropdown() {
+        const dataset = datasetSelect.value;
+        let cities = Object.keys(recordsData[dataset]);
+
+        // Put Italia / Europa at the top of the list if present
+        const topKey = dataset === 'Italy' ? 'Italia' : 'Europa';
+        if (cities.includes(topKey)) {
+            cities = [topKey, ...cities.filter(c => c !== topKey)];
+        }
+
+        citySelect.innerHTML = '';
+        cities.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            if (city === 'Italia') {
+                option.textContent = '🇮🇹 Italia (Intera Nazione)';
+            } else if (city === 'Europa') {
+                option.textContent = '🇪🇺 Europa (Intero Continente)';
+            } else {
+                option.textContent = city;
+            }
+            citySelect.appendChild(option);
+        });
+
+        if (cities.length > 0) {
+            citySelect.value = cities[0];
+        }
+    }
+
+    function renderCharts() {
+        renderHeatmap();
+        renderDailyEvolutionChart();
+        renderAnomalyChart();
+        renderHeatwavesChart();
+        renderNightHeatwavesChart();
+        renderTopSummersTable();
+    }
+
+    function renderHeatmap() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const metric = document.getElementById('metricSelect').value;
+        const cityData = recordsData[dataset][city];
+
+        const years = cityData.years;
+        
+        let records = [];
+        let temps = [];
+        if (metric === 'max') {
+            records = cityData.records;
+            temps = cityData.temps;
+        } else if (metric === 'min') {
+            records = cityData.records_min;
+            temps = cityData.temps_min;
+        } else if (metric === 'mean') {
+            records = cityData.mean_temps;
+            temps = cityData.mean_temps;
+        }
+
+        // Reverse arrays so Jan is at top, Dec at bottom
+        let recordsReversed = [...records].reverse();
+        let tempsReversed = [...temps].reverse();
+        let monthsReversed = [...months].reverse();
+
+        let annotations = [];
+        let colorscale = [];
+        let zmin, zmax, showscale, hoverinfo;
+
+        if (metric === 'mean') {
+            // For mean temps, z is the temperature values directly
+            colorscale = [
+                [0, '#313695'], [0.25, '#74add1'], [0.5, '#ffffbf'], [0.75, '#f46d43'], [1, '#a50026']
+            ];
+            let allTemps = records.flat();
+            zmin = Math.min(...allTemps);
+            zmax = Math.max(...allTemps);
+            showscale = true;
+            hoverinfo = 'x+y+z';
+            // Disable legend-box visually since it's only for records
+            document.querySelector('.legend-box').style.display = 'none';
+        } else {
+            // For records, z is -1, 0, 1
+            colorscale = [
+                [0.0, 'lightgray'],   // maps to -1
+                [0.5, 'white'],       // maps to 0
+                [1.0, metric === 'max' ? '#ff7f7f' : '#3b82f6'] // red for max, blue for min
+            ];
+            zmin = -1;
+            zmax = 1;
+            showscale = false;
+            hoverinfo = 'none';
+            document.querySelector('.legend-box').style.display = 'flex';
+            
+            for (let i = 0; i < recordsReversed.length; i++) {
+                for (let j = 0; j < recordsReversed[i].length; j++) {
+                    if (recordsReversed[i][j] === 1) {
+                        annotations.push({
+                            x: years[j],
+                            y: monthsReversed[i],
+                            text: tempsReversed[i][j].toFixed(1),
+                            showarrow: false,
+                            font: {
+                                color: 'black',
+                                size: 5,
+                                weight: 'bold'
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        var data = [{
+            z: recordsReversed,
+            x: years,
+            y: monthsReversed,
+            type: 'heatmap',
+            colorscale: colorscale,
+            zmin: zmin,
+            zmax: zmax,
+            showscale: showscale,
+            hoverinfo: hoverinfo
+        }];
+
+        let titleText = "";
+        if (metric === 'max') titleText = `Nuovi Record di Temperatura Massima Assoluta Mensile - ${city}`;
+        else if (metric === 'min') titleText = `Nuovi Record di Notti Più Calde (Minima Più Alta) Mensile - ${city}`;
+        else titleText = `Temperature Medie Mensili (°C) - ${city}`;
+
+        var layout = {
+            title: titleText,
+            xaxis: {
+                title: 'Anno',
+                tickangle: -45,
+                dtick: 5
+            },
+            yaxis: {
+                title: 'Mese',
+            },
+            annotations: annotations,
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('recordChart', data, layout, {responsive: true});
+    }
+
+    function renderAnomalyChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData ? recordsData[dataset][city] : null;
+
+        if (!cityData || !cityData.annual_anomalies) return;
+
+        const years = cityData.annual_years;
+        const anomalies = cityData.annual_anomalies;
+
+        const markerColors = years.map((y, idx) => {
+            const a = anomalies[idx];
+            if (y === 2026) {
+                return a >= 0 ? '#991b1b' : '#1e3a8a'; // Dark Red / Dark Blue for 2026 (ongoing)
+            }
+            return a >= 0 ? '#ef4444' : '#3b82f6';
+        });
+
+        const hoverText = years.map((y, idx) => {
+            const a = anomalies[idx];
+            const sign = a >= 0 ? '+' : '';
+            if (y === 2026) {
+                return `<b>2026 (In corso)</b><br>Anomalia parziale: <b>${sign}${a}°C</b>`;
+            }
+            return `<b>Anno ${y}</b><br>Anomalia: <b>${sign}${a}°C</b>`;
+        });
+
+        var data = [{
+            x: years,
+            y: anomalies,
+            type: 'bar',
+            hoverinfo: 'text',
+            text: hoverText,
+            marker: {
+                color: markerColors
+            }
+        }];
+
+        var layout = {
+            title: `Anomalia Termica Annuale - ${city} (rispetto alla media del periodo; 2026 in scuro)`,
+            xaxis: { title: 'Anno', dtick: 5, tickangle: -45 },
+            yaxis: { title: 'Anomalia (°C)' },
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('anomalyChart', data, layout, {responsive: true});
+    }
+
+    function renderDailyEvolutionChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData[dataset][city];
+
+        if (!cityData || !cityData.daily_2026) {
+            const chartDiv = document.getElementById('dailyEvolutionChart');
+            if (chartDiv) chartDiv.innerHTML = '';
+            return;
+        }
+
+        const daily = cityData.daily_2026;
+        const dates_2026 = daily.dates;
+        const temps_2026 = daily.temps;
+        const normals_2026 = daily.normals;
+        const dates_365 = daily.dates_365;
+        const normals_365 = daily.normals_365;
+
+        const pos_curve = temps_2026.map((t, i) => {
+            if (t === null || normals_2026[i] === null) return null;
+            return t > normals_2026[i] ? t : normals_2026[i];
+        });
+
+        const neg_curve = temps_2026.map((t, i) => {
+            if (t === null || normals_2026[i] === null) return null;
+            return t < normals_2026[i] ? t : normals_2026[i];
+        });
+
+        const traces = [
+            {
+                x: dates_2026,
+                y: normals_2026,
+                mode: 'lines',
+                line: { width: 0 },
+                showlegend: false,
+                hoverinfo: 'skip'
+            },
+            {
+                x: dates_2026,
+                y: pos_curve,
+                customdata: temps_2026,
+                mode: 'lines',
+                line: { color: '#ef4444', width: 1 },
+                fill: 'tonexty',
+                fillcolor: 'rgba(239, 68, 68, 0.85)',
+                name: 'Anomalia positiva (sopra media)',
+                hovertemplate: '<b>%{x}</b><br>Temp. 2026: %{customdata}°C<br>Normale (1991-2020): %{y}°C<extra></extra>'
+            },
+            {
+                x: dates_2026,
+                y: normals_2026,
+                mode: 'lines',
+                line: { width: 0 },
+                showlegend: false,
+                hoverinfo: 'skip'
+            },
+            {
+                x: dates_2026,
+                y: neg_curve,
+                customdata: temps_2026,
+                mode: 'lines',
+                line: { color: '#3b82f6', width: 1 },
+                fill: 'tonexty',
+                fillcolor: 'rgba(59, 130, 246, 0.85)',
+                name: 'Anomalia negativa (sotto media)',
+                hovertemplate: '<b>%{x}</b><br>Temp. 2026: %{customdata}°C<br>Normale (1991-2020): %{y}°C<extra></extra>'
+            },
+            {
+                x: dates_365,
+                y: normals_365,
+                mode: 'lines',
+                line: { color: '#16a34a', width: 2.5 },
+                name: 'Temperatura normale (media 1991-2020)',
+                hovertemplate: '<b>%{x}</b><br>Normale (1991-2020): %{y}°C<extra></extra>'
+            },
+            {
+                x: dates_2026,
+                y: temps_2026,
+                mode: 'lines',
+                line: { color: '#1e293b', width: 1.5 },
+                name: 'Evoluzione 2026',
+                showlegend: false,
+                hoverinfo: 'skip'
+            }
+        ];
+
+        const layout = {
+            title: `Evoluzione Giornaliera Temperatura Media (2026 vs Normale 1991-2020) - ${city}`,
+            xaxis: {
+                title: 'Data',
+                type: 'date',
+                tickformat: '%d %b',
+                range: ['2026-01-01', '2026-12-31']
+            },
+            yaxis: {
+                title: 'Temperatura Media (°C)',
+                zeroline: false
+            },
+            legend: {
+                orientation: 'h',
+                yanchor: 'top',
+                y: -0.15,
+                xanchor: 'center',
+                x: 0.5
+            },
+            margin: { t: 50, r: 20, l: 50, b: 80 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('dailyEvolutionChart', traces, layout, {responsive: true});
+    }
+
+    function renderHeatwavesChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData[dataset][city];
+
+        if (!cityData.heatwaves || cityData.heatwaves.length === 0) {
+            document.getElementById('heatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore registrata per questa città.</p>';
+            return;
+        }
+
+        const hws = cityData.heatwaves.filter(hw => hw.year >= 1980);
+        if (hws.length === 0) {
+            document.getElementById('heatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore (dal 1980 in poi) registrata per questa città.</p>';
+            return;
+        }
+
+        const dates = hws.map(hw => hw.start);
+        const anomalies = hws.map(hw => hw.anomaly);
+        const durationText = hws.map(hw => `Durata: ${hw.duration} giorni<br>Picco Assoluto: ${hw.max_temp}°C`);
+        const durationWidths = hws.map(hw => hw.duration * 86400000); // exact duration in ms
+        
+        var data = [{
+            x: dates,
+            y: anomalies,
+            type: 'bar',
+            text: durationText,
+            width: durationWidths,
+            hovertemplate: '%{x}<br>Anomalia: +%{y}°C<br>%{text}<extra></extra>',
+            marker: {
+                color: anomalies,
+                colorscale: 'Inferno',
+                cmin: 0,
+                cmax: Math.max(...anomalies, 10)
+            }
+        }];
+
+        // Gray shapes for non-summer months
+        const hwShapes = [];
+        for (let y = 1979; y <= 2026; y++) {
+            hwShapes.push({
+                type: 'rect', xref: 'x', yref: 'paper',
+                x0: `${y}-09-01`, x1: `${y+1}-06-01`,
+                y0: 0, y1: 1,
+                fillcolor: 'rgba(200,200,200,0.25)', line: { width: 0 }
+            });
+        }
+
+        var layout = {
+            title: `Ondate di Calore Estreme (90° Perc. JJA) - ${city}`,
+            xaxis: { 
+                title: 'Anno', 
+                type: 'date', 
+                range: ['1980-01-01', '2026-12-31']
+            },
+            yaxis: { title: 'Anomalia Termica (°C)' },
+            shapes: hwShapes,
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('heatwaveChart', data, layout, {responsive: true});
+    }
+
+    function renderNightHeatwavesChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData[dataset][city];
+
+        if (!cityData.night_heatwaves || cityData.night_heatwaves.length === 0) {
+            document.getElementById('nightHeatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore notturna registrata per questa città.</p>';
+            return;
+        }
+
+        const hws = cityData.night_heatwaves.filter(hw => hw.year >= 1980);
+        if (hws.length === 0) {
+            document.getElementById('nightHeatwaveChart').innerHTML = '<p style="text-align:center; color:#666;">Nessuna ondata di calore notturna (dal 1980 in poi) registrata per questa città.</p>';
+            return;
+        }
+
+        const dates = hws.map(hw => hw.start);
+        const anomalies = hws.map(hw => hw.anomaly);
+        const durationText = hws.map(hw => `Durata: ${hw.duration} giorni<br>Picco Minima: ${hw.max_temp}°C`);
+        const durationWidths = hws.map(hw => hw.duration * 86400000);
+        
+        var data = [{
+            x: dates,
+            y: anomalies,
+            type: 'bar',
+            text: durationText,
+            width: durationWidths,
+            hovertemplate: '%{x}<br>Anomalia: +%{y}°C<br>%{text}<extra></extra>',
+            marker: {
+                color: anomalies,
+                colorscale: 'Blues',
+                cmin: 0,
+                cmax: Math.max(...anomalies, 10)
+            }
+        }];
+
+        // Gray shapes for non-summer months
+        const nightShapes = [];
+        for (let y = 1979; y <= 2026; y++) {
+            nightShapes.push({
+                type: 'rect', xref: 'x', yref: 'paper',
+                x0: `${y}-09-01`, x1: `${y+1}-06-01`,
+                y0: 0, y1: 1,
+                fillcolor: 'rgba(200,200,200,0.25)', line: { width: 0 }
+            });
+        }
+
+        var layout = {
+            title: `Ondate di Calore NOTTURNE Estreme (Min > 90° Perc. JJA) - ${city}`,
+            xaxis: { 
+                title: 'Anno', 
+                type: 'date', 
+                range: ['1980-01-01', '2026-12-31']
+            },
+            yaxis: { title: 'Anomalia Termica (°C)' },
+            shapes: nightShapes,
+            margin: { t: 50, r: 20, l: 50, b: 60 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('nightHeatwaveChart', data, layout, {responsive: true});
+    }
+
+    function renderTopSummersTable() {
+        const dataset = datasetSelect.value;
+        let city = citySelect.value;
+        
+        if (!recordsData || !recordsData[dataset]) return;
+        
+        let cityData = recordsData[dataset][city];
+        if (!cityData) {
+            const available = Object.keys(recordsData[dataset]);
+            if (available.length > 0) {
+                city = available[0];
+                cityData = recordsData[dataset][city];
+            }
+        }
+
+        const container = document.getElementById('topSummersTableContainer');
+        if (!cityData || !cityData.top_summers || cityData.top_summers.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#666; font-size:1.1rem; padding:1rem;">Nessun dato disponibile per la classifica estiva.</p>';
+            return;
+        }
+
+        const summers = cityData.top_summers;
+        const maxTemp = summers[0].mean_temp;
+
+        let html = `
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; color: #1e293b; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <thead>
+                    <tr style="background-color: #f1f5f9; border-bottom: 2px solid #e2e8f0; color: #334155; font-weight: 700;">
+                        <th style="padding: 12px 16px; width: 80px;">Pos.</th>
+                        <th style="padding: 12px 16px; width: 150px;">Anno</th>
+                        <th style="padding: 12px 16px;">Media Estiva (°C)</th>
+                        <th style="padding: 12px 16px;">Media Massime (°C)</th>
+                        <th style="padding: 12px 16px;">Media Minime (°C)</th>
+                        <th style="padding: 12px 16px;">Giorni Monitorati</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        summers.forEach(s => {
+            let medal = '';
+            if (s.rank === 1) medal = '🥇 1°';
+            else if (s.rank === 2) medal = '🥈 2°';
+            else if (s.rank === 3) medal = '🥉 3°';
+            else medal = `#${s.rank}`;
+
+            let yearLabel = `${s.year}`;
+            let badge = '';
+            if (s.is_partial) {
+                badge = `<span style="background-color: #ef4444; color: #ffffff; padding: 3px 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; margin-left: 6px; display: inline-block;">In corso</span>`;
+            }
+
+            const pct = Math.max(10, Math.min(100, (s.mean_temp / maxTemp) * 100));
+
+            html += `
+            <tr style="border-bottom: 1px solid #e2e8f0; ${s.year === 2026 ? 'background-color: #fef2f2;' : ''}">
+                <td style="padding: 12px 16px; font-weight: 700; color: #0f172a;">${medal}</td>
+                <td style="padding: 12px 16px; font-weight: 700; color: #0f172a;">${yearLabel} ${badge}</td>
+                <td style="padding: 12px 16px; font-weight: 700; color: #dc2626;">
+                    ${s.mean_temp.toFixed(2)} °C
+                    <div style="background-color: #fee2e2; border-radius: 4px; height: 7px; width: 140px; margin-top: 5px; overflow: hidden;">
+                        <div style="background-color: #ef4444; height: 100%; width: ${pct}%;"></div>
+                    </div>
+                </td>
+                <td style="padding: 12px 16px; color: #334155; font-weight: 600;">${s.mean_max.toFixed(1)} °C</td>
+                <td style="padding: 12px 16px; color: #334155; font-weight: 600;">${s.mean_min.toFixed(1)} °C</td>
+                <td style="padding: 12px 16px; color: #64748b; font-weight: 500;">${s.days} / 92 gg</td>
+            </tr>
+            `;
+        });
+
+        html += `
+                </tbody>
+            </table>
+        </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    datasetSelect.addEventListener('change', () => {
+        updateCityDropdown();
+        renderCharts();
+    });
+
+    citySelect.addEventListener('change', renderCharts);
+    document.getElementById('metricSelect').addEventListener('change', renderHeatmap);
+
+    // Initialize
+    loadData();
+</script>
+
+</body>
+</html>

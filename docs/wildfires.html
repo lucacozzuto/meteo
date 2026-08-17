@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incendi Boschivi nel Mediterraneo (1980–2026) — Meteo Records</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0c10;
+            --bg-card: rgba(22, 27, 34, 0.75);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --accent-fire: #ff3d00;
+            --accent-orange: #ff7539;
+            --accent-cyan: #00ffcc;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 5%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 61, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 117, 57, 0.05) 0%, transparent 40%);
+            min-height: 100vh;
+        }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff8a00, #ff2000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .header p { color: var(--text-muted); font-size: 1.1rem; max-width: 900px; margin: 0 auto; }
+        
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #fff; text-decoration: underline; }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card img:hover {
+            transform: scale(1.003);
+        }
+
+        .legend-box {
+            background: rgba(255, 61, 0, 0.05);
+            border: 1px solid rgba(255, 61, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        .legend-box h3 { color: var(--accent-orange); margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .legend-box ul { list-style: none; padding-left: 0; }
+        .legend-box li { margin-bottom: 0.5rem; color: #d0d7de; font-size: 0.95rem; }
+
+        /* Modal Lightbox */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 30px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            overflow: auto;
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 95%;
+            max-width: 1600px;
+        }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+
+<a href="index.html" class="nav-link">← Torna alla Dashboard Meteo</a>
+
+<div class="header">
+    <h1>🔥 Incendi Boschivi nel Mediterraneo (1980–2026)</h1>
+    <p>Serie storica continuativa della superficie forestale bruciata in ettari nei 5 principali paesi del Mediterraneo (Spagna, Italia, Grecia, Portogallo, Francia), basata sui <strong>dati ufficiali di terra EFFIS (European Forest Fire Information System)</strong> trasmessi dai servizi antincendio nazionali alla Commissione Europea.</p>
+</div>
+
+<!-- GRAFICO CUMULATIVO INTERATTIVO PER PAESE -->
+<div class="card">
+    <h2 style="font-size: 1.4rem; color: var(--accent-fire); margin-bottom: 0.5rem;">📈 Cumulata Annuale degli Incendi Boschivi per Paese (1980–2026)</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">
+        Evoluzione cumulativa della superficie forestale bruciata (in ettari) dall'inizio dell'anno ad oggi. L'anno in corso <strong>2026 (linea ROSSA)</strong> è messo a confronto diretto con la serie storica degli anni precedenti (1980–2025 in <strong>linee GRIGIE</strong>).
+    </p>
+    
+    <div style="margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <label for="countrySelect" style="font-weight: 600; color: var(--accent-orange); font-size: 1rem;">Seleziona Paese / Bacino:</label>
+        <select id="countrySelect" style="padding: 0.6rem 1.2rem; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; outline: none;">
+            <option value="TOTALE" style="background: #161b22; color: #fff;">🌐 TOTALE (Mediterraneo)</option>
+            <option value="Italia" style="background: #161b22; color: #fff;">🇮🇹 Italia</option>
+            <option value="Spagna" style="background: #161b22; color: #fff;">🇪🇸 Spagna</option>
+            <option value="Grecia" style="background: #161b22; color: #fff;">🇬🇷 Grecia</option>
+            <option value="Portogallo" style="background: #161b22; color: #fff;">🇵🇹 Portogallo</option>
+            <option value="Francia" style="background: #161b22; color: #fff;">🇫🇷 Francia</option>
+        </select>
+    </div>
+
+    <div id="wildfireCumulativeChart" style="width: 100%; min-height: 520px;"></div>
+</div>
+
+<!-- HEATMAP INCENDI PURA -->
+<div class="card">
+    <h2 style="font-size: 1.4rem; color: var(--accent-fire); margin-bottom: 0.5rem;">Tabellone degli Incendi Boschivi nel Mediterraneo (1980–2026)</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.95rem;">Le caselle rosse evidenziano le annate record d'incendio (> 90° percentile del paese). Il rettangolo blu racchiude la colonna degli anni record d'incendio sull'intero bacino mediterraneo.</p>
+    <img src="record_heatmap_wildfires_mediterranean.png" alt="Heatmap Incendi Boschivi Mediterraneo 1980-2026" class="zoomable">
+    
+    <div class="legend-box">
+        <h3>Legenda del Tabellone</h3>
+        <ul>
+            <li>🔥 <strong>Casella Rossa (Soglia 90° Percentile del Paese):</strong> Anno di grave emergenza incendi per il singolo paese (top 10% degli anni più distruttivi). Con il valore della superficie bruciata espresso in ettari (`ha`, `k`, `M`).</li>
+            <li>🟦 <strong>Rettangolo Blu sulla Colonna dell'Anno:</strong> Evidenzia la colonna dell'anno quando la riga <strong>TOTALE</strong> supera il suo 90° percentile storico (mega-incendi a livello dell'intero bacino mediterraneo: <strong>1981</strong>, <strong>1985</strong>, <strong>1989</strong>, <strong>1994</strong>, <strong>2003</strong>).</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Modal Lightbox -->
+<div id="imageModal" class="modal">
+  <span class="close" id="modalClose">&times;</span>
+  <img class="modal-content" id="img01">
+</div>
+
+<script>
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("img01");
+    const closeBtn = document.getElementById("modalClose");
+    const zoomableImages = document.querySelectorAll('.zoomable');
+
+    zoomableImages.forEach(img => {
+        img.onclick = function() {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        }
+    });
+
+    closeBtn.onclick = function() { modal.style.display = "none"; }
+    modal.onclick = function(e) {
+        if (e.target !== modalImg) { modal.style.display = "none"; }
+    }
+
+    // LOGICA GRAFICO CUMULATIVO INCENDI
+    let wildfireCumulativeData = null;
+    const countrySelect = document.getElementById('countrySelect');
+
+    async function loadWildfireCumulativeData() {
+        try {
+            const response = await fetch('wildfire_cumulative.json?v=' + new Date().getTime());
+            wildfireCumulativeData = await response.json();
+            renderWildfireCumulativeChart();
+        } catch (error) {
+            console.error("Errore nel caricamento dei dati cumulativi incendi:", error);
+        }
+    }
+
+    function renderWildfireCumulativeChart() {
+        if (!wildfireCumulativeData) return;
+        const country = countrySelect.value;
+        const countryData = wildfireCumulativeData[country];
+
+        if (!countryData) return;
+
+        const traces = [];
+        const years = Object.keys(countryData).sort();
+
+        years.forEach(y => {
+            const pts = countryData[y];
+            if (!pts || pts.length === 0) return;
+
+            const x_vals = pts.map(p => p.day_of_year);
+            const y_vals = pts.map(p => p.cumulative_ha);
+            const text_vals = pts.map(p => p.day_label);
+
+            const is2026 = (y === '2026');
+
+            if (is2026) {
+                traces.push({
+                    x: x_vals,
+                    y: y_vals,
+                    text: text_vals,
+                    name: '🔥 2026 (In corso)',
+                    mode: 'lines+markers',
+                    line: { color: '#ef4444', width: 4 },
+                    marker: { size: 6, color: '#ef4444' },
+                    hovertemplate: '<b>2026 (%{text})</b><br>Cumulata: <b>%{y:,.0f} ha</b><extra></extra>'
+                });
+            } else {
+                traces.push({
+                    x: x_vals,
+                    y: y_vals,
+                    text: text_vals,
+                    name: `${y}`,
+                    mode: 'lines',
+                    line: { color: 'rgba(148, 163, 184, 0.45)', width: 1.5 },
+                    hovertemplate: `<b>${y} (%{text})</b><br>Cumulata: <b>%{y:,.0f} ha</b><extra></extra>`
+                });
+            }
+        });
+
+        const monthTicks = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
+        const monthLabels = ['01 Gen', '01 Feb', '01 Mar', '01 Apr', '01 Mag', '01 Giu', '01 Lug', '01 Ago', '01 Set', '01 Ott', '01 Nov', '01 Dic'];
+
+        const layout = {
+            title: {
+                text: `Evoluzione Cumulata Incendi Boschivi - ${country} (1980–2026)`,
+                font: { family: 'Outfit', size: 20, color: '#ff7539' }
+            },
+            xaxis: {
+                title: 'Data (Giorno dell\'Anno)',
+                tickvals: monthTicks,
+                ticktext: monthLabels,
+                gridcolor: 'rgba(255, 255, 255, 0.08)',
+                zerolinecolor: 'rgba(255, 255, 255, 0.12)',
+                color: '#8b949e'
+            },
+            yaxis: {
+                title: 'Superficie Bruciata Cumulata (Ettari)',
+                gridcolor: 'rgba(255, 255, 255, 0.08)',
+                zerolinecolor: 'rgba(255, 255, 255, 0.12)',
+                color: '#8b949e'
+            },
+            paper_bgcolor: 'rgba(0, 0, 0, 0)',
+            plot_bgcolor: 'rgba(22, 27, 34, 0.75)',
+            font: { family: 'Inter', color: '#f0f6fc' },
+            showlegend: false,
+            margin: { t: 60, r: 20, l: 60, b: 60 }
+        };
+
+        Plotly.newPlot('wildfireCumulativeChart', traces, layout, { responsive: true });
+    }
+
+    countrySelect.addEventListener('change', renderWildfireCumulativeChart);
+    loadWildfireCumulativeData();
+</script>
+
+</body>
+</html>

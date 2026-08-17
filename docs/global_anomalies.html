@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warming Stripes - Anomalie Termiche Globali</title>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f9f9f9;
+            --accent-color: #2563eb;
+            --border-color: #e5e5e5;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: var(--card-bg);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        h1 {
+            margin: 0;
+            color: var(--accent-color);
+        }
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .chart-container {
+            position: relative;
+            height: 800px;
+            width: 100%;
+            margin-bottom: 4rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Panoramica Globale delle Anomalie Termiche</h1>
+    <p>Visualizzazione delle deviazioni termiche annuali dalla media storica</p>
+    <a href="index.html" class="back-link">&larr; Torna alla Dashboard Principale</a>
+</header>
+
+<div class="container">
+    <h2 style="text-align: center; color: var(--accent-color);">Anomalie Termiche - Italia</h2>
+    <div class="chart-container" id="anomalyChartItaly"></div>
+
+    <h2 style="text-align: center; color: var(--accent-color);">Anomalie Termiche - Europa</h2>
+    <div class="chart-container" id="anomalyChartEurope"></div>
+</div>
+
+<script>
+    async function loadAndRender() {
+        try {
+            const response = await fetch('monthly_records.json');
+            const recordsData = await response.json();
+            
+            // Custom continuous colorscale centered at 0
+            const colorscale = [
+                [0, '#313695'], [0.25, '#74add1'], [0.5, '#ffffbf'], [0.75, '#f46d43'], [1, '#a50026']
+            ];
+
+            function renderDataset(datasetName, containerId, title) {
+                let allCities = [];
+                let allAnomalies = [];
+                let years = [];
+
+                let dataset = recordsData[datasetName];
+                
+                // Sort alphabetically but reverse so A is at top of Plotly y-axis
+                let sortedCities = Object.keys(dataset).sort().reverse();
+
+                for (let city of sortedCities) {
+                    const cityData = dataset[city];
+                    if (cityData.annual_anomalies) {
+                        allCities.push(city);
+                        allAnomalies.push(cityData.annual_anomalies);
+                        if (years.length === 0) {
+                            years = cityData.annual_years;
+                        }
+                    }
+                }
+
+                // Find max absolute anomaly to center the color scale at 0
+                let flatAnomalies = allAnomalies.flat().filter(x => x !== null);
+                let maxAbs = Math.max(Math.abs(Math.min(...flatAnomalies)), Math.abs(Math.max(...flatAnomalies)));
+
+                var data = [{
+                    z: allAnomalies,
+                    x: years,
+                    y: allCities,
+                    type: 'heatmap',
+                    colorscale: colorscale,
+                    zmin: -maxAbs,
+                    zmax: maxAbs,
+                    showscale: true,
+                    colorbar: {
+                        title: 'Anomalia (°C)'
+                    },
+                    hoverinfo: 'x+y+z'
+                }];
+
+                // Adjust height dynamically based on number of cities to avoid squishing
+                let plotHeight = Math.max(600, allCities.length * 25);
+
+                var layout = {
+                    title: `Warming Stripes: ${title}`,
+                    xaxis: { title: 'Anno', tickangle: -45, dtick: 5 },
+                    yaxis: { title: 'Città', automargin: true },
+                    margin: { t: 50, r: 20, l: 150, b: 60 },
+                    height: plotHeight,
+                    plot_bgcolor: "white",
+                    paper_bgcolor: "white"
+                };
+
+                // Adjust container height before plotting
+                document.getElementById(containerId).style.height = plotHeight + 'px';
+
+                Plotly.newPlot(containerId, data, layout, {responsive: true});
+            }
+
+            renderDataset('Italy', 'anomalyChartItaly', 'Italia');
+            renderDataset('Europe', 'anomalyChartEurope', 'Europa');
+
+        } catch (error) {
+            console.error("Errore nel caricamento dei dati:", error);
+        }
+    }
+
+    loadAndRender();
+</script>
+
+</body>
+</html>
