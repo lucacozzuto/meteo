@@ -1,18 +1,9 @@
 [
     {
-        "city": "Dublin",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 20.508501052856445,
-        "new_date": "2026-08-13",
-        "old_record": 20.0145,
-        "old_date": "1983-07-12"
-    },
-    {
         "city": "Napoli",
         "region": "Italy",
         "metric": "massima",
-        "new_record": 37.42000198364258,
+        "new_record": 39.09999847412109,
         "new_date": "2026-08-13",
         "old_record": 36.65,
         "old_date": "2023-08-20"
