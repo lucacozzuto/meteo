@@ -163,6 +163,10 @@ def get_monthly_records(data_dir):
             else:
                 top_summers = []
 
+            # Giorni Torridi (Tmax >= 30C) and Notti Roventi (Tmin >= 25C)
+            hot_days_counts = [int((df[df['year'] == y]['temperature_2m_max'] >= 30.0).sum()) for y in years]
+            scorching_nights_counts = [int((df[df['year'] == y]['temperature_2m_min'] >= 25.0).sum()) for y in years]
+
             city_data = {
                 "years": years,
                 "records": [],
@@ -175,7 +179,9 @@ def get_monthly_records(data_dir):
                 "heatwaves": heatwaves,
                 "night_heatwaves": night_heatwaves,
                 "daily_2026": daily_2026,
-                "top_summers": top_summers
+                "top_summers": top_summers,
+                "hot_days_counts": hot_days_counts,
+                "scorching_nights_counts": scorching_nights_counts
             }
 
             for m in range(1, 13):

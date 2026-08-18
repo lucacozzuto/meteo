@@ -117,6 +117,7 @@
     </div>
 
     <div class="chart-container" id="recordChart"></div>
+    <div class="chart-container" id="hotDaysScorchingNightsChart" style="height: 450px; margin-top: 3rem;"></div>
     <div class="chart-container" id="dailyEvolutionChart" style="height: 500px; margin-top: 3rem;"></div>
     <div class="chart-container" id="anomalyChart" style="height: 400px; margin-top: 3rem;"></div>
     <div class="chart-container" id="heatwaveChart" style="height: 400px; margin-top: 3rem;"></div>
@@ -180,6 +181,7 @@
 
     function renderCharts() {
         renderHeatmap();
+        renderHotDaysScorchingNightsChart();
         renderDailyEvolutionChart();
         renderAnomalyChart();
         renderHeatwavesChart();
@@ -295,6 +297,67 @@
         };
 
         Plotly.newPlot('recordChart', data, layout, {responsive: true});
+    }
+
+    function renderHotDaysScorchingNightsChart() {
+        const dataset = datasetSelect.value;
+        const city = citySelect.value;
+        const cityData = recordsData ? recordsData[dataset][city] : null;
+
+        if (!cityData || !cityData.hot_days_counts || !cityData.scorching_nights_counts) {
+            const chartDiv = document.getElementById('hotDaysScorchingNightsChart');
+            if (chartDiv) chartDiv.innerHTML = '';
+            return;
+        }
+
+        const years = cityData.years;
+        const hotDays = cityData.hot_days_counts;
+        const scorchingNights = cityData.scorching_nights_counts;
+
+        const traceHotDays = {
+            x: years,
+            y: hotDays,
+            mode: 'lines+markers',
+            name: '🔥 Giorni Torridi (Max ≥ 30°C)',
+            line: { color: '#ef4444', width: 2.5 },
+            marker: { size: 5, color: '#ef4444' },
+            hovertemplate: '<b>Anno %{x}</b><br>🔥 Giorni Torridi (≥30°C): <b>%{y}</b> giorni<extra></extra>'
+        };
+
+        const traceScorchingNights = {
+            x: years,
+            y: scorchingNights,
+            mode: 'lines+markers',
+            name: '🌙 Notti Roventi (Min ≥ 25°C)',
+            line: { color: '#2563eb', width: 2.5 },
+            marker: { size: 5, color: '#2563eb' },
+            hovertemplate: '<b>Anno %{x}</b><br>🌙 Notti Roventi (≥25°C): <b>%{y}</b> notti<extra></extra>'
+        };
+
+        const layout = {
+            title: `Evoluzione Annuale: Giorni Torridi (≥30°C) e Notti Roventi (≥25°C) - ${city}`,
+            xaxis: {
+                title: 'Anno',
+                dtick: 5,
+                tickangle: -45
+            },
+            yaxis: {
+                title: 'Numero di Giorni / Notti',
+                zeroline: true
+            },
+            legend: {
+                orientation: 'h',
+                yanchor: 'top',
+                y: -0.2,
+                xanchor: 'center',
+                x: 0.5
+            },
+            margin: { t: 50, r: 20, l: 50, b: 80 },
+            plot_bgcolor: "white",
+            paper_bgcolor: "white"
+        };
+
+        Plotly.newPlot('hotDaysScorchingNightsChart', [traceHotDays, traceScorchingNights], layout, {responsive: true});
     }
 
     function renderAnomalyChart() {
