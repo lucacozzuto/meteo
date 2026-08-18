@@ -321,7 +321,8 @@
             name: '🔥 Giorni Torridi (Max ≥ 30°C)',
             line: { color: '#ef4444', width: 2.5 },
             marker: { size: 5, color: '#ef4444' },
-            hovertemplate: '<b>Anno %{x}</b><br>🔥 Giorni Torridi (≥30°C): <b>%{y}</b> giorni<extra></extra>'
+            hovertemplate: '<b>Anno %{x}</b><br>🔥 Giorni Torridi (≥30°C): <b>%{y}</b> giorni<extra></extra>',
+            yaxis: 'y'
         };
 
         const traceScorchingNights = {
@@ -331,7 +332,8 @@
             name: '🌙 Notti Roventi (Min ≥ 25°C)',
             line: { color: '#2563eb', width: 2.5 },
             marker: { size: 5, color: '#2563eb' },
-            hovertemplate: '<b>Anno %{x}</b><br>🌙 Notti Roventi (≥25°C): <b>%{y}</b> notti<extra></extra>'
+            hovertemplate: '<b>Anno %{x}</b><br>🌙 Notti Roventi (≥25°C): <b>%{y}</b> notti<extra></extra>',
+            yaxis: 'y2'
         };
 
         const layout = {
@@ -342,7 +344,17 @@
                 tickangle: -45
             },
             yaxis: {
-                title: 'Numero di Giorni / Notti',
+                title: '🔥 Giorni Torridi (≥30°C)',
+                titlefont: { color: '#ef4444' },
+                tickfont: { color: '#ef4444' },
+                zeroline: true
+            },
+            yaxis2: {
+                title: '🌙 Notti Roventi (≥25°C)',
+                titlefont: { color: '#2563eb' },
+                tickfont: { color: '#2563eb' },
+                overlaying: 'y',
+                side: 'right',
                 zeroline: true
             },
             legend: {
@@ -352,7 +364,7 @@
                 xanchor: 'center',
                 x: 0.5
             },
-            margin: { t: 50, r: 20, l: 50, b: 80 },
+            margin: { t: 50, r: 65, l: 65, b: 80 },
             plot_bgcolor: "white",
             paper_bgcolor: "white"
         };
