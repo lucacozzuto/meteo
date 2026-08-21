@@ -1,5 +1,23 @@
 [
     {
+        "city": "Belgrade",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 27.35449981689453,
+        "new_date": "2026-08-20",
+        "old_record": 27.189,
+        "old_date": "2007-07-23"
+    },
+    {
+        "city": "Barcelona",
+        "region": "Europe",
+        "metric": "minima",
+        "new_record": 27.07250022888184,
+        "new_date": "2026-08-20",
+        "old_record": 26.156,
+        "old_date": "2018-08-04"
+    },
+    {
         "city": "Napoli",
         "region": "Italy",
         "metric": "massima",
@@ -160,15 +178,6 @@
         "new_date": "2026-07-17",
         "old_record": 37.451,
         "old_date": "2000-08-21"
-    },
-    {
-        "city": "Barcelona",
-        "region": "Europe",
-        "metric": "minima",
-        "new_record": 26.30599975585937,
-        "new_date": "2026-07-16",
-        "old_record": 26.156,
-        "old_date": "2018-08-04"
     },
     {
         "city": "Lisbon",
