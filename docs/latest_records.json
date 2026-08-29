@@ -1,5 +1,32 @@
 [
     {
+        "city": "Potenza",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 38.03900146484375,
+        "new_date": "2026-08-28",
+        "old_record": 37.7495,
+        "old_date": "1946-08-18"
+    },
+    {
+        "city": "Campobasso",
+        "region": "Italy",
+        "metric": "massima",
+        "new_record": 39.247501373291016,
+        "new_date": "2026-08-28",
+        "old_record": 37.451,
+        "old_date": "2000-08-21"
+    },
+    {
+        "city": "Perugia",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 23.823999404907227,
+        "new_date": "2026-08-28",
+        "old_record": 23.308498,
+        "old_date": "1958-08-01"
+    },
+    {
         "city": "Barcelona",
         "region": "Europe",
         "metric": "minima",
@@ -160,15 +187,6 @@
         "new_date": "2026-07-20",
         "old_record": 26.65,
         "old_date": "2023-07-21"
-    },
-    {
-        "city": "Campobasso",
-        "region": "Italy",
-        "metric": "massima",
-        "new_record": 37.49250030517578,
-        "new_date": "2026-07-17",
-        "old_record": 37.451,
-        "old_date": "2000-08-21"
     },
     {
         "city": "Lisbon",
