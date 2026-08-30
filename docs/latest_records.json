@@ -1,5 +1,23 @@
 [
     {
+        "city": "Catanzaro",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 29.55150032043457,
+        "new_date": "2026-08-29",
+        "old_record": 28.571,
+        "old_date": "2023-07-22"
+    },
+    {
+        "city": "Italia",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 24.40850067138672,
+        "new_date": "2026-08-29",
+        "old_record": 24.2415,
+        "old_date": "1945-07-31"
+    },
+    {
         "city": "Potenza",
         "region": "Italy",
         "metric": "massima",
