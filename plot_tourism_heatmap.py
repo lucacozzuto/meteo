@@ -192,17 +192,24 @@ def generate_line_chart(df_total, df_foreign, df_domestic, country_code, country
     piv_tot = cdf_tot.pivot_table(index='month', columns='year', values='value_millions', aggfunc='first')
     tot_tot = piv_tot.sum(axis=0, skipna=True)
     cnt_tot = piv_tot.notna().sum(axis=0)
-    tot_tot[cnt_tot < 10] = np.nan
+    # Mask incomplete historical years (< 10 months), but keep 2026 (ongoing year)
+    for y in tot_tot.index:
+        if y < 2026 and cnt_tot[y] < 10:
+            tot_tot[y] = np.nan
 
     piv_for = cdf_for.pivot_table(index='month', columns='year', values='value_millions', aggfunc='first')
     tot_for = piv_for.sum(axis=0, skipna=True)
     cnt_for = piv_for.notna().sum(axis=0)
-    tot_for[cnt_for < 10] = np.nan
+    for y in tot_for.index:
+        if y < 2026 and cnt_for[y] < 10:
+            tot_for[y] = np.nan
 
     piv_dom = cdf_dom.pivot_table(index='month', columns='year', values='value_millions', aggfunc='first')
     tot_dom = piv_dom.sum(axis=0, skipna=True)
     cnt_dom = piv_dom.notna().sum(axis=0)
-    tot_dom[cnt_dom < 10] = np.nan
+    for y in tot_dom.index:
+        if y < 2026 and cnt_dom[y] < 10:
+            tot_dom[y] = np.nan
 
     # Fill DOM = TOTAL - FOR whenever DOM is missing
     years = sorted(list(set(tot_tot.dropna().index).union(set(tot_for.dropna().index))))
@@ -255,11 +262,22 @@ def generate_line_chart(df_total, df_foreign, df_domestic, country_code, country
                 fontsize=7.5, fontweight='bold', color='#1d4ed8'
             )
 
-    ax.set_title(f'Confronto Pernottamenti Stranieri vs Residenti – {country_name}\n(Milioni di notti trascorse annue · Eurostat tour_occ_nim)', fontsize=14, fontweight='bold')
+    ax.set_title(f'Confronto Pernottamenti Stranieri vs Residenti – {country_name}\n(Milioni di notti trascorse annue · Eurostat tour_occ_nim · 2026: dati parziali)', fontsize=14, fontweight='bold')
     ax.set_xlabel('Anno', fontsize=12)
     ax.set_ylabel('Notti Trascorse Annue (milioni)', fontsize=12)
+
+    # Format xticklabels so 2026 shows (dati parziali) or asterisk if appropriate
+    xtick_labels = [f"{y}*" if y == 2026 else str(y) for y in years]
     ax.set_xticks(years)
-    ax.set_xticklabels(years, rotation=45, ha='right')
+    ax.set_xticklabels(xtick_labels, rotation=45, ha='right')
+
+    if 2026 in years:
+        ax.text(
+            0.99, 0.02, '* 2026: dati parziali (mesi disponibili)',
+            transform=ax.transAxes, fontsize=10, fontstyle='italic',
+            ha='right', va='bottom',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8, edgecolor='gray')
+        )
 
     ax.grid(True, linestyle='--', alpha=0.4)
     ax.legend(fontsize=11, loc='upper left', frameon=True, facecolor='white', framealpha=0.9)
