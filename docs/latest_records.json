@@ -18,10 +18,28 @@
         "old_date": "1945-07-31"
     },
     {
+        "city": "Perugia",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 23.373998641967773,
+        "new_date": "2026-08-29",
+        "old_record": 23.308498,
+        "old_date": "1958-08-01"
+    },
+    {
+        "city": "Cagliari",
+        "region": "Italy",
+        "metric": "minima",
+        "new_record": 29.063501358032227,
+        "new_date": "2026-08-28",
+        "old_record": 27.8635,
+        "old_date": "2023-07-18"
+    },
+    {
         "city": "Potenza",
         "region": "Italy",
         "metric": "massima",
-        "new_record": 38.03900146484375,
+        "new_record": 38.34999847412109,
         "new_date": "2026-08-28",
         "old_record": 37.7495,
         "old_date": "1946-08-18"
@@ -30,19 +48,10 @@
         "city": "Campobasso",
         "region": "Italy",
         "metric": "massima",
-        "new_record": 39.247501373291016,
+        "new_record": 38.89250183105469,
         "new_date": "2026-08-28",
         "old_record": 37.451,
         "old_date": "2000-08-21"
-    },
-    {
-        "city": "Perugia",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 23.823999404907227,
-        "new_date": "2026-08-28",
-        "old_record": 23.308498,
-        "old_date": "1958-08-01"
     },
     {
         "city": "LAquila",
@@ -187,15 +196,6 @@
         "new_date": "2026-07-30",
         "old_record": 37.786,
         "old_date": "2025-08-10"
-    },
-    {
-        "city": "Cagliari",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 28.4635009765625,
-        "new_date": "2026-07-21",
-        "old_record": 27.8635,
-        "old_date": "2023-07-18"
     },
     {
         "city": "Tirana",
