@@ -1,32 +1,5 @@
 [
     {
-        "city": "Catanzaro",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 29.55150032043457,
-        "new_date": "2026-08-29",
-        "old_record": 28.571,
-        "old_date": "2023-07-22"
-    },
-    {
-        "city": "Italia",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 24.40850067138672,
-        "new_date": "2026-08-29",
-        "old_record": 24.2415,
-        "old_date": "1945-07-31"
-    },
-    {
-        "city": "Perugia",
-        "region": "Italy",
-        "metric": "minima",
-        "new_record": 23.373998641967773,
-        "new_date": "2026-08-29",
-        "old_record": 23.308498,
-        "old_date": "1958-08-01"
-    },
-    {
         "city": "Cagliari",
         "region": "Italy",
         "metric": "minima",
